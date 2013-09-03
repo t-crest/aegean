@@ -1,0 +1,18 @@
+A list of tasks to be done for the Aegean workflow:
+- Script for generating top level file instantiating:
+	- Patmos
+	- NoC
+	- IO devices
+	- Memory NoC
+	- Memory Ctrl
+	-(Hardware locks)
+- Script for generating compiler configuration files and linker scripts
+	- Generation of memory map
+	- Placement of processes to processors
+- MPI Library
+	- Library functions
+	- Buffer allocation
+	- Synchronization (Barrier)
+- Poseidon
+	- Generation of the C initialization file
+- 
