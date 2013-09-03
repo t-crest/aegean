@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- Definition of simple elements -->
+<xs:element name="core" type="xs:string"/>
+
+<!-- Definition of simple types-->
+
+<xs:simpleType name="coordinate">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="\([0-9]+,[0-9]+\)"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="address">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="0x[0-9a-f]+"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="com">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="all2all|custom"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="topo">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="custom|bitorus|mesh"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="proc">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="patmos|IP"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<!-- Definition of attributes -->
+<xs:attribute name="version" type="xs:string"/>
+<xs:attribute name="name" type="xs:string"/>
+<xs:attribute name="width" type="xs:integer"/>
+<xs:attribute name="height" type="xs:integer"/>
+<xs:attribute name="phits" type="xs:integer"/>
+<xs:attribute name="bandwidth" type="xs:integer"/>
+<xs:attribute name="node_id" type="xs:string"/>
+<xs:attribute name="proc_id" type="xs:integer"/>
+<xs:attribute name="cached" type="xs:boolean"/>
+<xs:attribute name="routerDepth" type="xs:integer"/>
+<xs:attribute name="linkDepth" type="xs:integer"/>
+
+<xs:attribute name="entry_point" type="address"/>
+<xs:attribute name="start" type="address"/>
+<xs:attribute name="end" type="address"/>
+
+<xs:attribute name="from" type="coordinate" />
+<xs:attribute name="to" type="coordinate" />
+<xs:attribute name="src" type="coordinate" />
+<xs:attribute name="dest" type="coordinate" />
+<xs:attribute name="loc" type="coordinate" />
+
+<xs:attribute name="ttype" type="topo"/>
+<xs:attribute name="ctype" type="com"/>
+<xs:attribute name="ntype" type="proc"/>
+
+<!-- Definition of complex elements -->
+
+	<!-- A process of the application -->
+	<xs:element name="mem">
+		<xs:complexType mixed="true">
+			<xs:attribute ref="end" use="required"/>
+			<xs:attribute ref="start" use="required"/>
+			<xs:attribute ref="cached" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- An entry point for a processor -->
+
+	<!-- A process of the application -->
+	<xs:element name="process">
+		<xs:complexType>
+			<xs:attribute ref="proc_id" use="required"/>
+			<xs:attribute ref="node_id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- An entry point for a processor -->
+	<xs:element name="entry">
+		<xs:complexType>
+			<xs:attribute ref="node_id" use="required"/>
+			<xs:attribute ref="entry_point" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- The nodes of the platform -->
+	<xs:element name="node">
+		<xs:complexType>
+			<xs:attribute ref="node_id" use="required"/>
+			<xs:attribute ref="loc" use="required"/>
+			<xs:attribute ref="ntype" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- The links of the platform -->
+	<xs:element name="link">
+		<xs:complexType>
+			<xs:attribute ref="src" use="required"/>
+			<xs:attribute ref="dest" use="required"/>
+			<xs:attribute ref="linkDepth" use="required"/>
+		</xs:complexType>
+	</xs:element>	
+
+	<xs:element name="channel">
+		<xs:complexType>
+			<xs:attribute ref="from" use="required"/>
+			<xs:attribute ref="to" use="required"/>
+			<xs:attribute ref="bandwidth" use="optional"/>
+			<xs:attribute ref="phits" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="nodes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="node" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="topology">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="link" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute ref="ttype" use="required"/>
+			<xs:attribute ref="routerDepth" use="required"/>
+			<xs:attribute ref="linkDepth" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="map">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mem" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- A description of the processes -->
+	<xs:element name="processes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="process" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- The entry points for each processor -->
+	<xs:element name="entries">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="entry" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- The communication patter of the application. -->
+	<xs:element name="communication">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="channel" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute ref="ctype" use="required"/>
+			<xs:attribute ref="phits" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- A decription of the hardware platform. -->
+	<xs:element name="platform">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nodes"/>
+				<xs:element ref="topology"/>
+				<xs:element ref="map"/>
+			</xs:sequence>
+			<xs:attribute ref="name" use="required"/>
+			<xs:attribute ref="width" use="required"/>
+			<xs:attribute ref="height" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- A description of the application running on the platform. The description includes the processes and how they communicate -->
+	<xs:element name="application">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="processes"/>
+				<xs:element ref="entries"/>
+				<xs:element ref="communication"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- A detaile description of the cores of the platform-->
+	<xs:element name="cores">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="core"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- The top-level tag describing the full configuration-->
+	<xs:element name="configuration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="platform"/>
+				<xs:element ref="application"/>
+				<xs:element ref="cores"/>
+			</xs:sequence>
+			<xs:attribute ref="version" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

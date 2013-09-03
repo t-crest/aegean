@@ -1,0 +1,38 @@
+Configuration
+
+-------------------------
+Platform topology
+- Node specifications
+- NoC topology
+- Memory mapping
+
+-------------------------
+
+Application configuration
+- processes
+	- ID
+	- Core ID (Optional)
+	-
+- Entry point for each core
+- Communication pattern
+
+--------------------------
+
+
+Node configuration
+- IP blocks
+- Patmos
+	- Scratchpad sizes
+	- Cache sizes
+	- IO memory map
+	- Issue width (1/2)
+- NI
+	- Max timeslots
+	- Communication scratchpad size
+	- DMA slot table
+
+---------------------------
+
+Configuration files
+XML format passed with lxml and validation
+Python 3.3
