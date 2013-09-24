@@ -14,5 +14,6 @@ A list of tasks to be done for the Aegean workflow:
 	- Buffer allocation
 	- Synchronization (Barrier)
 - Poseidon
-	- Generation of the C initialization file
+	\/- Generation of the C initialization file
+	- Enable scheduler to shorten schedules
 - 
