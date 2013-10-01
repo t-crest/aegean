@@ -11,7 +11,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.noc_types.all;
+use work.config.all;
+use work.ocp.all;
+use work.noc_interface.all;
 
 entity aegean is
     port(
@@ -89,6 +91,9 @@ architecture struct of aegean is
 
     signal ocp_core_ms : ocp_core_m_a;
     signal ocp_core_ss : ocp_core_s_a;
+
+    signal spm_ms : spm_masters;
+    signal spm_ss : spm_slaves;
 
 
 begin
@@ -175,8 +180,24 @@ begin
     end generate ; -- patmoss
 
     spms : for i in 0 to (N*M)-1 generate
-
+        spm : entity work.com_spm port map(
+                p_clk => clk,
+                n_clk => clk,
+                reset => reset,
+                ocp_core_m => ocp_core_ms(i),
+                ocp_core_s => ocp_core_ss(i),
+                spm_m => spm_ms(i),
+                spm_s => spm_ss(i)
+            );
     end generate ; -- spms
 
+    noc : entity work.noc port map(
+            clk => clk,
+            reset => reset,
+            ocp_io_ms => ocp_io_ms,
+            ocp_io_ss => ocp_io_ss,
+            spm_ports_m => spm_ms,
+            spm_ports_s => spm_ss
+        );
 
 end architecture ; -- struct

@@ -29,6 +29,7 @@ update_hw:
 
 compile-aegean: compile-config compile-argo compile-patmos
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/com_spm.vhd
+	$(WINE) $(VCOM) $(AEGEAN_PATH)/noc_node.vhd
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/noc_n.vhd
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/aegean.vhd
 #	$(WINE) $(VCOM) $(AEGEAN_PATH)/altera/cyc2_pll.vhd
@@ -61,3 +62,6 @@ compile-config:
 
 sim:
 	$(WINE) vsim aegean
+
+clean:
+	-rm -r work
