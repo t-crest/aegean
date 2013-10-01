@@ -149,7 +149,7 @@ port map (a_clk => p_clk,
     a_dout => SData_h,
     b_clk => n_clk,
     b_wr => spm_m.MCmd(0),
-    b_addr => spm_m.MAddr(SPM_ADDR_WIDTH-1 downto 0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
     b_din => spm_m.MData(63 downto 32),
     b_dout => spm_s.SData(63 downto 32));
 
@@ -163,7 +163,7 @@ port map (a_clk => p_clk,
     a_dout => SData_l,
     b_clk => n_clk,
     b_wr => spm_m.MCmd(0),
-    b_addr => spm_m.MAddr(SPM_ADDR_WIDTH-1 downto 0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
     b_din => spm_m.MData(31 downto 0),
     b_dout => spm_s.SData(31 downto 0));
 
