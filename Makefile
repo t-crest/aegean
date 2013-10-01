@@ -27,16 +27,15 @@ update_hw:
 	cd ../patmos && ./misc/build.sh -u patmos
 	cd ../t-crest-noc && git pull
 
-compile-aegean: compile-patmos
-#compile-argo
-	$(WINE) $(VCOM) $(AEGEAN_PATH)/packages/config.vhd
-	$(WINE) $(VCOM) $(AEGEAN_PATH)/packages/ocp.vhd
+compile-aegean: compile-config compile-argo compile-patmos
+	$(WINE) $(VCOM) $(AEGEAN_PATH)/com_spm.vhd
+	$(WINE) $(VCOM) $(AEGEAN_PATH)/noc_n.vhd
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/aegean.vhd
 #	$(WINE) $(VCOM) $(AEGEAN_PATH)/altera/cyc2_pll.vhd
 #	$(WINE) $(VCOM) $(AEGEAN_PATH)/aegean_top_de2_70.vhd
 
 compile-argo:
-	$(WINE) $(VCOM) $(ARGO_PATH)/defs.vhd
+#	$(WINE) $(VCOM) $(ARGO_PATH)/defs.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/bram.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/bram_tdp.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/counter.vhd
@@ -45,13 +44,20 @@ compile-argo:
 	$(WINE) $(VCOM) $(ARGO_PATH)/hpu.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/xbar.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/router.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/noc_node.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/noc_n.vhd
+#	$(WINE) $(VCOM) $(ARGO_PATH)/noc_node.vhd
+#	$(WINE) $(VCOM) $(ARGO_PATH)/noc_n.vhd
 
 
 compile-patmos:
-	$(WINE) $(VLIB)
 	$(WINE) $(VLOG) ${PATMOS_SOURCE}
+
+compile-config:
+	$(WINE) $(VLIB)
+	$(WINE) $(VCOM) $(ARGO_PATH)/config.vhd
+	$(WINE) $(VCOM) $(ARGO_PATH)/ocp.vhd
+	$(WINE) $(VCOM) $(ARGO_PATH)/noc_defs.vhd
+	$(WINE) $(VCOM) $(ARGO_PATH)/noc_interface.vhd
+
 
 sim:
 	$(WINE) vsim aegean

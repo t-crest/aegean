@@ -11,8 +11,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.config.all;
-use work.ocp.all;
+use work.noc_types.all;
 
 entity aegean is
     port(
@@ -83,13 +82,11 @@ architecture struct of aegean is
         );
     end component;
 
-    type ocp_io_m_a is array((N*M)-1 downto 0) of ocp_io_m;
-    type ocp_io_s_a is array((N*M)-1 downto 0) of ocp_io_s;
+
     signal ocp_io_ms : ocp_io_m_a;
     signal ocp_io_ss : ocp_io_s_a;
 
-    type ocp_core_m_a is array((N*M)-1 downto 0) of ocp_core_m;
-    type ocp_core_s_a is array((N*M)-1 downto 0) of ocp_core_s;
+
     signal ocp_core_ms : ocp_core_m_a;
     signal ocp_core_ss : ocp_core_s_a;
 
@@ -158,19 +155,19 @@ begin
                     io_led                        => open,
                     io_uartPins_tx                => open,
                     io_uartPins_rx                => '0',
-                    io_sramPins_ram_out_addr      => io_sramPins_ram_out_addr    ,
-                    io_sramPins_ram_out_dout_ena  => io_sramPins_ram_out_dout_ena,
-                    io_sramPins_ram_out_nadsc     => io_sramPins_ram_out_nadsc   ,
-                    io_sramPins_ram_out_noe       => io_sramPins_ram_out_noe     ,
-                    io_sramPins_ram_out_nbwe      => io_sramPins_ram_out_nbwe    ,
-                    io_sramPins_ram_out_nbw       => io_sramPins_ram_out_nbw     ,
-                    io_sramPins_ram_out_ngw       => io_sramPins_ram_out_ngw     ,
-                    io_sramPins_ram_out_nce1      => io_sramPins_ram_out_nce1    ,
-                    io_sramPins_ram_out_ce2       => io_sramPins_ram_out_ce2     ,
-                    io_sramPins_ram_out_nce3      => io_sramPins_ram_out_nce3    ,
-                    io_sramPins_ram_out_nadsp     => io_sramPins_ram_out_nadsp   ,
-                    io_sramPins_ram_out_nadv      => io_sramPins_ram_out_nadv    ,
-                    io_sramPins_ram_out_dout      => io_sramPins_ram_out_dout    ,
+                    io_sramPins_ram_out_addr      => open,
+                    io_sramPins_ram_out_dout_ena  => open,
+                    io_sramPins_ram_out_nadsc     => open,
+                    io_sramPins_ram_out_noe       => open,
+                    io_sramPins_ram_out_nbwe      => open,
+                    io_sramPins_ram_out_nbw       => open,
+                    io_sramPins_ram_out_ngw       => open,
+                    io_sramPins_ram_out_nce1      => open,
+                    io_sramPins_ram_out_ce2       => open,
+                    io_sramPins_ram_out_nce3      => open,
+                    io_sramPins_ram_out_nadsp     => open,
+                    io_sramPins_ram_out_nadv      => open,
+                    io_sramPins_ram_out_dout      => open,
                     io_sramPins_ram_in_din        => io_sramPins_ram_in_din
                 );
         end generate;
