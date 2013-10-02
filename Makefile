@@ -61,7 +61,9 @@ compile-config:
 
 
 sim:
-	$(WINE) vsim aegean
+	$(WINE) $(VCOM) $(AEGEAN_PATH)/packages/test.vhd
+	$(WINE) $(VCOM) $(AEGEAN_PATH)/sim/aegean_testbench.vhd
+	$(WINE) vsim aegean_testbench
 
 clean:
 	-rm -r work

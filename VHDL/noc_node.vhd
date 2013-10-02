@@ -40,6 +40,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
+use work.ocp.all;
 use work.noc_defs.all;
 use work.noc_interface.all;
 
@@ -50,8 +51,8 @@ port (
 	n_clk		: std_logic;
 	reset		: std_logic;
 
-	proc_m		: in ocp_master;
-	proc_s      : out ocp_slave;
+	proc_m		: in ocp_io_m;
+	proc_s      : out ocp_io_s;
 
 	spm_m		: out spm_master;
 	spm_s		: in spm_slave;
@@ -85,8 +86,8 @@ port (
 
 -- Processor Ports
 -- DMA Configuration Port - OCP
-	proc_in		: in ocp_master;
-	proc_out	: out ocp_slave;
+	proc_in		: in ocp_io_m;
+	proc_out	: out ocp_io_s;
 
 -- SPM Data Port - OCP?
 	spm_in		: in spm_slave;

@@ -44,7 +44,7 @@ use work.noc_interface.all;
 
 entity com_spm is
   generic(
-    SPM_IDX_SIZE : natural := 8
+    SPM_IDX_SIZE : natural := 6
     );
   port (
     p_clk : in std_logic;

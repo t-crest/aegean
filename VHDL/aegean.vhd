@@ -173,7 +173,7 @@ begin
                     io_sramPins_ram_out_nadsp     => open,
                     io_sramPins_ram_out_nadv      => open,
                     io_sramPins_ram_out_dout      => open,
-                    io_sramPins_ram_in_din        => io_sramPins_ram_in_din
+                    io_sramPins_ram_in_din        => (others => '0')
                 );
         end generate;
 
