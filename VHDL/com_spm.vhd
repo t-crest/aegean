@@ -86,6 +86,8 @@ architecture arch of com_spm is
 
     signal MCmd : std_logic_vector(OCP_CMD_WIDTH-1 downto 0);
 
+    signal h_0_en, h_1_en, h_2_en, h_3_en : std_logic;
+    signal l_0_en, l_1_en, l_2_en, l_3_en : std_logic;
 
 begin
 
@@ -139,33 +141,127 @@ begin
         end if ;
     end process ; -- MCmd_reg
 
--- High SPM instance
-spm_h : bram_tdp
-generic map (DATA=>DATA_WIDTH, ADDR => SPM_IDX_SIZE-1)
+
+h_0_en <= ocp_core_m.MByteEn(0) and wr_h;
+h_1_en <= ocp_core_m.MByteEn(1) and wr_h;
+h_2_en <= ocp_core_m.MByteEn(2) and wr_h;
+h_3_en <= ocp_core_m.MByteEn(3) and wr_h;
+
+l_0_en <= ocp_core_m.MByteEn(0) and wr_l;
+l_1_en <= ocp_core_m.MByteEn(1) and wr_l;
+l_2_en <= ocp_core_m.MByteEn(2) and wr_l;
+l_3_en <= ocp_core_m.MByteEn(3) and wr_l;
+
+-- High SPM instance 0
+spm_h_0 : bram_tdp
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
 port map (a_clk => p_clk,
-    a_wr => wr_h,
+    a_wr => h_0_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
-    a_din => ocp_core_m.MData,
-    a_dout => SData_h,
+    a_din => ocp_core_m.MData(7 downto 0),
+    a_dout => SData_h(7 downto 0),
     b_clk => n_clk,
     b_wr => spm_m.MCmd(0),
     b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
-    b_din => spm_m.MData(63 downto 32),
-    b_dout => spm_s.SData(63 downto 32));
+    b_din => spm_m.MData(39 downto 32),
+    b_dout => spm_s.SData(39 downto 32));
 
--- Low SPM instance
-spm_l : bram_tdp
-generic map (DATA => DATA_WIDTH, ADDR => SPM_IDX_SIZE-1)
+-- High SPM instance 1
+spm_h_1 : bram_tdp
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
 port map (a_clk => p_clk,
-    a_wr => wr_l,
+    a_wr => h_1_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
-    a_din => ocp_core_m.MData,
-    a_dout => SData_l,
+    a_din => ocp_core_m.MData(15 downto 8),
+    a_dout => SData_h(15 downto 8),
     b_clk => n_clk,
     b_wr => spm_m.MCmd(0),
     b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
-    b_din => spm_m.MData(31 downto 0),
-    b_dout => spm_s.SData(31 downto 0));
+    b_din => spm_m.MData(47 downto 40),
+    b_dout => spm_s.SData(47 downto 40));
 
+-- High SPM instance 2
+spm_h_2 : bram_tdp
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+port map (a_clk => p_clk,
+    a_wr => h_2_en,
+    a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
+    a_din => ocp_core_m.MData(23 downto 16),
+    a_dout => SData_h(23 downto 16),
+    b_clk => n_clk,
+    b_wr => spm_m.MCmd(0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
+    b_din => spm_m.MData(55 downto 48),
+    b_dout => spm_s.SData(55 downto 48));
+
+-- High SPM instance 3
+spm_h_3 : bram_tdp
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+port map (a_clk => p_clk,
+    a_wr => h_3_en,
+    a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
+    a_din => ocp_core_m.MData(31 downto 24),
+    a_dout => SData_h(31 downto 24),
+    b_clk => n_clk,
+    b_wr => spm_m.MCmd(0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
+    b_din => spm_m.MData(63 downto 56),
+    b_dout => spm_s.SData(63 downto 56));
+
+-- Low SPM instance 0
+spm_l_0 : bram_tdp
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+port map (a_clk => p_clk,
+    a_wr => l_0_en,
+    a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
+    a_din => ocp_core_m.MData(7 downto 0),
+    a_dout => SData_l(7 downto 0),
+    b_clk => n_clk,
+    b_wr => spm_m.MCmd(0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
+    b_din => spm_m.MData(7 downto 0),
+    b_dout => spm_s.SData(7 downto 0));
+
+-- Low SPM instance 1
+spm_l_1 : bram_tdp
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+port map (a_clk => p_clk,
+    a_wr => l_1_en,
+    a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
+    a_din => ocp_core_m.MData(15 downto 8),
+    a_dout => SData_l(15 downto 8),
+    b_clk => n_clk,
+    b_wr => spm_m.MCmd(0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
+    b_din => spm_m.MData(15 downto 8),
+    b_dout => spm_s.SData(15 downto 8));
+
+-- Low SPM instance 2
+spm_l_2 : bram_tdp
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+port map (a_clk => p_clk,
+    a_wr => l_2_en,
+    a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
+    a_din => ocp_core_m.MData(23 downto 16),
+    a_dout => SData_l(23 downto 16),
+    b_clk => n_clk,
+    b_wr => spm_m.MCmd(0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
+    b_din => spm_m.MData(23 downto 16),
+    b_dout => spm_s.SData(23 downto 16));
+
+-- Low SPM instance 3
+spm_l_3 : bram_tdp
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+port map (a_clk => p_clk,
+    a_wr => l_3_en,
+    a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
+    a_din => ocp_core_m.MData(31 downto 24),
+    a_dout => SData_l(31 downto 24),
+    b_clk => n_clk,
+    b_wr => spm_m.MCmd(0),
+    b_addr => spm_m.MAddr(SPM_IDX_SIZE-2 downto 0),
+    b_din => spm_m.MData(31 downto 24),
+    b_dout => spm_s.SData(31 downto 24));
 
 end architecture ; -- arch
