@@ -154,7 +154,7 @@ l_3_en <= ocp_core_m.MByteEn(3) and wr_l;
 
 -- High SPM instance 0
 spm_h_0 : bram_tdp
-generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => h_0_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
@@ -168,7 +168,7 @@ port map (a_clk => p_clk,
 
 -- High SPM instance 1
 spm_h_1 : bram_tdp
-generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => h_1_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
@@ -182,7 +182,7 @@ port map (a_clk => p_clk,
 
 -- High SPM instance 2
 spm_h_2 : bram_tdp
-generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => h_2_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
@@ -196,7 +196,7 @@ port map (a_clk => p_clk,
 
 -- High SPM instance 3
 spm_h_3 : bram_tdp
-generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA=>DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => h_3_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
@@ -210,7 +210,7 @@ port map (a_clk => p_clk,
 
 -- Low SPM instance 0
 spm_l_0 : bram_tdp
-generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => l_0_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
@@ -224,7 +224,7 @@ port map (a_clk => p_clk,
 
 -- Low SPM instance 1
 spm_l_1 : bram_tdp
-generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => l_1_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
@@ -238,7 +238,7 @@ port map (a_clk => p_clk,
 
 -- Low SPM instance 2
 spm_l_2 : bram_tdp
-generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => l_2_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
@@ -252,7 +252,7 @@ port map (a_clk => p_clk,
 
 -- Low SPM instance 3
 spm_l_3 : bram_tdp
-generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-3)
+generic map (DATA => DATA_WIDTH/4, ADDR => SPM_IDX_SIZE-1)
 port map (a_clk => p_clk,
     a_wr => l_3_en,
     a_addr => ocp_core_m.MAddr(SPM_IDX_SIZE+1 downto 3),
