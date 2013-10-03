@@ -68,7 +68,7 @@ begin
         port map(
             inclk0 => clk,
             c0     => clk_int,
-            c1     => open
+            c1     => oSRAM_CLK
         );
     -- we use a PLL
     -- clk_int <= clk;
