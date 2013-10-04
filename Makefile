@@ -2,6 +2,7 @@ PATMOS_PATH=../patmos/patmos/chisel/build
 PATMOS_SOURCE=${PATMOS_PATH}/Patmos.v
 ARGO_PATH=../t-crest-noc/noc/src
 AEGEAN_PATH=./VHDL
+SIM_PATH=$(AEGEAN_PATH)/sim
 VLIB=vlib -quiet work
 VCOM=vcom -quiet -93
 VLOG=vlog -quiet
@@ -23,8 +24,12 @@ endif
 
 all:
 
-update_hw:
+update_hw: update_argo update_patmos
+
+update_patmos:
 	cd ../patmos && ./misc/build.sh -u patmos
+
+update_argo:
 	cd ../t-crest-noc && git pull
 
 compile-aegean: compile-config compile-argo compile-patmos
@@ -36,7 +41,6 @@ compile-aegean: compile-config compile-argo compile-patmos
 #	$(WINE) $(VCOM) $(AEGEAN_PATH)/aegean_top_de2_70.vhd
 
 compile-argo:
-#	$(WINE) $(VCOM) $(ARGO_PATH)/defs.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/bram.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/bram_tdp.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/counter.vhd
@@ -60,10 +64,10 @@ compile-config:
 	$(WINE) $(VCOM) $(ARGO_PATH)/noc_interface.vhd
 
 
-sim:
+sim: compile-aegean
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/packages/test.vhd
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/sim/aegean_testbench.vhd
-	$(WINE) vsim aegean_testbench
+	$(WINE) vsim -novopt -do $(SIM_PATH)/aegean.do aegean_testbench
 
 clean:
 	-rm -r work

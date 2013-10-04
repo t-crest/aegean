@@ -82,7 +82,8 @@ architecture arch of com_spm is
 
     signal wr_h, wr_l : std_logic;
     signal Sdata_h, Sdata_l : std_logic_vector(DATA_WIDTH-1 downto 0);
-    signal select_high, select_low : std_logic;
+    signal select_low, select_low_reg : std_logic;
+    signal select_high, select_high_reg : std_logic;
 
     signal MCmd : std_logic_vector(OCP_CMD_WIDTH-1 downto 0);
 
@@ -96,9 +97,9 @@ begin
         select_high <= '0';
         select_low <= '0';
         if ocp_core_m.MAddr(2) = '1' then
-            select_high <= '1';
-        else
             select_low <= '1';
+        else
+            select_high <= '1';
         end if;
     end process ; -- chip_select
 
@@ -115,16 +116,20 @@ begin
         end if ;
     end process ; -- wr
 
-    data_in_mux : process( select_high, select_low, SData_l, SData_h, MCmd )
+    data_in_mux : process( select_high_reg, select_low_reg, SData_l, SData_h, MCmd )
     begin
         ocp_core_s.SData <= (others => '0');
         ocp_core_s.SResp <= OCP_RESP_NULL;
         if MCmd(1) = '1' then
-            if select_high = '1' then
+            if select_high_reg = '1' then
                 ocp_core_s.SData <= SData_h;
-            elsif select_low = '1' then
+            elsif select_low_reg = '1' then
                 ocp_core_s.SData <= SData_l;
             end if ;
+            ocp_core_s.SResp <= OCP_RESP_DVA;
+        end if ;
+
+        if MCmd(0) = '1' then
             ocp_core_s.SResp <= OCP_RESP_DVA;
         end if ;
     end process ; -- data_in_mux
@@ -133,9 +138,13 @@ begin
     begin
         if rising_edge(p_clk) then
             if reset = '0' then
-                MCmd <= ocp_core_m.MCmd;
+                MCmd <= ocp_core_m.MCmd  after PDELAY;
+                select_low_reg <= select_low after PDELAY;
+                select_high_reg <= select_high after PDELAY;
             else
                 MCmd <= (others => '0');
+                select_low_reg <= '0';
+                select_high_reg <= '0';
             end if ;
 
         end if ;
