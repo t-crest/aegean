@@ -32,7 +32,7 @@ update_patmos:
 update_argo:
 	cd ../t-crest-noc && git pull
 
-compile-aegean: compile-config compile-argo compile-patmos
+compile-aegean: compile-config compile-patmos compile-argo
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/com_spm.vhd
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/noc_node.vhd
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/noc_n.vhd
@@ -54,6 +54,7 @@ compile-argo:
 
 
 compile-patmos:
+	cd ../patmos/patmos && ./scripts/rbs_test.sh
 	$(WINE) $(VLOG) ${PATMOS_SOURCE}
 
 compile-config:

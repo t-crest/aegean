@@ -55,4 +55,14 @@ begin
     clock_gen(clk,20 ns);
     reset_gen(reset,40 ns);
 
+
+   -- uart : process
+   -- begin
+   --     wait for 2 ns;
+   --     if not <<signal .aegean_testbench.aegean.reset : std_logic>> then
+   --         report "2008 support" severity failure;
+   --     end if ;
+   --     wait;
+   -- end process ; -- uart
+
 end architecture ; -- arch
