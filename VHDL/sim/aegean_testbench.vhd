@@ -1,5 +1,9 @@
 library ieee;
+library modelsim_lib;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use std.textio.all;
+use modelsim_lib.util.all;
 use work.test.all;
 
 
@@ -26,6 +30,11 @@ architecture arch of aegean_testbench is
     signal io_sramPins_ram_out_nadv    : std_logic;
     signal io_sramPins_ram_out_dout    : std_logic_vector(31 downto 0);
     signal io_sramPins_ram_in_din      : std_logic_vector(31 downto 0);
+
+    signal uart_tx_reg : std_logic_vector(7 downto 0);
+    signal uart_tx_status_reg : std_logic_vector(0 downto 0);
+
+    file OUTPUT: TEXT open WRITE_MODE is "STD_OUTPUT";
 
 
 begin
@@ -55,6 +64,21 @@ begin
     clock_gen(clk,20 ns);
     reset_gen(reset,40 ns);
 
+    uart_spy : process
+        variable buf: LINE;
+    begin
+        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_data","/aegean_testbench/uart_tx_reg");
+--      init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/InOut/UART/rx_empty","/aegean_testbench/uart_rx_status_reg");
+--      init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/InOut/UART/rx_data","/aegean_testbench/uart_rx_reg");
+
+        loop
+            wait until falling_edge(uart_tx_status_reg(0));
+            write(buf,character'val(to_integer(unsigned(uart_tx_reg))));
+            writeline(OUTPUT,buf);
+        end loop;
+
+    end process ; -- uart_spy
 
    -- uart : process
    -- begin
