@@ -14,7 +14,6 @@ architecture arch of aegean_testbench is
     signal clk : std_logic;
     signal reset : std_logic;
     signal led : std_logic_vector(8 downto 0);
-    signal txd, rxd : std_logic;
 
     signal io_sramPins_ram_out_addr    : std_logic_vector(18 downto 0);
     signal io_sramPins_ram_out_dout_ena: std_logic;
@@ -31,19 +30,27 @@ architecture arch of aegean_testbench is
     signal io_sramPins_ram_out_dout    : std_logic_vector(31 downto 0);
     signal io_sramPins_ram_in_din      : std_logic_vector(31 downto 0);
 
-    signal uart_tx_reg : std_logic_vector(7 downto 0);
-    signal uart_tx_status_reg : std_logic_vector(0 downto 0);
+    signal core0_uart_tx_reg : std_logic_vector(7 downto 0);
+    signal core0_uart_tx_status_reg : std_logic_vector(0 downto 0);
+    signal core1_uart_tx_reg : std_logic_vector(7 downto 0);
+    signal core1_uart_tx_status_reg : std_logic_vector(0 downto 0);
+    signal core2_uart_tx_reg : std_logic_vector(7 downto 0);
+    signal core2_uart_tx_status_reg : std_logic_vector(0 downto 0);
+    signal core3_uart_tx_reg : std_logic_vector(7 downto 0);
+    signal core3_uart_tx_status_reg : std_logic_vector(0 downto 0);
 
     file OUTPUT: TEXT open WRITE_MODE is "STD_OUTPUT";
 
+    constant PERIOD : time := 10 ns;
+    constant RESET_TIME : time := 40 ns;
 
 begin
     aegean : entity work.aegean port map (
         clk => clk,
         reset => reset,
         led => led,
-        txd => txd,
-        rxd => rxd,
+        txd => open,
+        rxd => '0',
 
         io_sramPins_ram_out_addr     => io_sramPins_ram_out_addr    ,
         io_sramPins_ram_out_dout_ena => io_sramPins_ram_out_dout_ena,
@@ -61,32 +68,102 @@ begin
         io_sramPins_ram_in_din       => io_sramPins_ram_in_din
         );
 
-    clock_gen(clk,20 ns);
-    reset_gen(reset,40 ns);
+    clock_gen(clk,PERIOD);
+    reset_gen(reset,RESET_TIME);
 
-    uart_spy : process
+    core0_uart_spy : process
         variable buf: LINE;
+        constant CORE_ID : STRING (7 downto 1):="Core0: ";
     begin
-        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_data","/aegean_testbench/uart_tx_reg");
---      init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/InOut/UART/rx_empty","/aegean_testbench/uart_rx_status_reg");
---      init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/InOut/UART/rx_data","/aegean_testbench/uart_rx_reg");
-
+        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core0_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core0_uart_tx_reg");
+        write(buf,CORE_ID);
         loop
-            wait until falling_edge(uart_tx_status_reg(0));
-            write(buf,character'val(to_integer(unsigned(uart_tx_reg))));
-            writeline(OUTPUT,buf);
+            wait until falling_edge(core0_uart_tx_status_reg(0));
+            write(buf,character'val(to_integer(unsigned(core0_uart_tx_reg))));
+            --writeline(OUTPUT,buf);
+            if to_integer(unsigned(core0_uart_tx_reg)) = 10 then
+                writeline(OUTPUT,buf);
+                write(buf,CORE_ID);
+            end if;
         end loop;
+    end process ; -- core0_uart_spy
 
-    end process ; -- uart_spy
+    core1_uart_spy : process
+        variable buf: LINE;
+        constant CORE_ID : STRING (7 downto 1):="Core1: ";
+    begin
+        init_signal_spy("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core1_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core1_uart_tx_reg");
+        write(buf,CORE_ID);
+        loop
+            wait until falling_edge(core1_uart_tx_status_reg(0));
+            write(buf,character'val(to_integer(unsigned(core1_uart_tx_reg))));
+            --writeline(OUTPUT,buf);
+            if to_integer(unsigned(core1_uart_tx_reg)) = 10 then
+                writeline(OUTPUT,buf);
+                write(buf,CORE_ID);
+            end if;
+        end loop;
+    end process ; -- core1_uart_spy
 
-   -- uart : process
-   -- begin
-   --     wait for 2 ns;
-   --     if not <<signal .aegean_testbench.aegean.reset : std_logic>> then
-   --         report "2008 support" severity failure;
-   --     end if ;
-   --     wait;
-   -- end process ; -- uart
+    core2_uart_spy : process
+        variable buf: LINE;
+        constant CORE_ID : STRING (7 downto 1):="Core2: ";
+    begin
+        init_signal_spy("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core2_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core2_uart_tx_reg");
+        write(buf,CORE_ID);
+        loop
+            wait until falling_edge(core2_uart_tx_status_reg(0));
+            write(buf,character'val(to_integer(unsigned(core2_uart_tx_reg))));
+            --writeline(OUTPUT,buf);
+            if to_integer(unsigned(core2_uart_tx_reg)) = 10 then
+                writeline(OUTPUT,buf);
+                write(buf,CORE_ID);
+            end if;
+        end loop;
+    end process ; -- core2_uart_spy
+
+    core3_uart_spy : process
+        variable buf: LINE;
+        constant CORE_ID : STRING (7 downto 1):="Core3: ";
+    begin
+        init_signal_spy("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core3_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core3_uart_tx_reg");
+        write(buf,CORE_ID);
+        loop
+            wait until falling_edge(core3_uart_tx_status_reg(0));
+            write(buf,character'val(to_integer(unsigned(core3_uart_tx_reg))));
+            --writeline(OUTPUT,buf);
+            if to_integer(unsigned(core3_uart_tx_reg)) = 10 then
+                writeline(OUTPUT,buf);
+                write(buf,CORE_ID);
+            end if;
+        end loop;
+    end process ; -- core3_uart_spy
+
+
+    baud_inc : process
+    begin
+        --init_signal_driver("/aegean_testbench/uart_baud_tick", "/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", open, open, 0);
+        signal_force("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        signal_force("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        signal_force("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        signal_force("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        loop
+            wait until rising_edge(clk);
+            signal_force("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            wait until rising_edge(clk);
+            signal_force("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            wait for 3*PERIOD;
+        end loop;
+    end process ; -- baud_inc
 
 end architecture ; -- arch

@@ -64,10 +64,11 @@ compile-config:
 	$(WINE) $(VCOM) $(ARGO_PATH)/noc_defs.vhd
 	$(WINE) $(VCOM) $(ARGO_PATH)/noc_interface.vhd
 
-
-sim: compile-aegean
+compile-testbench:
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/packages/test.vhd
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/sim/aegean_testbench.vhd
+
+sim: compile-testbench compile-aegean
 	$(WINE) vsim -novopt -do $(SIM_PATH)/aegean.do aegean_testbench
 
 clean:
