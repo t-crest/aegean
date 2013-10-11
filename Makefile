@@ -2,6 +2,8 @@ PATMOS_PATH=../patmos/patmos/chisel/build
 PATMOS_SOURCE=${PATMOS_PATH}/Patmos.v
 ARGO_PATH=../t-crest-noc/noc/src
 AEGEAN_PATH=./VHDL
+POSEIDON=../poseidon/build/Poseidon
+POSEIDON_CONV=java -cp ../poseidon/Converter/build/ converter.Converter
 SIM_PATH=$(AEGEAN_PATH)/sim
 VLIB=vlib -quiet work
 VCOM=vcom -quiet -93
@@ -22,7 +24,14 @@ else
 	WINE=
 endif
 
+.PHONY: schedule
+
 all:
+
+schedule:
+	@$(POSEIDON) -m GREEDY -p ./config/bitorus2x2.xml -s ./config/aegean_sched.xml
+	@$(POSEIDON_CONV) ./config/aegean_sched.xml ./config/init.h Aegean-c
+	@cp ./config/init.h ../patmos/patmos/c/init.h
 
 update_hw: update_argo update_patmos
 
