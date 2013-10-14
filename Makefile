@@ -1,9 +1,18 @@
-PATMOS_PATH=../patmos/patmos/chisel/build
-PATMOS_SOURCE=${PATMOS_PATH}/Patmos.v
-ARGO_PATH=../t-crest-noc/noc/src
+TCREST_TOOL_PATH=$(CURDIR)/../local/bin
+PATH:=$(PATH):$(TCREST_TOOL_PATH)
+
+PATMOS_PATH=$(CURDIR)/../patmos/
+PATMOS_SOURCE=$(PATMOS_PATH)/chisel/build/Patmos.v
+PATMOS_BOOTAPP=bootable-cmp_hello
+
+ARGO_PATH=$(CURDIR)/../t-crest-noc/
+ARGO_SRC_PATH=$(ARGO_PATH)/noc/src
+
 AEGEAN_PATH=./VHDL
+
 POSEIDON=../poseidon/build/Poseidon
 POSEIDON_CONV=java -cp ../poseidon/Converter/build/ converter.Converter
+
 SIM_PATH=$(AEGEAN_PATH)/sim
 VLIB=vlib -quiet work
 VCOM=vcom -quiet -93
@@ -25,21 +34,22 @@ else
 endif
 
 .PHONY: schedule
+.FORCE:
 
-all:
+all: schedule compile-aegean
 
 schedule:
 	@$(POSEIDON) -m GREEDY -p ./config/bitorus2x2.xml -s ./config/aegean_sched.xml
 	@$(POSEIDON_CONV) ./config/aegean_sched.xml ./config/init.h Aegean-c
-	@cp ./config/init.h ../patmos/patmos/c/init.h
+	@cp ./config/init.h $(PATMOS_PATH)/c/init.h
 
 update_hw: update_argo update_patmos
 
 update_patmos:
-	cd ../patmos && ./misc/build.sh -u patmos
+	cd .. && ./misc/build.sh -u patmos
 
 update_argo:
-	cd ../t-crest-noc && git pull
+	cd $(ARGO_PATH) && git pull
 
 compile-aegean: compile-config compile-patmos compile-argo
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/com_spm.vhd
@@ -50,28 +60,30 @@ compile-aegean: compile-config compile-patmos compile-argo
 #	$(WINE) $(VCOM) $(AEGEAN_PATH)/aegean_top_de2_70.vhd
 
 compile-argo:
-	$(WINE) $(VCOM) $(ARGO_PATH)/bram.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/bram_tdp.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/counter.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/dma.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/nAdapter.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/hpu.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/xbar.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/router.vhd
-#	$(WINE) $(VCOM) $(ARGO_PATH)/noc_node.vhd
-#	$(WINE) $(VCOM) $(ARGO_PATH)/noc_n.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/bram.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/bram_tdp.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/counter.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/dma.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/nAdapter.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/hpu.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/xbar.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/router.vhd
+#	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/noc_node.vhd
+#	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/noc_n.vhd
 
 
-compile-patmos:
-	cd ../patmos/patmos && ./scripts/rbs_test.sh
-	$(WINE) $(VLOG) ${PATMOS_SOURCE}
+$(PATMOS_SOURCE): .FORCE
+	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) gen
+
+compile-patmos: $(PATMOS_SOURCE)
+	$(WINE) $(VLOG) $(PATMOS_SOURCE)
 
 compile-config:
 	$(WINE) $(VLIB)
-	$(WINE) $(VCOM) $(ARGO_PATH)/config.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/ocp.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/noc_defs.vhd
-	$(WINE) $(VCOM) $(ARGO_PATH)/noc_interface.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/config.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/ocp.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/noc_defs.vhd
+	$(WINE) $(VCOM) $(ARGO_SRC_PATH)/noc_interface.vhd
 
 compile-testbench:
 	$(WINE) $(VCOM) $(AEGEAN_PATH)/packages/test.vhd
