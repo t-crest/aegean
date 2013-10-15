@@ -3,7 +3,7 @@ PATH:=$(PATH):$(TCREST_TOOL_PATH)
 
 PATMOS_PATH=$(CURDIR)/../patmos/
 PATMOS_SOURCE=$(PATMOS_PATH)/chisel/build/Patmos.v
-PATMOS_BOOTAPP=bootable-cmp_hello
+PATMOS_BOOTAPP=bootable-mandelbrot_par
 
 ARGO_PATH=$(CURDIR)/../t-crest-noc/
 ARGO_SRC_PATH=$(ARGO_PATH)/noc/src
