@@ -44,7 +44,8 @@ use work.noc_interface.all;
 
 entity com_spm is
   generic(
-    SPM_IDX_SIZE : natural := 8
+    -- 2**SPM_IDX_SIZE is the number of words in the SPM
+    SPM_IDX_SIZE : natural := 10
     );
   port (
     p_clk : in std_logic;
