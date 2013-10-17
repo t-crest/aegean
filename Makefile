@@ -104,7 +104,7 @@ synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(ARGO_SRC) $(AEGEAN_SRC)
 	quartus_sta quartus/aegean_top
 
 config:
-	quartus_pgm -c USB-Blaster -m JTAG quartus/output_files/aegean_top.cdf
+	quartus_pgm -c USB-Blaster -m JTAG quartus/aegean_top.cdf
 
 clean:
 	-rm -r $(BUILD_PATH)
