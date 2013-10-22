@@ -52,7 +52,7 @@ endif
 
 all: sim
 
-schedule: $(AEGEAN_PATH)/config/init.h
+schedule: $(BUILD_PATH)/init.h
 
 $(BUILD_PATH)/init.h: $(BUILD_PATH)/aegean_sched.xml
 	$(POSEIDON_CONV) $< $@ Aegean-c
