@@ -1,34 +1,47 @@
-<?xml version="1.0"?>
-<configuration version="1.1">
+<?xml version="1.0" encoding="utf-8"?>
+
+<aegean version="0.1">
 
 	<platform name="Agean" width="2" height="2">
-		<nodes>
-			<node node_id="id_t" loc="(0,0)" ntype="patmos"/>
-		</nodes>
+
 		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
-		<topology ttype="bitorus" routerDepth="1" linkDepth="0">
+		<topology ttype="custom" routerDepth="1" linkDepth="0">
 			<link src="(0,0)" dest="(0,1)" linkDepth="0" />
 		</topology>
-		<map>
-			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
-		</map>
+
+		<nodes>
+			<node id="pat0" loc="(0,0)" iptype_ref="patmos_xx" core_id="0x00" />
+			<node id="hw_acc0" loc="(0,1)" iptype_ref="hw_acc" />
+		</nodes>
+
+		<ipcores>
+			<ipcore iptype="patmos_xx">
+				<patmos>
+					<MCache size="1024" blocks="32" repl="FIFO" />
+					<DCache size="0" assoc="1" repl="LRU" />
+					<SCache size="1024" />
+				</patmos>
+			</ipcore>
+			<!-- entity (VHDL term) / module (Verilog term) / component (Chisel) -->
+			<ipcore iptype="hw_acc" entity="foo" srcfile="file:///test2.vhd" />
+		</ipcores>
+
 	</platform>
 
 	<application>
-		<processes>
-			<process proc_id="1" node_id="id_t"/>
-		</processes>
+
 		<entries>
-			<entry node_id="id_t" entry_point="0x000000"/>
+			<entry id_ref="pat0" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
 		</entries>
+
 		<!-- <communication type="all2all"/"custom" phits="s"> -->
 		<communication ctype="all2all" phits="1">
 			<channel from="(0,1)" to="(1,2)" bandwidth="1" phits="1"/>
 		</communication>
+
+		<map>
+			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
+		</map>
 	</application>
 
-	<cores>
-		<core>
-		</core>
-	</cores>
-</configuration>
+</aegean>

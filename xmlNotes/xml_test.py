@@ -3,28 +3,28 @@
 import sys
 from lxml import etree
 from io import StringIO
+from subprocess import call
 
-#f = open('../Poseidon/Config_format.xml')
-#root = etree.XML(f.read())
-#root = etree.parse("../Poseidon/Config_format.xml")
-print(sys.argv)
-root = etree.parse(sys.argv[1])
-
-for element in root.iter():
-	if (element.tag is etree.Comment) or (not element.text) or (not element.text.strip()):
-		print(element.tag)
-	else:
-		print("%s - %s" % (element.tag, element.text))
+def parseXML(filename):
+    tree = etree.parse(filename)
+    xmlschema_doc = etree.parse("Aegean.xsd")
+    xmlschema = etree.XMLSchema(xmlschema_doc)
+    xmlschema.assertValid(tree)
+    if xmlschema.validate(tree):
+        return tree
 
 
+#tree = parseXML(sys.argv[1])
+tree = parseXML("Config_format.xml")
+aegean = tree.getroot()
 
-xmlschema_doc = etree.parse("Aegean.xsd")
-xmlschema = etree.XMLSchema(xmlschema_doc)
+platform = list(aegean)[0]
+application = list(aegean)[1]
 
-xmlschema.assertValid(root)
+for element in tree.iter():
+   if (element.tag is etree.Comment) or (not element.text) or (not element.text.strip()):
+       print(element.tag)
+   else:
+       print("%s - %s" % (element.tag, element.text))
 
-#if xmlschema.validate(root):
-#	print("XML file validated.")
-#else:
-#	print("XML file invalid")
-#
+call(["ls","-l"])
