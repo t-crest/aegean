@@ -58,8 +58,8 @@
 
 <xs:attribute name="from" type="coordinate" />
 <xs:attribute name="to" type="coordinate" />
-<xs:attribute name="src" type="coordinate" />
-<xs:attribute name="dest" type="coordinate" />
+<xs:attribute name="source" type="coordinate" />
+<xs:attribute name="sink" type="coordinate" />
 <xs:attribute name="loc" type="coordinate" />
 
 <xs:attribute name="ttype" type="topo"/>
@@ -101,8 +101,8 @@
 	<!-- The links of the platform -->
 	<xs:element name="link">
 		<xs:complexType>
-			<xs:attribute ref="src" use="required"/>
-			<xs:attribute ref="dest" use="required"/>
+			<xs:attribute ref="source" use="required"/>
+			<xs:attribute ref="sink" use="required"/>
 			<xs:attribute ref="linkDepth" use="required"/>
 		</xs:complexType>
 	</xs:element>
@@ -228,8 +228,8 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="entries"/>
-				<xs:element ref="communication"/>
 				<xs:element ref="map"/>
+				<xs:element ref="communication"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

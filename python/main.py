@@ -27,6 +27,7 @@ aegean = parseXML(sys.argv[1])
 
 application = list(aegean)[1]
 
+# Hardware config needs to be done before software config
 hwc = HWConfig(aegean)
 hwc.config()
 

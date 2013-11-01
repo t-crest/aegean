@@ -6,7 +6,7 @@
 
 		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
 		<topology ttype="custom" routerDepth="1" linkDepth="0">
-			<link src="(0,0)" dest="(0,1)" linkDepth="0" />
+			<link source="(0,0)" sink="(0,1)" linkDepth="0" />
 		</topology>
 
 		<nodes>
@@ -34,14 +34,14 @@
 			<entry id_ref="pat0" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
 		</entries>
 
+		<map>
+			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
+		</map>
+
 		<!-- <communication type="all2all"/"custom" phits="s"> -->
 		<communication ctype="all2all" phits="1">
 			<channel from="(0,1)" to="(1,2)" bandwidth="1" phits="1"/>
 		</communication>
-
-		<map>
-			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
-		</map>
 	</application>
 
 </aegean>
