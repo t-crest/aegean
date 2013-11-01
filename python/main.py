@@ -5,7 +5,11 @@ from lxml import etree
 from io import StringIO
 from subprocess import call
 
-XMLSCHEME = "Aegean.xsd"
+from hardwareConfig import HWConfig
+from softwareConfig import SWConfig
+
+
+XMLSCHEME = "../xmlNotes/Aegean.xsd"
 
 def parseXML(filename):
     tree = etree.parse(filename)
@@ -13,18 +17,25 @@ def parseXML(filename):
     xmlschema = etree.XMLSchema(xmlschema_doc)
     xmlschema.assertValid(tree)
     if xmlschema.validate(tree):
-        return tree
+        return tree.getroot()
 
 
-def getPlatform():
+def createMakefile():
+    pass
 
+aegean = parseXML(sys.argv[1])
 
-#tree = parseXML(sys.argv[1])
-tree = parseXML("Config_format.xml")
-aegean = tree.getroot()
-
-platform = list(aegean)[0]
 application = list(aegean)[1]
+
+hwc = HWConfig(aegean)
+hwc.config()
+
+swc = SWConfig(aegean)
+swc.config()
+
+createMakefile()
+
+
 
 
 #for element in tree.iter():

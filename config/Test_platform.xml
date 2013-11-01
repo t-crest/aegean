@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<aegean version="0.1">
+
+	<platform name="Agean" width="2" height="2">
+
+		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
+		<topology ttype="custom" routerDepth="1" linkDepth="0">
+			<link src="(0,0)" dest="(0,1)" linkDepth="0" />
+			<link src="(0,0)" dest="(1,0)" linkDepth="0" />
+			<link src="(0,1)" dest="(0,0)" linkDepth="0" />
+			<link src="(0,1)" dest="(1,1)" linkDepth="0" />
+			<link src="(1,0)" dest="(0,0)" linkDepth="0" />
+			<link src="(1,0)" dest="(1,1)" linkDepth="0" />
+			<link src="(1,1)" dest="(0,1)" linkDepth="0" />
+			<link src="(1,1)" dest="(1,0)" linkDepth="0" />
+		</topology>
+
+		<nodes>
+			<node id="pat0" loc="(0,0)" iptype_ref="patmos_xx" core_id="0x00" />
+			<node id="pat1" loc="(0,1)" iptype_ref="patmos_xx" core_id="0x01" />
+			<node id="pat2" loc="(1,0)" iptype_ref="patmos_xx" core_id="0x02" />
+			<node id="pat3" loc="(1,1)" iptype_ref="patmos_xx" core_id="0x03" />
+		</nodes>
+
+		<ipcores>
+			<ipcore iptype="patmos_xx">
+				<patmos>
+					<MCache size="1024" blocks="32" repl="FIFO" />
+					<DCache size="0" assoc="1" repl="LRU" />
+					<SCache size="1024" />
+				</patmos>
+			</ipcore>
+		</ipcores>
+
+	</platform>
+
+	<application>
+
+		<entries>
+			<entry id_ref="pat0" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
+			<entry id_ref="pat1" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
+			<entry id_ref="pat2" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
+			<entry id_ref="pat3" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
+		</entries>
+
+		<!-- <communication type="all2all"/"custom" phits="s"> -->
+		<communication ctype="custom" phits="1">
+			<channel from="(0,0)" to="(0,1)" bandwidth="1" phits="1"/>
+			<channel from="(0,0)" to="(1,0)" bandwidth="1" phits="1"/>
+			<channel from="(0,0)" to="(1,1)" bandwidth="1" phits="1"/>
+			<channel from="(0,1)" to="(0,0)" bandwidth="1" phits="1"/>
+			<channel from="(0,1)" to="(1,0)" bandwidth="1" phits="1"/>
+			<channel from="(0,1)" to="(1,1)" bandwidth="1" phits="1"/>
+			<channel from="(1,0)" to="(0,0)" bandwidth="1" phits="1"/>
+			<channel from="(1,0)" to="(0,1)" bandwidth="1" phits="1"/>
+			<channel from="(1,0)" to="(1,1)" bandwidth="1" phits="1"/>
+			<channel from="(1,1)" to="(0,0)" bandwidth="1" phits="1"/>
+			<channel from="(1,1)" to="(0,1)" bandwidth="1" phits="1"/>
+			<channel from="(1,1)" to="(1,0)" bandwidth="1" phits="1"/>
+		</communication>
+
+		<map>
+			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
+		</map>
+	</application>
+
+</aegean>
