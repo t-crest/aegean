@@ -1,19 +1,17 @@
 #! /usr/bin/env python3
 
 import sys
+import aegean
 from lxml import etree
 from io import StringIO
-from subprocess import call
 
 from hardwareConfig import HWConfig
 from softwareConfig import SWConfig
 
-
-XMLSCHEME = "../xmlNotes/Aegean.xsd"
-
 def parseXML(filename):
-    tree = etree.parse(filename)
-    xmlschema_doc = etree.parse(XMLSCHEME)
+    parser = etree.XMLParser(remove_comments=True)
+    tree = etree.parse(filename, parser=parser)
+    xmlschema_doc = etree.parse(aegean.XMLSCHEME)
     xmlschema = etree.XMLSchema(xmlschema_doc)
     xmlschema.assertValid(tree)
     if xmlschema.validate(tree):

@@ -2,6 +2,7 @@ TCREST_TOOL_PATH?=$(CURDIR)/../local/bin
 PATH:=$(PATH):$(TCREST_TOOL_PATH)
 
 AEGEAN_PATH?=$(CURDIR)
+AEGEAN_PLATFORM?=$(AEGEAN_PATH)/config/Test_platform.xml
 AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/VHDL
 AEGEAN_SRC=$(patsubst %,$(AEGEAN_SRC_PATH)/%,\
 	com_spm.vhd noc_node.vhd noc_n.vhd aegean.vhd)
@@ -51,6 +52,10 @@ endif
 .FORCE:
 
 all: sim
+
+platform_config: $(AEGEAN_PLATFORM)
+	mkdir -p $(BUILD_PATH)/tmp
+	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM)
 
 schedule: $(BUILD_PATH)/init.h
 

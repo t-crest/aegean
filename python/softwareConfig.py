@@ -2,11 +2,15 @@
 
 import sys
 import string
+import aegean
 from lxml import etree
-from subprocess import call
+import subprocess
 
 class SWConfig(object):
-    """docstring for SWConfig"""
+    """
+    The SWConfig class handles the configuration steps
+    for configuring the software of the Aegean platform
+    """
     def __init__(self, aegean):
         self.application = list(aegean)[1]
 
@@ -18,18 +22,18 @@ class SWConfig(object):
                 break
 
         et = etree.ElementTree(communication)
-        et.write('com.xml')
+        et.write(aegean.TMP_COM)
         self.createSched()
         self.createScript()
 
     def createSched(self):
         print("Creating schedule")
-        Poseidon = ["../../poseidon/build/Poseidon"]
-        Poseidon+= ["-p","./test.xml"]
-        Poseidon+= ["-c","./com.xml"]
-        Poseidon+= ["-s","./out.xml"]
+        Poseidon = [aegean.POSEIDON]
+        Poseidon+= ["-p",aegean.TMP_PLAT]
+        Poseidon+= ["-c",aegean.TMP_COM]
+        Poseidon+= ["-s",aegean.TMP_SCHED]
         Poseidon+= ["-m","GREEDY"]
-        call(Poseidon)
+        subprocess.call(Poseidon)
 
     def createScript(self):
         print("Creating compiler scripts")
