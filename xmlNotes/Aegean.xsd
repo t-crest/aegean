@@ -30,12 +30,6 @@
 	</xs:restriction>
 </xs:simpleType>
 
-<xs:simpleType name="proc">
-	<xs:restriction base="xs:string">
-		<xs:pattern value="patmos|IP"/>
-	</xs:restriction>
-</xs:simpleType>
-
 <!-- Definition of attributes -->
 <xs:attribute name="version" type="xs:string"/>
 <xs:attribute name="name" type="xs:string"/>
@@ -44,14 +38,13 @@
 <xs:attribute name="phits" type="xs:nonNegativeInteger"/>
 <xs:attribute name="bandwidth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="id" type="xs:ID"/>
-<xs:attribute name="id_ref" type="xs:IDREF"/>
-<xs:attribute name="iptype" type="xs:ID"/>
-<xs:attribute name="iptype_ref" type="xs:IDREF"/>
+<xs:attribute name="idRef" type="xs:IDREF"/>
+<xs:attribute name="IPType" type="xs:ID"/>
+<xs:attribute name="IPTypeRef" type="xs:IDREF"/>
 <xs:attribute name="cached" type="xs:boolean"/>
 <xs:attribute name="routerDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="linkDepth" type="xs:nonNegativeInteger"/>
 
-<xs:attribute name="entry_point" type="address"/>
 <xs:attribute name="start" type="address"/>
 <xs:attribute name="end" type="address"/>
 
@@ -61,9 +54,8 @@
 <xs:attribute name="sink" type="coordinate" />
 <xs:attribute name="loc" type="coordinate" />
 
-<xs:attribute name="ttype" type="topo"/>
-<xs:attribute name="ctype" type="com"/>
-<xs:attribute name="ntype" type="proc"/>
+<xs:attribute name="topoType" type="topo"/>
+<xs:attribute name="comType" type="com"/>
 
 <!-- Definition of complex elements -->
 
@@ -80,10 +72,10 @@
 	<!-- An entry point for an ipcore -->
 	<xs:element name="entry">
 		<xs:complexType>
-			<xs:attribute ref="id_ref" use="required"/>
+			<xs:attribute ref="idRef" use="required"/>
 			<xs:attribute name="entity" type="xs:string" />
 			<xs:attribute name="parameters" type="xs:string" />
-			<xs:attribute name="srcfile" type="xs:anyURI" />
+			<xs:attribute name="srcFile" type="xs:anyURI" />
 		</xs:complexType>
 	</xs:element>
 
@@ -92,7 +84,7 @@
 		<xs:complexType>
 			<xs:attribute ref="id" use="required"/>
 			<xs:attribute ref="loc" use="required"/>
-			<xs:attribute ref="iptype_ref" use="required"/>
+			<xs:attribute ref="IPTypeRef" use="required"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -125,6 +117,16 @@
 	<xs:element name="patmos">
 		<xs:complexType>
 			<xs:all>
+				<xs:element name="frequency">
+					<xs:complexType>
+						<xs:attribute name="hz" type="xs:nonNegativeInteger" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="bootrom">
+					<xs:complexType>
+						<xs:attribute name="app" type="xs:string" use="required" />
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="MCache">
 					<xs:complexType>
 						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
@@ -148,14 +150,14 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="ipcore">
+	<xs:element name="IPCore">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="patmos" maxOccurs="1" minOccurs="0" />
 			</xs:sequence>
-			<xs:attribute ref="iptype" use="required" />
+			<xs:attribute ref="IPType" use="required" />
 			<xs:attribute name="entity" type="xs:string" />
-			<xs:attribute name="srcfile" type="xs:anyURI" />
+			<xs:attribute name="srcFile" type="xs:anyURI" />
 		</xs:complexType>
 	</xs:element>
 
@@ -164,13 +166,13 @@
 			<xs:sequence>
 				<xs:element ref="link" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute ref="ttype" use="required"/>
+			<xs:attribute ref="topoType" use="required"/>
 			<xs:attribute ref="routerDepth" use="required"/>
 			<xs:attribute ref="linkDepth" use="required"/>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="map">
+	<xs:element name="memMap">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="mem" maxOccurs="unbounded"/>
@@ -179,10 +181,10 @@
 	</xs:element>
 
 	<!-- A description of the processes -->
-	<xs:element name="ipcores">
+	<xs:element name="IPCores">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="ipcore" maxOccurs="unbounded"/>
+				<xs:element ref="IPCore" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -202,7 +204,7 @@
 			<xs:sequence>
 				<xs:element ref="channel" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute ref="ctype" use="required"/>
+			<xs:attribute ref="comType" use="required"/>
 			<xs:attribute ref="phits" use="optional"/>
 		</xs:complexType>
 	</xs:element>
@@ -213,7 +215,7 @@
 			<xs:sequence>
 				<xs:element ref="topology"/>
 				<xs:element ref="nodes"/>
-				<xs:element ref="ipcores"/>
+				<xs:element ref="IPCores"/>
 			</xs:sequence>
 			<xs:attribute ref="name" use="required"/>
 			<xs:attribute ref="width" use="required"/>
@@ -226,7 +228,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="entries"/>
-				<xs:element ref="map"/>
+				<xs:element ref="memMap"/>
 				<xs:element ref="communication"/>
 			</xs:sequence>
 		</xs:complexType>

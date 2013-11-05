@@ -5,7 +5,7 @@
 	<platform name="Aegean" width="3" height="2">
 
 		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
-		<topology ttype="custom" routerDepth="1" linkDepth="0">
+		<topology topoType="custom" routerDepth="1" linkDepth="0">
 			<link source="(0,0)" sink="(0,1)" linkDepth="0" />
 			<link source="(0,0)" sink="(1,0)" linkDepth="0" />
 			<link source="(0,1)" sink="(0,0)" linkDepth="0" />
@@ -23,43 +23,43 @@
 		</topology>
 
 		<nodes>
-			<node id="pat0" loc="(0,0)" iptype_ref="patmos_xx" />
-			<node id="pat1" loc="(1,0)" iptype_ref="patmos_xx" />
-			<node id="pat2" loc="(2,0)" iptype_ref="patmos_xx" />
-			<node id="pat3" loc="(0,1)" iptype_ref="patmos_xx" />
-			<node id="pat4" loc="(1,1)" iptype_ref="patmos_xx" />
-			<node id="pat5" loc="(2,1)" iptype_ref="patmos_xx" />
+			<node id="pat0" loc="(0,0)" IPTypeRef="patmos_xx" />
+			<node id="pat1" loc="(1,0)" IPTypeRef="patmos_xx" />
+			<node id="pat2" loc="(2,0)" IPTypeRef="patmos_xx" />
+			<node id="pat3" loc="(0,1)" IPTypeRef="patmos_xx" />
+			<node id="pat4" loc="(1,1)" IPTypeRef="patmos_xx" />
+			<node id="pat5" loc="(2,1)" IPTypeRef="patmos_xx" />
 		</nodes>
 
-		<ipcores>
-			<ipcore iptype="patmos_xx">
+		<IPCores>
+			<IPCore IPType="patmos_xx">
 				<patmos>
+					<frequency hz="80000000" />
+					<bootrom app="bootable-mandelbrot"/>
 					<MCache size="1024" blocks="32" repl="FIFO" />
 					<DCache size="0" assoc="1" repl="LRU" />
 					<SCache size="1024" />
 				</patmos>
-			</ipcore>
-		</ipcores>
+			</IPCore>
+		</IPCores>
 
 	</platform>
 
 	<application>
 
 		<entries>
-			<entry id_ref="pat0" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
-			<entry id_ref="pat1" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
-			<entry id_ref="pat2" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
-			<entry id_ref="pat3" entity="main" parameters="0 1" srcfile="file:///test2.c"/>
+			<entry idRef="pat0" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
+			<entry idRef="pat1" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
+			<entry idRef="pat2" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
+			<entry idRef="pat3" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
 		</entries>
 
-
-
-		<map>
+		<memMap>
 			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
-		</map>
+		</memMap>
 
 		<!-- <communication type="all2all"/"custom" phits="s"> -->
-		<communication ctype="all2all" phits="1">
+		<communication comType="all2all" phits="1">
 			<channel from="(0,0)" to="(0,1)" bandwidth="1" phits="1"/>
 			<channel from="(0,0)" to="(1,0)" bandwidth="1" phits="1"/>
 			<channel from="(0,0)" to="(1,1)" bandwidth="1" phits="1"/>
