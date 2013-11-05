@@ -117,9 +117,15 @@
 	<xs:element name="patmos">
 		<xs:complexType>
 			<xs:all>
+				<xs:element name="description" type="xs:string"/>
 				<xs:element name="frequency">
 					<xs:complexType>
-						<xs:attribute name="hz" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="Hz" type="xs:nonNegativeInteger" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="pipeline">
+					<xs:complexType>
+						<xs:attribute name="dual" type="xs:boolean" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="bootrom">
@@ -132,6 +138,21 @@
 						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
 						<xs:attribute name="blocks" type="xs:nonNegativeInteger" use="required" />
 						<xs:attribute name="repl" type="xs:string" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ISPM">
+					<xs:complexType>
+						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="DSPM">
+					<xs:complexType>
+						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BootSPM">
+					<xs:complexType>
+						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="DCache">

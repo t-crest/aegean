@@ -54,8 +54,6 @@ endif
 all: sim
 
 platform_config: $(AEGEAN_PLATFORM)
-
-$(AEGEAN_PLATFORM):
 	mkdir -p $(BUILD_PATH)/tmp
 	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM)
 
