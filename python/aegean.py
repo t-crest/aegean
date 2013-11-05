@@ -1,10 +1,13 @@
+import os
 
 XMLSCHEME = "xmlNotes/Aegean.xsd"
 
-POSEIDON = "../poseidon/build/Poseidon"
+AEGEAN_PATH = os.getcwd()
 
-PATMOS_PATH = "../patmos"
-BUILD_PATH = "build"
+POSEIDON = AEGEAN_PATH + "/../poseidon/build/Poseidon"
+
+PATMOS_PATH = AEGEAN_PATH + "/../patmos"
+BUILD_PATH = AEGEAN_PATH + "/build"
 
 TMP_DIR= BUILD_PATH + "/tmp/"
 TMP_PLAT = TMP_DIR + "a.xml"

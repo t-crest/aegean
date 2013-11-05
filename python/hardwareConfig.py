@@ -24,7 +24,7 @@ class HWConfig(object):
 
             et = etree.ElementTree(patmos)
             et.write(aegean.TMP_DIR + IPType + ".xml")
-         #   self.patmosGen(IPType,app,aegean.TMP_DIR + IPType + ".xml")
+            self.patmosGen(IPType,app,aegean.TMP_DIR + IPType + ".xml")
 
     def patmosGen(self,IPType,bootapp,configfile):
         Patmos = ["make","-C",aegean.PATMOS_PATH]
