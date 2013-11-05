@@ -98,7 +98,7 @@ architecture struct of aegean is
 
 begin
 
-    patmoss : for i in 0 to (N*M)-1 generate
+    patmoss : for i in 0 to NODES-1 generate
         l0: if i=0 generate
             patmos_p : patmos port map (
                     clk                           => clk,
@@ -179,7 +179,7 @@ begin
 
     end generate ; -- patmoss
 
-    spms : for i in 0 to (N*M)-1 generate
+    spms : for i in 0 to NODES-1 generate
         spm : entity work.com_spm port map(
                 p_clk => clk,
                 n_clk => clk,

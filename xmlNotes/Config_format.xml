@@ -2,7 +2,7 @@
 
 <aegean version="0.1">
 
-	<platform name="Agean" width="2" height="2">
+	<platform name="Aegean" width="2" height="2">
 
 		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
 		<topology ttype="custom" routerDepth="1" linkDepth="0">

@@ -33,6 +33,7 @@ class SWConfig(object):
         Poseidon+= ["-c",aegean.TMP_COM]
         Poseidon+= ["-s",aegean.TMP_SCHED]
         Poseidon+= ["-m","GREEDY"]
+        Poseidon+= ["-d"]
         subprocess.call(Poseidon)
 
     def createScript(self):

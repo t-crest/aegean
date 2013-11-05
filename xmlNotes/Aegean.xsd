@@ -47,7 +47,6 @@
 <xs:attribute name="id_ref" type="xs:IDREF"/>
 <xs:attribute name="iptype" type="xs:ID"/>
 <xs:attribute name="iptype_ref" type="xs:IDREF"/>
-<xs:attribute name="core_id" type="address"/>
 <xs:attribute name="cached" type="xs:boolean"/>
 <xs:attribute name="routerDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="linkDepth" type="xs:nonNegativeInteger"/>
@@ -94,7 +93,6 @@
 			<xs:attribute ref="id" use="required"/>
 			<xs:attribute ref="loc" use="required"/>
 			<xs:attribute ref="iptype_ref" use="required"/>
-			<xs:attribute ref="core_id" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 
