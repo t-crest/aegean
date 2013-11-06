@@ -8,7 +8,7 @@ class NoCGen(object):
     def __init__(self,platform):
         self.platform = platform
         et = etree.ElementTree(self.platform)
-        et.write(aegean.TMP_PLAT)
+        et.write(aegean.GEN_PLAT)
 
     def getLinks(self):
         return list(list(self.platform)[0])

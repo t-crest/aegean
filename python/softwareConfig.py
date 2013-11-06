@@ -22,16 +22,16 @@ class SWConfig(object):
                 break
 
         et = etree.ElementTree(communication)
-        et.write(aegean.TMP_COM)
+        et.write(aegean.GEN_COM)
         self.createSched()
         self.createScript()
 
     def createSched(self):
         print("Creating schedule")
         Poseidon = [aegean.POSEIDON]
-        Poseidon+= ["-p",aegean.TMP_PLAT]
-        Poseidon+= ["-c",aegean.TMP_COM]
-        Poseidon+= ["-s",aegean.TMP_SCHED]
+        Poseidon+= ["-p",aegean.GEN_PLAT]
+        Poseidon+= ["-c",aegean.GEN_COM]
+        Poseidon+= ["-s",aegean.GEN_SCHED]
         Poseidon+= ["-m","GREEDY"]
         Poseidon+= ["-d"]
         subprocess.call(Poseidon)

@@ -23,21 +23,38 @@
 		</topology>
 
 		<nodes>
-			<node id="pat0" loc="(0,0)" IPTypeRef="patmos_xx" />
-			<node id="pat1" loc="(1,0)" IPTypeRef="patmos_xx" />
-			<node id="pat2" loc="(2,0)" IPTypeRef="patmos_xx" />
-			<node id="pat3" loc="(0,1)" IPTypeRef="patmos_xx" />
-			<node id="pat4" loc="(1,1)" IPTypeRef="patmos_xx" />
-			<node id="pat5" loc="(2,1)" IPTypeRef="patmos_xx" />
+			<node id="pat0" loc="(0,0)" IPTypeRef="patmosD" />
+			<node id="pat1" loc="(1,0)" IPTypeRef="patmosD" />
+			<node id="pat2" loc="(2,0)" IPTypeRef="patmosS" />
+			<node id="pat3" loc="(0,1)" IPTypeRef="patmosS" />
+			<node id="pat4" loc="(1,1)" IPTypeRef="patmosS" />
+			<node id="pat5" loc="(2,1)" IPTypeRef="patmosS" />
 		</nodes>
 
 		<IPCores>
-			<IPCore IPType="patmos_xx">
+			<IPCore IPType="patmosD">
 				<patmos>
-					<description>default configuration</description>
+					<description>Dual issue slot patmos</description>
 
 					<frequency Hz="80000000" />
 					<pipeline dual="true" />
+					<bootrom app="bootable-mandelbrot"/>
+					<MCache size="4096" blocks="16" repl="" />
+					<ISPM size="8192" />
+					<DSPM size="2048" />
+					<BootSPM size="2048" />
+
+					<!-- currently unused -->
+					<DCache size="0" assoc="0" repl="" />
+					<SCache size="0" />
+				</patmos>
+			</IPCore>
+			<IPCore IPType="patmosS">
+				<patmos>
+					<description>Single issue slot patmos</description>
+
+					<frequency Hz="80000000" />
+					<pipeline dual="false" />
 					<bootrom app="bootable-mandelbrot"/>
 					<MCache size="4096" blocks="16" repl="" />
 					<ISPM size="8192" />
