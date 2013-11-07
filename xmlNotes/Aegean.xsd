@@ -185,7 +185,7 @@
 	<xs:element name="topology">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="link" maxOccurs="unbounded"/>
+				<xs:element ref="link" maxOccurs="unbounded" minOccurs="0" />
 			</xs:sequence>
 			<xs:attribute ref="topoType" use="required"/>
 			<xs:attribute ref="routerDepth" use="required"/>
@@ -223,7 +223,7 @@
 	<xs:element name="communication">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="channel" maxOccurs="unbounded"/>
+				<xs:element ref="channel" maxOccurs="unbounded" minOccurs="0"/>
 			</xs:sequence>
 			<xs:attribute ref="comType" use="required"/>
 			<xs:attribute ref="phits" use="optional"/>

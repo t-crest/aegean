@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<aegean version="0.1">
+
+	<platform name="Aegean" width="2" height="2">
+
+		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
+		<topology topoType="bitorus" routerDepth="1" linkDepth="0" />
+
+		<nodes>
+			<node id="pat0" loc="(0,0)" IPTypeRef="patmos" />
+			<node id="pat1" loc="(1,0)" IPTypeRef="patmos" />
+			<node id="pat2" loc="(0,1)" IPTypeRef="patmos" />
+			<node id="pat3" loc="(1,1)" IPTypeRef="patmos" />
+		</nodes>
+
+		<IPCores>
+			<IPCore IPType="patmos">
+				<patmos>
+					<description>Single issue slot patmos</description>
+
+					<frequency Hz="80000000" />
+					<pipeline dual="false" />
+					<bootrom app="bootable-mandelbrot"/>
+					<MCache size="4096" blocks="16" repl="" />
+					<ISPM size="8192" />
+					<DSPM size="2048" />
+					<BootSPM size="2048" />
+
+					<!-- currently unused -->
+					<DCache size="0" assoc="0" repl="" />
+					<SCache size="0" />
+				</patmos>
+			</IPCore>
+		</IPCores>
+
+	</platform>
+
+	<application>
+
+		<entries>
+			<entry idRef="pat0" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
+			<entry idRef="pat1" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
+			<entry idRef="pat2" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
+			<entry idRef="pat3" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
+		</entries>
+
+		<memMap>
+			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
+		</memMap>
+
+		<!-- <communication type="all2all"/"custom" phits="s"> -->
+		<communication comType="all2all" phits="1">
+
+		</communication>
+	</application>
+
+</aegean>

@@ -1,5 +1,5 @@
 from lxml import etree
-import aegean
+import paths
 import subprocess
 
 class CMPGen(object):
@@ -23,14 +23,14 @@ class CMPGen(object):
                     break
 
             et = etree.ElementTree(patmos)
-            et.write(aegean.BUILD_PATH + "/" + IPType + ".xml")
-            self.patmosGen(IPType,app,aegean.BUILD_PATH + "/" + IPType + ".xml")
+            et.write(paths.TMP_BUILD_PATH + "/" + IPType + ".xml")
+            self.patmosGen(IPType,app,paths.TMP_BUILD_PATH + "/" + IPType + ".xml")
 
     def patmosGen(self,IPType,bootapp,configfile):
-        Patmos = ["make","-C",aegean.PATMOS_PATH]
+        Patmos = ["make","-C",paths.PATMOS_PATH]
         Patmos+= ["BOOTAPP="+bootapp]
-        Patmos+= ["BOOTBUILDDIR="+aegean.BUILD_PATH]
-        Patmos+= ["CHISELBUILDDIR="+aegean.BUILD_PATH]
+        Patmos+= ["BOOTBUILDDIR="+paths.BUILD_PATH]
+        Patmos+= ["CHISELBUILDDIR="+paths.BUILD_PATH]
         Patmos+= ["HWMODULEPREFIX="+IPType]
         Patmos+= ["CONFIGFILE="+configfile]
         Patmos+= ["gen"]
@@ -39,7 +39,7 @@ class CMPGen(object):
     def generate(self):
         self.IPgen()
         #self.nodes
-        f = open(aegean.AegeanFile, 'w')
+        f = open(paths.AegeanFile, 'w')
         f.write('''\
 --------------------------------------------------------------------------------
 -- Auto generated entity for the aegean platform,
