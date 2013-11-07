@@ -1,19 +1,19 @@
 import os
 
-XMLSCHEME = "xmlNotes/Aegean.xsd"
-
 AEGEAN_PATH = os.getcwd()
+
+
+XMLSCHEME = AEGEAN_PATH + "/xmlNotes/Aegean.xsd"
 
 POSEIDON = AEGEAN_PATH + "/../poseidon/build/Poseidon"
 
 PATMOS_PATH = AEGEAN_PATH + "/../patmos"
 BUILD_PATH = AEGEAN_PATH + "/build"
 
-GEN_DIR= BUILD_PATH + "/generated/"
-GEN_PLAT = GEN_DIR + "a.xml"
-GEN_COM = GEN_DIR + "b.xml"
-GEN_SCHED = GEN_DIR + "c.xml"
+GEN_PLAT = BUILD_PATH + "/a.xml"
+GEN_COM = BUILD_PATH + "/b.xml"
+GEN_SCHED = BUILD_PATH + "/c.xml"
 
-NOCFile = GEN_DIR + "noc.vhd"
-AegeanFile = GEN_DIR + "noc.vhd"
-ConfFile = GEN_DIR + "config.vhd"
+NOCFile = BUILD_PATH + "/noc.vhd"
+AegeanFile = BUILD_PATH + "/aegean.vhd"
+ConfFile = BUILD_PATH + "/config.vhd"
