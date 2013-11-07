@@ -10,12 +10,12 @@ add wave /aegean_testbench/aegean/ocp_core_ss(0)
 add wave -hexadecimal /aegean_testbench/aegean/ocp_io_ms(0)
 add wave -hexadecimal /aegean_testbench/aegean/ocp_io_ss(0)
 
-add wave -hexadecimal aegean_testbench/aegean/patmoss(0)/l0/patmos_p/fetch/pcReg
+add wave -hexadecimal aegean_testbench/aegean/pat0/fetch/pcReg
 
-add wave /aegean_testbench/aegean/noc/nodes_m(0)/nodes_n(0)/node/na/ocp_cmd_write
-add wave /aegean_testbench/aegean/noc/nodes_m(0)/nodes_n(0)/node/na/response_ld_control
-add wave /aegean_testbench/aegean/noc/nodes_m(0)/nodes_n(0)/node/na/ocp_write_control
-add wave /aegean_testbench/aegean/noc/nodes_m(0)/nodes_n(0)/node/na/resp_ld
+add wave /aegean_testbench/aegean/noc/pat0_patmos/na/ocp_cmd_write
+add wave /aegean_testbench/aegean/noc/pat0_patmos/na/response_ld_control
+add wave /aegean_testbench/aegean/noc/pat0_patmos/na/ocp_write_control
+add wave /aegean_testbench/aegean/noc/pat0_patmos/na/resp_ld
 
 add wave /aegean_testbench/aegean/spms(0)/spm/wr_h
 add wave /aegean_testbench/aegean/spms(0)/spm/wr_l
@@ -30,14 +30,14 @@ add wave -hexadecimal /aegean_testbench/aegean/spms(1)/spm/spm_l_0/mem
 
 add wave -position end  sim:/aegean_testbench/core0_uart_tx_reg
 add wave -position end  sim:/aegean_testbench/core0_uart_tx_status_reg
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_reg
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_state
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_buff
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/io_ocp_M_Cmd
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/io_ocp_M_Addr
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/io_ocp_M_Data
-add wave -hexadecimal /aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/uartS_Data
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_reg
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_baud_tick
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_state
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_buff
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/io_ocp_M_Cmd
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/io_ocp_M_Addr
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/io_ocp_M_Data
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/uartS_Data
 
 
 

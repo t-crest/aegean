@@ -35,9 +35,12 @@ CONFIG_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
 
 
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
-VLIB=vlib -quiet work
-VCOM=vcom -quiet -93 -work $(BUILD_PATH)/work
-VLOG=vlog -quiet -work $(BUILD_PATH)/work
+#VLIB=vlib -quiet work
+#VCOM=vcom -quiet -93 -work $(BUILD_PATH)/work
+#VLOG=vlog -quiet -work $(BUILD_PATH)/work
+VLIB=vlib work
+VCOM=vcom -93 -work $(BUILD_PATH)/work
+VLOG=vlog -work $(BUILD_PATH)/work
 VSIM=vsim -novopt -lib $(BUILD_PATH)/work
 
 ifeq ($(WINDIR),)
@@ -55,7 +58,7 @@ else
 	WINE=
 endif
 
-.PHONY: schedule sim synth config platform
+.PHONY: sim synth config platform compile
 .FORCE:
 
 all: sim
@@ -111,7 +114,7 @@ compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC) $(CONFIG_SRC)
 # Simulation of source code for the platform described in AEGEAN_PLATFORM
 # Call make sim
 #########################################################################
-sim: compile $(BUILD_PATH)/work compile-aegean $(TESTBENCH_SRC)
+sim: compile $(BUILD_PATH)/work compile $(TESTBENCH_SRC)
 	$(WINE) $(VCOM) $(TESTBENCH_SRC)
 	$(WINE) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 

@@ -75,8 +75,8 @@ begin
         variable buf: LINE;
         constant CORE_ID : STRING (7 downto 1):="Core0: ";
     begin
-        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core0_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core0_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat0/iocomp/uart/tx_empty","/aegean_testbench/core0_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat0/iocomp/uart/tx_data","/aegean_testbench/core0_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge(core0_uart_tx_status_reg(0));
@@ -93,8 +93,8 @@ begin
         variable buf: LINE;
         constant CORE_ID : STRING (7 downto 1):="Core1: ";
     begin
-        init_signal_spy("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core1_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core1_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat1/iocomp/uart/tx_empty","/aegean_testbench/core1_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat1/iocomp/uart/tx_data","/aegean_testbench/core1_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge(core1_uart_tx_status_reg(0));
@@ -111,8 +111,8 @@ begin
         variable buf: LINE;
         constant CORE_ID : STRING (7 downto 1):="Core2: ";
     begin
-        init_signal_spy("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core2_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core2_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat2/iocomp/uart/tx_empty","/aegean_testbench/core2_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat2/iocomp/uart/tx_data","/aegean_testbench/core2_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge(core2_uart_tx_status_reg(0));
@@ -129,8 +129,8 @@ begin
         variable buf: LINE;
         constant CORE_ID : STRING (7 downto 1):="Core3: ";
     begin
-        init_signal_spy("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_empty","/aegean_testbench/core3_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_data","/aegean_testbench/core3_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat3/iocomp/uart/tx_empty","/aegean_testbench/core3_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/pat3/iocomp/uart/tx_data","/aegean_testbench/core3_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge(core3_uart_tx_status_reg(0));
@@ -147,21 +147,21 @@ begin
     baud_inc : process
     begin
         --init_signal_driver("/aegean_testbench/uart_baud_tick", "/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", open, open, 0);
-        signal_force("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
-        signal_force("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
-        signal_force("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
-        signal_force("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        signal_force("/aegean_testbench/aegean/pat0/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        signal_force("/aegean_testbench/aegean/pat1/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        signal_force("/aegean_testbench/aegean/pat2/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+        signal_force("/aegean_testbench/aegean/pat3/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
         loop
             wait until rising_edge(clk);
-            signal_force("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
-            signal_force("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
-            signal_force("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
-            signal_force("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat0/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat1/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat2/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat3/iocomp/uart/tx_baud_tick", "1", 0 ns, freeze, open, 0);
             wait until rising_edge(clk);
-            signal_force("/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
-            signal_force("/aegean_testbench/aegean/patmoss(1)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
-            signal_force("/aegean_testbench/aegean/patmoss(2)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
-            signal_force("/aegean_testbench/aegean/patmoss(3)/l1/patmos_p/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat0/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat1/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat2/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
+            signal_force("/aegean_testbench/aegean/pat3/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
             wait for 3*PERIOD;
         end loop;
     end process ; -- baud_inc
