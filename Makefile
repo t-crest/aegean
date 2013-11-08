@@ -3,10 +3,10 @@ PATH:=$(PATH):$(TCREST_TOOL_PATH)
 
 AEGEAN_PATH?=$(CURDIR)
 #AEGEAN_PLATFORM?=Test_platform.xml
-AEGEAN_PLATFORM?=mandelbrot_demo.xml
-AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM)
+AEGEAN_PLATFORM?=mandelbrot_demo
+AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
-BUILD_PATH?=$(AEGEAN_PATH)/build
+BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
 AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/VHDL
 AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
@@ -35,12 +35,9 @@ CONFIG_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
 
 
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
-#VLIB=vlib -quiet work
-#VCOM=vcom -quiet -93 -work $(BUILD_PATH)/work
-#VLOG=vlog -quiet -work $(BUILD_PATH)/work
-VLIB=vlib work
-VCOM=vcom -93 -work $(BUILD_PATH)/work
-VLOG=vlog -work $(BUILD_PATH)/work
+VLIB=vlib -quiet work
+VCOM=vcom -quiet -93 -work $(BUILD_PATH)/work
+VLOG=vlog -quiet -work $(BUILD_PATH)/work
 VSIM=vsim -novopt -lib $(BUILD_PATH)/work
 
 ifeq ($(WINDIR),)
@@ -71,8 +68,7 @@ platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH)
 	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 
 $(BUILD_PATH):
-	mkdir -p $(BUILD_PATH)
-	mkdir -p $(BUILD_PATH)/xml
+	mkdir -p $(BUILD_PATH)/..
 
 #schedule: $(BUILD_PATH)/init.h
 

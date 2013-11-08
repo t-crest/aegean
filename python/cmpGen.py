@@ -6,7 +6,8 @@ class CMPGen(object):
     """
     The CMPGen class handles the generation of the Aegean hardware platform
     """
-    def __init__(self,platform):
+    def __init__(self,p,platform):
+        self.p = p
         self.platform = platform
         self.IPCores = list(self.platform)[2]
         self.nodes = list(self.platform)[1]
@@ -23,14 +24,14 @@ class CMPGen(object):
                     break
 
             et = etree.ElementTree(patmos)
-            et.write(paths.TMP_BUILD_PATH + "/" + IPType + ".xml")
-            self.patmosGen(IPType,app,paths.TMP_BUILD_PATH + "/" + IPType + ".xml")
+            et.write(self.p.TMP_BUILD_PATH + "/" + IPType + ".xml")
+            self.patmosGen(IPType,app,self.p.TMP_BUILD_PATH + "/" + IPType + ".xml")
 
     def patmosGen(self,IPType,bootapp,configfile):
-        Patmos = ["make","-C",paths.PATMOS_PATH]
+        Patmos = ["make","-C",self.p.PATMOS_PATH]
         Patmos+= ["BOOTAPP="+bootapp]
-        Patmos+= ["BOOTBUILDDIR="+paths.BUILD_PATH]
-        Patmos+= ["CHISELBUILDDIR="+paths.BUILD_PATH]
+        Patmos+= ["BOOTBUILDDIR="+self.p.BUILD_PATH]
+        Patmos+= ["CHISELBUILDDIR="+self.p.BUILD_PATH]
         Patmos+= ["HWMODULEPREFIX="+IPType]
         Patmos+= ["CONFIGFILE="+configfile]
         Patmos+= ["gen"]
@@ -39,7 +40,7 @@ class CMPGen(object):
     def generate(self):
         self.IPgen()
         #self.nodes
-        f = open(paths.AegeanFile, 'w')
+        f = open(self.p.AegeanFile, 'w')
         f.write('''\
 --------------------------------------------------------------------------------
 -- Auto generated entity for the aegean platform,
@@ -80,6 +81,47 @@ entity aegean is
 end entity ; -- aegean
 
 architecture struct of aegean is
+    component patmosPatmos is
+    port(
+        clk                         : in  std_logic;
+        reset                       : in  std_logic;
+        io_cpuId                    : in  std_logic_vector(31 downto 0);
+        -- Communication scratch pad signals
+        io_comConf_M_Cmd            : out std_logic_vector(2 downto 0);
+        io_comConf_M_Addr           : out std_logic_vector(31 downto 0);
+        io_comConf_M_Data           : out std_logic_vector(31 downto 0);
+        io_comConf_M_ByteEn         : out std_logic_vector(3 downto 0);
+        io_comConf_M_RespAccept     : out std_logic;
+        io_comConf_S_Resp           : in  std_logic_vector(1 downto 0);
+        io_comConf_S_Data           : in  std_logic_vector(31 downto 0);
+        io_comConf_S_CmdAccept      : in  std_logic;
+        io_comSpm_M_Cmd             : out std_logic_vector(2 downto 0);
+        io_comSpm_M_Addr            : out std_logic_vector(31 downto 0);
+        io_comSpm_M_Data            : out std_logic_vector(31 downto 0);
+        io_comSpm_M_ByteEn          : out std_logic_vector(3 downto 0);
+        io_comSpm_S_Resp            : in  std_logic_vector(1 downto 0);
+        io_comSpm_S_Data            : in  std_logic_vector(31 downto 0);
+        -- Simple IO signals
+        io_led                      : out std_logic_vector(8 downto 0);
+        io_uartPins_tx              : out std_logic;
+        io_uartPins_rx              : in  std_logic;
+        -- Sram signals
+        io_sramPins_ram_out_addr    : out std_logic_vector(18 downto 0);
+        io_sramPins_ram_out_dout_ena: out std_logic;
+        io_sramPins_ram_out_nadsc   : out std_logic;
+        io_sramPins_ram_out_noe     : out std_logic;
+        io_sramPins_ram_out_nbwe    : out std_logic;
+        io_sramPins_ram_out_nbw     : out std_logic_vector(3 downto 0);
+        io_sramPins_ram_out_ngw     : out std_logic;
+        io_sramPins_ram_out_nce1    : out std_logic;
+        io_sramPins_ram_out_ce2     : out std_logic;
+        io_sramPins_ram_out_nce3    : out std_logic;
+        io_sramPins_ram_out_nadsp   : out std_logic;
+        io_sramPins_ram_out_nadv    : out std_logic;
+        io_sramPins_ram_out_dout    : out std_logic_vector(31 downto 0);
+        io_sramPins_ram_in_din      : in  std_logic_vector(31 downto 0)
+        );
+    end component;
 
     signal ocp_io_ms : ocp_io_m_a;
     signal ocp_io_ss : ocp_io_s_a;
@@ -100,7 +142,7 @@ begin
             IPType = patmos.get("IPTypeRef")
             if p == 0:
                 f.write('''
-    '''+label+''' : entity work.'''+IPType+'''Patmos port map(
+    '''+label+''' : '''+IPType+'''Patmos port map(
         clk                           => clk,
         reset                         => reset,
         io_cpuId                      => std_logic_vector(to_unsigned('''+str(p)+''',32)),
@@ -140,7 +182,7 @@ begin
 ''')
             else:
                 f.write('''
-    '''+label+''' : entity work.'''+IPType+'''Patmos port map(
+    '''+label+''' : '''+IPType+'''Patmos port map(
         clk                           => clk,
         reset                         => reset,
         io_cpuId                      => std_logic_vector(to_unsigned('''+str(p)+''',32)),

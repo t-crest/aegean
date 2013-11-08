@@ -151,7 +151,6 @@ set_instance_assignment -name FAST_INPUT_REGISTER ON -to SRAM_DQ*
 set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *io_sramPins_ram_out_dout_ena
 
 
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VHDL_FILE ../build/config.vhd
 set_global_assignment -name VHDL_FILE ../VHDL/aegean_top_de2_70.vhd
 set_global_assignment -name VHDL_FILE ../build/aegean.vhd
@@ -171,3 +170,4 @@ set_global_assignment -name VHDL_FILE "../../t-crest-noc/noc/src/bram.vhd"
 set_global_assignment -name VHDL_FILE "../../t-crest-noc/noc/src/com_spm.vhd"
 set_global_assignment -name VHDL_FILE "../../t-crest-noc/noc/src/noc_node.vhd"
 set_global_assignment -name VHDL_FILE ../VHDL/altera/cyc2_pll.vhd
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

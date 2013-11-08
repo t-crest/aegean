@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<aegean version="0.1">
+<aegean version="0.1" projectname="test" >
 
-	<platform name="Aegean" width="3" height="2">
+	<platform width="3" height="2">
 
 		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
 		<topology topoType="custom" routerDepth="1" linkDepth="0">

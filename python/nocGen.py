@@ -5,8 +5,9 @@ from lxml import etree
 
 class NoCGen(object):
     """docstring for HWGen"""
-    def __init__(self,platform):
+    def __init__(self,p,platform):
         self.platform = platform
+        self.p = p
 
     def getLinks(self):
         return list(list(self.platform)[0])
@@ -21,7 +22,7 @@ class NoCGen(object):
         N = self.platform.get("width")
         M = self.platform.get("height")
         NODES = len(self.getNodes())
-        f = open(paths.ConfFile, 'w')
+        f = open(self.p.ConfFile, 'w')
         f.write('''\
 package config is
 
@@ -38,7 +39,7 @@ end package ; -- aegean_def
     The generateNoC method writes an entity of the NoC according the the specification.
     """
     def generate(self):
-        f = open(paths.NOCFile, 'w')
+        f = open(self.p.NOCFile, 'w')
         f.write('''\
 --------------------------------------------------------------------------------
 -- Auto generated NoC entity for the aegean platform.

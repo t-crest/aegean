@@ -8,17 +8,18 @@ class HWConfig(object):
     """
     The HWConfig class handles the hardware configuration of the aegean platform
     """
-    def __init__(self,aegean):
+    def __init__(self,p,aegean):
+        self.p = p
         self.platform = list(aegean)[0]
         self.IPCores = list(self.platform)[2]
         et = etree.ElementTree(self.platform)
-        et.write(paths.GEN_PLAT)
+        et.write(self.p.GEN_PLAT)
 
     def config(self):
-        noc = NoCGen(self.platform)
+        noc = NoCGen(self.p,self.platform)
         noc.config()
         noc.generate()
-        cmp = CMPGen(self.platform)
+        cmp = CMPGen(self.p,self.platform)
         cmp.generate()
 
 

@@ -32,7 +32,7 @@
 
 <!-- Definition of attributes -->
 <xs:attribute name="version" type="xs:string"/>
-<xs:attribute name="name" type="xs:string"/>
+<xs:attribute name="projectname" type="xs:string"/>
 <xs:attribute name="width" type="xs:positiveInteger"/>
 <xs:attribute name="height" type="xs:positiveInteger"/>
 <xs:attribute name="phits" type="xs:nonNegativeInteger"/>
@@ -238,7 +238,6 @@
 				<xs:element ref="nodes"/>
 				<xs:element ref="IPCores"/>
 			</xs:sequence>
-			<xs:attribute ref="name" use="required"/>
 			<xs:attribute ref="width" use="required"/>
 			<xs:attribute ref="height" use="required"/>
 		</xs:complexType>
@@ -263,6 +262,7 @@
 				<xs:element ref="application"/>
 			</xs:sequence>
 			<xs:attribute ref="version" use="required"/>
+			<xs:attribute ref="projectname" use="required"/>
 		</xs:complexType>
 	</xs:element>
 

@@ -1,27 +1,31 @@
 import os
 
-AEGEAN_PATH = os.getcwd()
+class Paths(object):
+    """docstring for Paths"""
+    def __init__(self, projectname):
+        self.projectname = projectname
 
+        self.AEGEAN_PATH = os.getcwd()
 
-XMLSCHEME = AEGEAN_PATH + "/xmlNotes/Aegean.xsd"
+        self.XMLSCHEME = self.AEGEAN_PATH + "/xmlNotes/Aegean.xsd"
 
-POSEIDON_PATH = AEGEAN_PATH + "/../poseidon"
-POSEIDON_CONV = POSEIDON_PATH + "/Converter/build"
-POSEIDON = POSEIDON_PATH + "/build/Poseidon"
+        self.POSEIDON_PATH = self.AEGEAN_PATH + "/../poseidon"
+        self.POSEIDON_CONV = self.POSEIDON_PATH + "/Converter/build"
+        self.POSEIDON = self.POSEIDON_PATH + "/build/Poseidon"
 
-PATMOS_PATH = AEGEAN_PATH + "/../patmos"
-BUILD_PATH = AEGEAN_PATH + "/build"
-TMP_BUILD_PATH = BUILD_PATH + "/xml"
+        self.PATMOS_PATH = self.AEGEAN_PATH + "/../patmos"
+        self.BUILD_PATH = self.AEGEAN_PATH + "/build/" + projectname
+        self.TMP_BUILD_PATH = self.BUILD_PATH + "/xml"
 
-###################################################
-# Intermediate files
-GEN_PLAT = TMP_BUILD_PATH + "/plat.xml"
-GEN_COM = TMP_BUILD_PATH + "/com.xml"
-GEN_SCHED = TMP_BUILD_PATH + "/sched.xml"
+        ###################################################
+        # Intermediate files
+        self.GEN_PLAT = self.TMP_BUILD_PATH + "/plat.xml"
+        self.GEN_COM = self.TMP_BUILD_PATH + "/com.xml"
+        self.GEN_SCHED = self.TMP_BUILD_PATH + "/sched.xml"
 
-###################################################
-# Final config files
-CSCHED = BUILD_PATH + "/init.h"
-NOCFile = BUILD_PATH + "/noc.vhd"
-AegeanFile = BUILD_PATH + "/aegean.vhd"
-ConfFile = BUILD_PATH + "/config.vhd"
+        ###################################################
+        # Final config files
+        self.CSCHED = self.BUILD_PATH + "/init.h"
+        self.NOCFile = self.BUILD_PATH + "/noc.vhd"
+        self.AegeanFile = self.BUILD_PATH + "/aegean.vhd"
+        self.ConfFile = self.BUILD_PATH + "/config.vhd"
