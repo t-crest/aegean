@@ -68,7 +68,7 @@ platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH)
 	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 
 $(BUILD_PATH):
-	mkdir -p $(BUILD_PATH)/..
+	mkdir -p $(BUILD_PATH)
 
 #schedule: $(BUILD_PATH)/init.h
 
