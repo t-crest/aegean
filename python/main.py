@@ -27,9 +27,9 @@ def mkdir_p(path):
             pass
         else: raise
 
-xmlscheme = os.getcwd() + "/xmlNotes/Aegean.xsd"
+xmlscheme = os.getcwd() + '/xmlNotes/Aegean.xsd'
 aegean = parseXML(sys.argv[1],xmlscheme)
-projectname = aegean.get("projectname")
+projectname = aegean.get('projectname')
 p = Paths(projectname)
 mkdir_p(p.TMP_BUILD_PATH)
 

@@ -18,7 +18,7 @@ class SWConfig(object):
     def config(self):
         tags = list(self.application)
         for i in range(0,len(tags)):
-            if tags[i].tag == "communication":
+            if tags[i].tag == 'communication':
                 communication = tags[i]
                 break
 
@@ -28,25 +28,25 @@ class SWConfig(object):
         self.createScript()
 
     def createSched(self):
-        print("Creating schedule")
+        print('Creating schedule')
         Poseidon = [self.p.POSEIDON]
-        Poseidon+= ["-p",self.p.GEN_PLAT]  # Platform specification
-        Poseidon+= ["-c",self.p.GEN_COM]   # Communication specification
-        Poseidon+= ["-s",self.p.GEN_SCHED] # XML Schedule output
-        Poseidon+= ["-m","GREEDY"]         # Optimization algorithm
-        Poseidon+= ["-d"]                  # Draw the topology
+        Poseidon+= ['-p',self.p.GEN_PLAT]  # Platform specification
+        Poseidon+= ['-c',self.p.GEN_COM]   # Communication specification
+        Poseidon+= ['-s',self.p.GEN_SCHED] # XML Schedule output
+        Poseidon+= ['-m','GREEDY']         # Optimization algorithm
+        Poseidon+= ['-d']                  # Draw the topology
         subprocess.call(Poseidon)
-        print("Converting schedule")
-        Converter = ["java"]
-        Converter+= ["-cp",self.p.POSEIDON_CONV,"converter.Converter"]
-        Converter+= [self.p.GEN_SCHED,self.p.CSCHED,"Aegean-c"]
+        print('Converting schedule')
+        Converter = ['java']
+        Converter+= ['-cp',self.p.POSEIDON_CONV,'converter.Converter']
+        Converter+= [self.p.GEN_SCHED,self.p.CSCHED,'Aegean-c']
         subprocess.call(Converter)
-        print("Copying schedule")
-        Cp = ["cp"]              # Copy
+        print('Copying schedule')
+        Cp = ['cp']              # Copy
         Cp+= [self.p.CSCHED]     # Source
-        Cp+= [self.p.PATMOS_PATH + "/c/init.h"] # Destination
+        Cp+= [self.p.PATMOS_PATH + '/c/init.h'] # Destination
         subprocess.call(Cp)
 
     def createScript(self):
-        print("Creating compiler scripts")
+        print('Creating compiler scripts')
 

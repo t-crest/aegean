@@ -146,7 +146,6 @@ begin
 
     baud_inc : process
     begin
-        --init_signal_driver("/aegean_testbench/uart_baud_tick", "/aegean_testbench/aegean/patmoss(0)/l0/patmos_p/iocomp/uart/tx_baud_tick", open, open, 0);
         signal_force("/aegean_testbench/aegean/pat0/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
         signal_force("/aegean_testbench/aegean/pat1/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);
         signal_force("/aegean_testbench/aegean/pat2/iocomp/uart/tx_baud_tick", "0", 0 ns, freeze, open, 0);

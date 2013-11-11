@@ -13,28 +13,46 @@ class CMPGen(object):
         self.nodes = list(self.platform)[1]
 
     def IPgen(self):
+        #f = open(self.p.SED_FILE,'w')
+        #f.write('s|set_global_assignment -name VERILOG_FILE ../Patmos.v|')
+        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../Patmos.v' + '|'
         for i in range(0,len(self.IPCores)):
-            IPType = self.IPCores[i].get("IPType")
+            IPType = self.IPCores[i].get('IPType')
 
             patmos = list(self.IPCores[i])[0]
             app = ""
             for j in range(0,len(patmos)):
-                if patmos[j].tag == "bootrom":
-                    app = patmos[j].get("app")
+                if patmos[j].tag == 'bootrom':
+                    app = patmos[j].get('app')
                     break
 
             et = etree.ElementTree(patmos)
-            et.write(self.p.TMP_BUILD_PATH + "/" + IPType + ".xml")
-            self.patmosGen(IPType,app,self.p.TMP_BUILD_PATH + "/" + IPType + ".xml")
+            et.write(self.p.TMP_BUILD_PATH + '/' + IPType + '.xml')
+            self.patmosGen(IPType,app,self.p.TMP_BUILD_PATH + '/' + IPType + '.xml')
+            #f.write('set_global_assignment -name VERILOG_FILE ../'+IPType+'Patmos.v')
+            SedString+= 'set_global_assignment -name VERILOG_FILE ../'+IPType+'Patmos.v'
+            if i < len(self.IPCores)-1:
+                SedString+='\\\n'
+                #f.write('\\\n')
+
+        SedString+= '|'
+        #f.write('|')
+        print(SedString)
+        #f.close()
+        Sed = ['sed','-i']
+        #Sed+= ['-f',self.p.SED_FILE]
+        Sed+= [SedString]
+        Sed+= [self.p.QUARTUS_FILE]
+        subprocess.call(Sed)
 
     def patmosGen(self,IPType,bootapp,configfile):
-        Patmos = ["make","-C",self.p.PATMOS_PATH]
-        Patmos+= ["BOOTAPP="+bootapp]
-        Patmos+= ["BOOTBUILDDIR="+self.p.BUILD_PATH]
-        Patmos+= ["CHISELBUILDDIR="+self.p.BUILD_PATH]
-        Patmos+= ["HWMODULEPREFIX="+IPType]
-        Patmos+= ["CONFIGFILE="+configfile]
-        Patmos+= ["gen"]
+        Patmos = ['make','-C',self.p.PATMOS_PATH]
+        Patmos+= ['BOOTAPP='+bootapp]
+        Patmos+= ['BOOTBUILDDIR='+self.p.BUILD_PATH]
+        Patmos+= ['CHISELBUILDDIR='+self.p.BUILD_PATH]
+        Patmos+= ['HWMODULEPREFIX='+IPType]
+        Patmos+= ['CONFIGFILE='+configfile]
+        Patmos+= ['gen']
         subprocess.call(Patmos)
 
     def generate(self):
@@ -81,7 +99,11 @@ entity aegean is
 end entity ; -- aegean
 
 architecture struct of aegean is
-    component patmosPatmos is
+''')
+        for i in range(0,len(self.IPCores)):
+            IPType = self.IPCores[i].get('IPType')
+            f.write('''
+    component '''+IPType+'''Patmos is
     port(
         clk                         : in  std_logic;
         reset                       : in  std_logic;
@@ -122,7 +144,8 @@ architecture struct of aegean is
         io_sramPins_ram_in_din      : in  std_logic_vector(31 downto 0)
         );
     end component;
-
+''')
+        f.write('''
     signal ocp_io_ms : ocp_io_m_a;
     signal ocp_io_ss : ocp_io_s_a;
 
@@ -138,8 +161,8 @@ begin
 ''')
         for p in range(0,len(self.nodes)):
             patmos = self.nodes[p]
-            label = patmos.get("id")
-            IPType = patmos.get("IPTypeRef")
+            label = patmos.get('id')
+            IPType = patmos.get('IPTypeRef')
             if p == 0:
                 f.write('''
     '''+label+''' : '''+IPType+'''Patmos port map(

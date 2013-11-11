@@ -1,5 +1,6 @@
 from nocGen import NoCGen
 from cmpGen import CMPGen
+from testGen import TestGen
 from lxml import etree
 import paths
 import subprocess
@@ -21,6 +22,8 @@ class HWConfig(object):
         noc.generate()
         cmp = CMPGen(self.p,self.platform)
         cmp.generate()
+        test = TestGen(self.p,self.platform)
+        test.generate()
 
 
 

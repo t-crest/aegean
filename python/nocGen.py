@@ -16,11 +16,11 @@ class NoCGen(object):
         return list(list(self.platform)[1])
 
     def getTopType(self):
-        return list(self.platform)[0].get("topoType")
+        return list(self.platform)[0].get('topoType')
 
     def config(self):
-        N = self.platform.get("width")
-        M = self.platform.get("height")
+        N = self.platform.get('width')
+        M = self.platform.get('height')
         NODES = len(self.getNodes())
         f = open(self.p.ConfFile, 'w')
         f.write('''\
@@ -121,8 +121,8 @@ begin
 # Instantiation of noc nodes and links
         nodes = self.getNodes()
         for k in range(0,len(nodes)):
-            j, i = nodes[k].get("loc").strip('()').split(',')
-            instancename = nodes[k].get("id") + "_" + nodes[k].get("IPTypeRef")
+            j, i = nodes[k].get('loc').strip('()').split(',')
+            instancename = nodes[k].get('id') + '_' + nodes[k].get('IPTypeRef')
             #core_id = str(int(nodes[k].get("core_id"),16))
             f.write('''\
     '''+instancename+''' : noc_node
@@ -150,19 +150,19 @@ begin
 
 ''')
 
-        if self.getTopType() == "custom":
+        if self.getTopType() == 'custom':
             links = self.getLinks()
             for k in range(0,len(links)):
-                j1, i1 = links[k].get("source").strip('()').split(',')
-                j2, i2 = links[k].get("sink").strip('()').split(',')
+                j1, i1 = links[k].get('source').strip('()').split(',')
+                j2, i2 = links[k].get('sink').strip('()').split(',')
                 same_col = (j1 == j2)
                 same_row = (i1 == i2)
                 #if not (same_row != same_col):
                 if not ((same_row or same_col) and (same_row != same_col)):
-                    raise SystemExit(" error: Link in specification is illegal. " + str(etree.tostring(links[k])))
+                    raise SystemExit(' error: Link in specification is illegal. ' + str(etree.tostring(links[k])))
 
                 if (abs(int(j1)-int(j2)) > 1) or (abs(int(i1)-int(i2)) > 1):
-                    raise SystemExit(" error: Link is trying to connect cores too far appart. " + str(etree.tostring(links[k])))
+                    raise SystemExit(' error: Link is trying to connect cores too far appart. ' + str(etree.tostring(links[k])))
 
 
                 if same_row:
@@ -189,7 +189,7 @@ begin
                     else:
                         raise SystemExit(" error: Something is wrong!!!")
 
-        elif self.getTopType() == "bitorus":
+        elif self.getTopType() == 'bitorus':
             f.write('''
     links_m : for i in 0 to M-1 generate
         links_n : for j in 0 to N-1 generate
@@ -219,7 +219,7 @@ begin
     end generate links_m;
 
 ''')
-        elif self.getTopType() == "mesh":
+        elif self.getTopType() == 'mesh':
             f.write('''
     links_m : for i in 0 to M-1 generate
         links_n : for j in 0 to N-1 generate
@@ -242,7 +242,7 @@ begin
 
 ''')
         else:
-            SystemExit(" error: xml validation error found in " + __file__)
+            SystemExit(' error: xml validation error found in ' + __file__)
 
         f.write('''\
 end struct;
