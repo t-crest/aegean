@@ -67,16 +67,27 @@ all: sim
 # Generation of source code for the platform described in AEGEAN_PLATFORM
 # Call make platform
 #########################################################################
-platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH)
+platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
 	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 
 $(BUILD_PATH):
 	mkdir -p $(BUILD_PATH)/quartus
 	mkdir -p $(BUILD_PATH)/xml
-	-cp $(AEGEAN_PATH)/quartus/aegean_top.cdf $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.cdf
-	-cp $(AEGEAN_PATH)/quartus/aegean_top.qpf $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qpf
-	-cp $(AEGEAN_PATH)/quartus/aegean_top.qsf $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf
-	-cp $(AEGEAN_PATH)/quartus/aegean_top.sdc $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc
+
+quartus_files: \
+	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.cdf \
+	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qpf \
+	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf \
+	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc
+
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.cdf: $(AEGEAN_PATH)/quartus/aegean_top.cdf $(BUILD_PATH)
+	-cp $< $@
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qpf: $(AEGEAN_PATH)/quartus/aegean_top.qpf $(BUILD_PATH)
+	-cp $< $@
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf: $(AEGEAN_PATH)/quartus/aegean_top.qsf $(BUILD_PATH)
+	-cp $< $@
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_top.sdc $(BUILD_PATH)
+	-cp $< $@
 
 #schedule: $(BUILD_PATH)/init.h
 
