@@ -28,8 +28,8 @@ add wave -hexadecimal /aegean_testbench/aegean/spms(0)/spm/spm_l_0/mem
 add wave -hexadecimal /aegean_testbench/aegean/spms(1)/spm/spm_h_0/mem
 add wave -hexadecimal /aegean_testbench/aegean/spms(1)/spm/spm_l_0/mem
 
-add wave -position end  sim:/aegean_testbench/core0_uart_tx_reg
-add wave -position end  sim:/aegean_testbench/core0_uart_tx_status_reg
+add wave -position end  sim:/aegean_testbench/pat0_uart_tx_reg
+add wave -position end  sim:/aegean_testbench/pat0_uart_tx_status_reg
 add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_reg
 add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_baud_tick
 add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_state

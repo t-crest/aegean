@@ -144,9 +144,14 @@ update_argo:
 clean:
 	-rm -r $(BUILD_PATH)
 
+cleanall:
+	-rm -r $(AEGEAN_PATH)/build
+
 help:
 	@echo "================================================================================"
 	@echo "== This is the help target of the Aegean main Makefile."
+	@echo "== The variable AEGEAN_PLATFORM set the platform specification"
+	@echo "== in the config directory."
 	@echo "=="
 	@echo "== Targets:"
 	@echo "==     all        : Builds all that is needed to simulate thedescribed platform."
@@ -162,6 +167,9 @@ help:
 	@echo "=="
 	@echo "==     update_hw  : Updates the hardware repos."
 	@echo "=="
-	@echo "==     clean      : Cleans the build directory."
+	@echo "==     clean      : Cleans the build directory of the specified"
+	@echo "==                   platform specification."
+	@echo "=="
+	@echo "==     cleanall   : Cleans all the build directories."
 	@echo "=="
 	@echo "================================================================================"
