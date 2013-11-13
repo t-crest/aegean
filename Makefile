@@ -8,6 +8,10 @@ AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
 BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
+PATMOS_PATH?=$(CURDIR)/../patmos
+PATMOS_SOURCE?=$(BUILD_PATH)/*.v
+PATMOS_BOOTAPP?=bootable-mandelbrot_par
+
 AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/VHDL
 AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	noc.vhd aegean.vhd)
@@ -15,6 +19,8 @@ AEGEAN_CONFIG_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	config.vhd)
 TEST_SRC=$(patsubst %,$(AEGEAN_SRC_PATH)/%,\
 	packages/test.vhd)
+MEM_SRC=$(patsubst %,$(PATMOS_PATH)/chisel/modelsim/%,\
+	conversions.vhd gen_utils.vhd sim_ssram_512x36.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	aegean_testbench.vhd)
 
@@ -22,10 +28,6 @@ POSEIDON_PATH?=$(CURDIR)/../poseidon
 POSEIDON?=$(POSEIDON_PATH)/build/Poseidon
 POSEIDON_CONV=java -cp $(POSEIDON_PATH)/Converter/build/ converter.Converter
 
-
-PATMOS_PATH?=$(CURDIR)/../patmos
-PATMOS_SOURCE?=$(BUILD_PATH)/*.v
-PATMOS_BOOTAPP?=bootable-mandelbrot_par
 
 ARGO_PATH?=$(CURDIR)/../t-crest-noc
 ARGO_SRC_PATH?=$(ARGO_PATH)/noc/src
@@ -130,7 +132,7 @@ compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC) $(CONFIG_SRC)
 # Call make sim
 #########################################################################
 sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
-	$(WINE) $(VCOM) $(TEST_SRC) $(TESTBENCH_SRC)
+	$(WINE) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(WINE) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
 synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(ARGO_SRC) $(AEGEAN_SRC)
