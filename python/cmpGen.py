@@ -19,7 +19,7 @@ class CMPGen(object):
         # Arbiter data width
         # The burst length of 4 should be read from a config file
         # At the moment it is not configurable
-        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../Patmos.v' + '|'
+        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../PatmosCore.v' + '|'
         for i in range(0,len(self.IPCores)):
             IPType = self.IPCores[i].get('IPType')
 
@@ -255,6 +255,17 @@ begin
             patmos = self.nodes[p]
             label = patmos.get('id')
             IPType = patmos.get('IPTypeRef')
+
+            # TODO: this assumes that core 0 handles all I/O
+            if p == 0:
+                ledPort = "led"
+                txdPort = "txd"
+                rxdPort = "rxd"
+            else:
+                ledPort = "open"
+                txdPort = "open"
+                rxdPort = "'1'"
+
             f.write('''
     '''+label+''' : '''+IPType+'''PatmosCore port map(
         clk                           => clk,
@@ -274,9 +285,9 @@ begin
         io_comSpm_M_ByteEn            => ocp_core_ms('''+str(p)+''').MByteEn,
         io_comSpm_S_Resp              => ocp_core_ss('''+str(p)+''').SResp,
         io_comSpm_S_Data              => ocp_core_ss('''+str(p)+''').SData,
-        io_led                        => led,
-        io_uartPins_tx                => txd,
-        io_uartPins_rx                => rxd,
+        io_led                        => '''+ledPort+''',
+        io_uartPins_tx                => '''+txdPort+''',
+        io_uartPins_rx                => '''+rxdPort+''',
         io_memPort_M_Cmd              => ocp_burst_ms('''+str(p)+''').MCmd,
         io_memPort_M_Addr             => ocp_burst_ms('''+str(p)+''').MAddr,
         io_memPort_M_Data             => ocp_burst_ms('''+str(p)+''').MData,

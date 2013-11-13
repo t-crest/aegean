@@ -155,7 +155,9 @@ set_global_assignment -name VHDL_FILE ../config.vhd
 set_global_assignment -name VHDL_FILE ../../../VHDL/aegean_top_de2_70.vhd
 set_global_assignment -name VHDL_FILE ../aegean.vhd
 set_global_assignment -name VHDL_FILE ../noc.vhd
-set_global_assignment -name VERILOG_FILE ../Patmos.v
+set_global_assignment -name VERILOG_FILE ../PatmosCore.v
+set_global_assignment -name VERILOG_FILE ../Arbiter.v
+set_global_assignment -name VERILOG_FILE ../SsramBurstRW.v
 set_global_assignment -name VHDL_FILE "../../../../t-crest-noc/noc/src/xbar.vhd"
 set_global_assignment -name VHDL_FILE "../../../../t-crest-noc/noc/src/router.vhd"
 set_global_assignment -name VHDL_FILE "../../../../t-crest-noc/noc/src/ocp.vhd"
