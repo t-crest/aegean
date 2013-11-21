@@ -60,6 +60,9 @@ else
 	WINE=
 endif
 
+# Temporary file specifying the configuration of the latest platform build
+PGEN=$(BUILD_PATH)/.pgen
+
 .PHONY: sim synth config platform compile
 .FORCE:
 
@@ -69,8 +72,17 @@ all: sim
 # Generation of source code for the platform described in AEGEAN_PLATFORM
 # Call make platform
 #########################################################################
-platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
+
+platform: $(BUILD_PATH)/aegean.vhd
+
+$(BUILD_PATH)/aegean.vhd: $(PGEN)
+
+#platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
+#	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
+
+$(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
 	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
+	echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
 
 $(BUILD_PATH):
 	mkdir -p $(BUILD_PATH)/quartus
