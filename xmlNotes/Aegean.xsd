@@ -30,6 +30,12 @@
 	</xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="memorySize">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="[0-9]+[kKmMgG]?"/>
+	</xs:restriction>
+</xs:simpleType>
+
 <!-- Definition of attributes -->
 <xs:attribute name="version" type="xs:string"/>
 <xs:attribute name="projectname" type="xs:string"/>
@@ -135,36 +141,41 @@
 				</xs:element>
 				<xs:element name="MCache">
 					<xs:complexType>
-						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="size" type="memorySize" use="required" />
 						<xs:attribute name="blocks" type="xs:nonNegativeInteger" use="required" />
 						<xs:attribute name="repl" type="xs:string" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="ISPM">
 					<xs:complexType>
-						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="size" type="memorySize" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="DSPM">
 					<xs:complexType>
-						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="size" type="memorySize" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="BootSPM">
 					<xs:complexType>
-						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="size" type="memorySize" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="DCache">
 					<xs:complexType>
-						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="size" type="memorySize" use="required" />
 						<xs:attribute name="assoc" type="xs:nonNegativeInteger" use="required" />
 						<xs:attribute name="repl" type="xs:string" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="SCache">
 					<xs:complexType>
-						<xs:attribute name="size" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="size" type="memorySize" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ExtMem">
+					<xs:complexType>
+						<xs:attribute name="size" type="memorySize" use="required" />
 					</xs:complexType>
 				</xs:element>
 			</xs:all>
