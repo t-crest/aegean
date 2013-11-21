@@ -13,7 +13,7 @@ class CMPGen(object):
         self.nodes = list(self.platform)[1]
 
     def IPgen(self):
-        self.ssramGen()
+        self.ssramGen(21)
         self.arbiterGen(len(self.nodes),21,32,4)
         # Arbiter addr width
         # Arbiter data width
@@ -54,19 +54,20 @@ class CMPGen(object):
         Patmos+= [self.p.BUILD_PATH+'/'+IPType+'PatmosCore.v']
         subprocess.call(Patmos)
 
-    def ssramGen(self):
+    def ssramGen(self,addr):
         Ssram = ['make','-C',self.p.CHISEL_PATH]
         Ssram+= ['CHISELBUILDDIR='+self.p.BUILD_PATH]
+        Ssram+= ['MEMCTRL_ADDR_WIDTH='+str(addr)]
         Ssram+= [self.p.BUILD_PATH+'/SsramBurstRW.v']
         subprocess.call(Ssram)
 
     def arbiterGen(self,cnt,addr,data,burstLength):
         Arbiter = ['make','-C',self.p.CHISEL_PATH]
         Arbiter+= ['CHISELBUILDDIR='+self.p.BUILD_PATH]
-        Arbiter+= ['ARBITERCNT='+str(cnt)]
-        Arbiter+= ['ARBITERADDRWIDTH='+str(addr)]
-        Arbiter+= ['ARBITERDATAWIDTH='+str(data)]
-        Arbiter+= ['ARBITERBURSTLENGTH='+str(burstLength)]
+        Arbiter+= ['ARBITER_CNT='+str(cnt)]
+        Arbiter+= ['ARBITER_ADDR_WIDTH='+str(addr)]
+        Arbiter+= ['ARBITER_DATA_WIDTH='+str(data)]
+        Arbiter+= ['ARBITER_BURST_LENGTH='+str(burstLength)]
         Arbiter+= [self.p.BUILD_PATH+'/Arbiter.v']
         subprocess.call(Arbiter)
 
