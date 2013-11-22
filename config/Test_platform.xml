@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<aegean version="0.1" projectname="Test_platform" >
+<aegean version="0.1">
+    <description>Test platform</description>
 
 	<platform width="3" height="2">
 
@@ -30,6 +31,8 @@
 			<node id="pat4" loc="(1,1)" IPTypeRef="patmosS" />
 			<node id="pat5" loc="(2,1)" IPTypeRef="patmosS" />
 		</nodes>
+
+		<memory id="ram0" IODevTypeRef="Ssram" size="2M" />
 
 		<IPCores>
 			<IPCore IPType="patmosD">
@@ -66,11 +69,62 @@
 
 					<ExtMem size="2M" />
 
+					<IOs>
+					  <IO IODevTypeRef="UART" offset="8" />
+					  <IO IODevTypeRef="Leds" offset="9" />
+					</IOs>
+
 					<!-- currently unused -->
 					<SCache size="0" />
+
 				</patmos>
 			</IPCore>
 		</IPCores>
+
+		<IODevs>
+		  <IODev IODevType="UART" entity="UART" iface="OcpCore">
+			<params>
+			  <param name="baud" value="115200" />
+			</params>
+			<ports>
+			  <inport name="rxd" />
+			  <outport name="txd" />
+			</ports>
+		  </IODev>
+		  <IODev IODevType="Leds" entity="Leds" iface="OcpCore">
+			<ports>
+			  <outport name="led" width="9" />
+			</ports>
+		  </IODev>
+		  <IODev IODevType="Ssram" entity="SsramBurstRW" iface="OcpBurst">
+			<ports>
+			  <outport name="addr" width="19" />
+			  <outport name="dout" width="32" />
+			  <inport  name="din" width="32" />
+			  <outport name="dout_ena" />
+			  <outport name="noe" />
+			  <outport name="nbwe" />
+			  <outport name="nbw" width="4" />
+			  <outport name="ngw" />
+			  <outport name="nce1" />
+			  <outport name="ce2" />
+			  <outport name="nce3" />
+			  <outport name="nadsp" />
+			  <outport name="adv" />
+			</ports>
+		  </IODev>
+		</IODevs>
+
+		<IOPorts>
+		  <IOPort name="Ssram32">
+			<out node="ram0" name="addr" width="19" pin="A27,A29,C37" />
+			<inout node="ram0" outname="dout" inname="din" width="32" enaname="dout_ena"
+				   pin="A27,A29,C37" />
+		  </IOPort>
+		  <IOPort name="UartPins">
+			<out node="pat0" name="rxd" pin="B52" />
+		  </IOPort>
+		</IOPorts>
 
 	</platform>
 
