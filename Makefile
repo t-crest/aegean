@@ -2,8 +2,8 @@ TCREST_TOOL_PATH?=$(CURDIR)/../local/bin
 PATH:=$(PATH):$(TCREST_TOOL_PATH)
 
 AEGEAN_PATH?=$(CURDIR)
-#AEGEAN_PLATFORM?=Test_platform.xml
-AEGEAN_PLATFORM?=mandelbrot_demo
+AEGEAN_PLATFORM?=Test_platform
+#AEGEAN_PLATFORM?=mandelbrot_demo
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
 BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
@@ -29,7 +29,7 @@ POSEIDON?=$(POSEIDON_PATH)/build/Poseidon
 POSEIDON_CONV=java -cp $(POSEIDON_PATH)/Converter/build/ converter.Converter
 
 
-ARGO_PATH?=$(CURDIR)/../t-crest-noc
+ARGO_PATH?=$(CURDIR)/../argo
 ARGO_SRC_PATH?=$(ARGO_PATH)/noc/src
 ARGO_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
 	noc_defs.vhd noc_interface.vhd bram.vhd bram_tdp.vhd counter.vhd\
@@ -81,8 +81,8 @@ $(BUILD_PATH)/aegean.vhd: $(PGEN)
 #	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 
 $(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
-	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
-	echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
+	@python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
+	@echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
 
 $(BUILD_PATH):
 	mkdir -p $(BUILD_PATH)/quartus
@@ -102,18 +102,6 @@ $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf: $(AEGEAN_PATH)/quartus/aegean_
 	-cp $< $@
 $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_top.sdc $(BUILD_PATH)
 	-cp $< $@
-
-#schedule: $(BUILD_PATH)/init.h
-
-#$(BUILD_PATH)/init.h: $(BUILD_PATH)/sched.xml
-#	$(POSEIDON_CONV) $< $@ Aegean-c
-
-#$(BUILD_PATH)/aegean_sched.xml: $(AEGEAN_PATH)/config/bitorus2x2.xml
-#	mkdir -p $(BUILD_PATH)
-#	$(POSEIDON) -m GREEDY -p $< -s $@
-
-#$(PATMOS_PATH)/c/init.h: $(BUILD_PATH)/init.h
-#	cp $< $@
 
 ##########################################################################
 # Compilation of source code for the platform described in AEGEAN_PLATFORM

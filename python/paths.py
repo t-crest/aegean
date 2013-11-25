@@ -15,7 +15,7 @@ class Paths(object):
 
         self.PATMOS_PATH = self.AEGEAN_PATH + '/../patmos'
         self.CHISEL_PATH = self.PATMOS_PATH + '/chisel'
-        self.BUILD_PATH = self.AEGEAN_PATH + '/build/' + projectname
+        self.BUILD_PATH = self.AEGEAN_PATH + '/build/' + str(projectname)
         self.TMP_BUILD_PATH = self.BUILD_PATH + '/xml'
 
         ###################################################
@@ -34,4 +34,4 @@ class Paths(object):
         self.AegeanFile = self.BUILD_PATH + '/aegean.vhd'
         self.TestFile = self.BUILD_PATH + '/aegean_testbench.vhd'
         self.ConfFile = self.BUILD_PATH + '/config.vhd'
-        self.QUARTUS_FILE = self.BUILD_PATH + '/quartus/'+projectname+'_top.qsf'
+        self.QUARTUS_FILE = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.qsf'

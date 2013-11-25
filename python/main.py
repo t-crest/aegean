@@ -3,6 +3,7 @@
 import sys
 import paths
 import os, errno
+import ntpath
 from lxml import etree
 from io import StringIO
 
@@ -27,9 +28,11 @@ def mkdir_p(path):
             pass
         else: raise
 
-xmlscheme = os.getcwd() + '/xmlNotes/Aegean.xsd'
+xmlscheme = os.getcwd() + '/xml_validation/Aegean_toplevel.xsd'
 aegean = parseXML(sys.argv[1],xmlscheme)
-projectname = aegean.get('projectname')
+projectname = ntpath.basename(sys.argv[1])
+projectname = os.path.splitext(projectname)[0]
+print("Projectname: " + projectname)
 p = Paths(projectname)
 mkdir_p(p.TMP_BUILD_PATH)
 

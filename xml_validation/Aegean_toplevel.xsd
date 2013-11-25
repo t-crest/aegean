@@ -1,71 +1,7 @@
 <?xml version="1.0"?>
 <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
-<!-- Definition of simple elements -->
-<!--<xs:element name="core" type="xs:string"/>-->
-
-<!-- Definition of simple types-->
-
-<xs:simpleType name="coordinate">
-	<xs:restriction base="xs:string">
-		<xs:pattern value="\([0-9]+,[0-9]+\)"/>
-	</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="address">
-	<xs:restriction base="xs:string">
-		<xs:pattern value="0x[0-9a-f]+"/>
-	</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="com">
-	<xs:restriction base="xs:string">
-		<xs:pattern value="all2all|custom"/>
-	</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="topo">
-	<xs:restriction base="xs:string">
-		<xs:pattern value="custom|bitorus|mesh"/>
-	</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="memorySize">
-	<xs:restriction base="xs:string">
-		<xs:pattern value="[0-9]+[kKmMgG]?"/>
-	</xs:restriction>
-</xs:simpleType>
-
-<!-- Definition of attributes -->
-<xs:attribute name="version" type="xs:string"/>
-<xs:attribute name="projectname" type="xs:string"/>
-<xs:attribute name="width" type="xs:positiveInteger"/>
-<xs:attribute name="height" type="xs:positiveInteger"/>
-<xs:attribute name="phits" type="xs:nonNegativeInteger"/>
-<xs:attribute name="bandwidth" type="xs:nonNegativeInteger"/>
-<xs:attribute name="id" type="xs:ID"/>
-<xs:attribute name="idRef" type="xs:IDREF"/>
-<xs:attribute name="IPType" type="xs:ID"/>
-<xs:attribute name="IPTypeRef" type="xs:IDREF"/>
-<xs:attribute name="IODevType" type="xs:ID"/>
-<xs:attribute name="IODevTypeRef" type="xs:IDREF"/>
-<xs:attribute name="cached" type="xs:boolean"/>
-<xs:attribute name="routerDepth" type="xs:nonNegativeInteger"/>
-<xs:attribute name="linkDepth" type="xs:nonNegativeInteger"/>
-
-<xs:attribute name="start" type="address"/>
-<xs:attribute name="end" type="address"/>
-
-<xs:attribute name="from" type="coordinate" />
-<xs:attribute name="to" type="coordinate" />
-<xs:attribute name="source" type="coordinate" />
-<xs:attribute name="sink" type="coordinate" />
-<xs:attribute name="loc" type="coordinate" />
-
-<xs:attribute name="topoType" type="topo"/>
-<xs:attribute name="comType" type="com"/>
-
-<!-- Definition of complex elements -->
+	<xs:include schemaLocation="simple.xsd"/>
+	<xs:include schemaLocation="patmos.xsd"/>
 
 	<!-- A memory region -->
 	<xs:element name="mem">
@@ -173,67 +109,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="patmos">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="description" type="xs:string"/>
-				<xs:element name="frequency">
-					<xs:complexType>
-						<xs:attribute name="Hz" type="xs:nonNegativeInteger" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="pipeline">
-					<xs:complexType>
-						<xs:attribute name="dual" type="xs:boolean" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="bootrom">
-					<xs:complexType>
-						<xs:attribute name="app" type="xs:string" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="MCache">
-					<xs:complexType>
-						<xs:attribute name="size" type="memorySize" use="required" />
-						<xs:attribute name="blocks" type="xs:nonNegativeInteger" use="required" />
-						<xs:attribute name="repl" type="xs:string" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="ISPM">
-					<xs:complexType>
-						<xs:attribute name="size" type="memorySize" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="DSPM">
-					<xs:complexType>
-						<xs:attribute name="size" type="memorySize" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="BootSPM">
-					<xs:complexType>
-						<xs:attribute name="size" type="memorySize" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="DCache">
-					<xs:complexType>
-						<xs:attribute name="size" type="memorySize" use="required" />
-						<xs:attribute name="assoc" type="xs:nonNegativeInteger" use="required" />
-						<xs:attribute name="repl" type="xs:string" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="SCache">
-					<xs:complexType>
-						<xs:attribute name="size" type="memorySize" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="ExtMem">
-					<xs:complexType>
-						<xs:attribute name="size" type="memorySize" use="required" />
-					</xs:complexType>
-				</xs:element>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
 
 	<xs:element name="params">
 		<xs:complexType>
@@ -245,9 +120,9 @@
 
 	<xs:element name="ports">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="outport" maxOccurs="unbounded" minOccurs="0" />
-				<xs:element ref="inport" maxOccurs="unbounded" minOccurs="0" />
+			<xs:sequence maxOccurs="unbounded" minOccurs="0">
+				<xs:element ref="inport" minOccurs="0" />
+				<xs:element ref="outport" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

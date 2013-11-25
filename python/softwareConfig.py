@@ -3,8 +3,15 @@
 import sys
 import string
 import paths
+import util
 from lxml import etree
 import subprocess
+
+#def findTag(x,s):
+#    tags = list(x)
+#    for i in range(0,len(tags)):
+#        if tags[i].tag == s:
+#            return tags[i]
 
 class SWConfig(object):
     """
@@ -12,16 +19,16 @@ class SWConfig(object):
     for configuring the software of the Aegean platform
     """
     def __init__(self,p,aegean):
-        self.application = list(aegean)[1]
+        self.application = util.findTag(aegean,"application")
         self.p = p
 
     def config(self):
-        tags = list(self.application)
-        for i in range(0,len(tags)):
-            if tags[i].tag == 'communication':
-                communication = tags[i]
-                break
-
+#        tags = list(self.application)
+#        for i in range(0,len(tags)):
+#            if tags[i].tag == 'communication':
+#                communication = tags[i]
+#                break
+        communication = util.findTag(self.application,"communication")
         et = etree.ElementTree(communication)
         et.write(self.p.GEN_COM)
         self.createSched()
@@ -49,4 +56,6 @@ class SWConfig(object):
 
     def createScript(self):
         print('Creating compiler scripts')
+
+
 

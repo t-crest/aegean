@@ -1,6 +1,7 @@
 #import sys
 #import string
 import paths
+import util
 from lxml import etree
 
 class NoCGen(object):
@@ -10,13 +11,13 @@ class NoCGen(object):
         self.p = p
 
     def getLinks(self):
-        return list(list(self.platform)[0])
+        return list(util.findTag(self.platform,"topology"))
 
     def getNodes(self):
-        return list(list(self.platform)[1])
+        return list(util.findTag(self.platform,"nodes"))
 
     def getTopType(self):
-        return list(self.platform)[0].get('topoType')
+        return util.findTag(self.platform,"topology").get('topoType')
 
     def config(self):
         N = self.platform.get('width')

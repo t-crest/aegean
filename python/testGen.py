@@ -1,3 +1,5 @@
+import util
+
 class TestGen(object):
     """
     The TestGen class handles the generation of a testbench for the Aegean hardware platform
@@ -5,8 +7,8 @@ class TestGen(object):
     def __init__(self,p,platform):
         self.p = p
         self.platform = platform
-        self.IPCores = list(self.platform)[2]
-        self.nodes = list(self.platform)[1]
+        self.IPCores = util.findTag(self.platform,"IPCores")
+        self.nodes = util.findTag(self.platform,"nodes")
 
 
     def generate(self):

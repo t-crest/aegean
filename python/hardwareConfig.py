@@ -4,6 +4,7 @@ from testGen import TestGen
 from lxml import etree
 import paths
 import subprocess
+import util
 
 class HWConfig(object):
     """
@@ -11,8 +12,8 @@ class HWConfig(object):
     """
     def __init__(self,p,aegean):
         self.p = p
-        self.platform = list(aegean)[0]
-        self.IPCores = list(self.platform)[2]
+        self.platform = util.findTag(aegean,"platform")
+        self.IPCores = util.findTag(self.platform,"IPCores")
         et = etree.ElementTree(self.platform)
         et.write(self.p.GEN_PLAT)
 

@@ -80,9 +80,10 @@
 				</patmos>
 			</IPCore>
 		</IPCores>
-
+		<!-- Maybe an IO device could also be an IPCore -->
 		<IODevs>
 		  <IODev IODevType="UART" entity="UART" iface="OcpCore">
+		  	<!-- Maybe the IODev should also have a srcfile attribute -->
 			<params>
 			  <param name="baud" value="115200" />
 			</params>
@@ -118,7 +119,7 @@
 		<IOPorts>
 		  <IOPort name="Ssram32">
 			<out node="ram0" name="addr" width="19" pin="A27,A29,C37" />
-			<inout node="ram0" outname="dout" inname="din" width="32" enaname="dout_ena"
+			<inout node="ram0" name="data" outname="dout" inname="din" width="32" enaname="dout_ena"
 				   pin="A27,A29,C37" />
 		  </IOPort>
 		  <IOPort name="UartPins">

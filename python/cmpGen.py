@@ -1,6 +1,7 @@
 from lxml import etree
 import paths
 import subprocess
+import util
 
 class CMPGen(object):
     """
@@ -9,8 +10,8 @@ class CMPGen(object):
     def __init__(self,p,platform):
         self.p = p
         self.platform = platform
-        self.IPCores = list(self.platform)[2]
-        self.nodes = list(self.platform)[1]
+        self.IPCores = util.findTag(self.platform,"IPCores")
+        self.nodes = util.findTag(self.platform,"nodes")
 
     def IPgen(self):
         self.ssramGen(21)
@@ -23,7 +24,7 @@ class CMPGen(object):
         for i in range(0,len(self.IPCores)):
             IPType = self.IPCores[i].get('IPType')
 
-            patmos = list(self.IPCores[i])[0]
+            patmos = util.findTag(self.IPCores[i],"patmos")
             app = ""
             for j in range(0,len(patmos)):
                 if patmos[j].tag == 'bootrom':
@@ -38,7 +39,6 @@ class CMPGen(object):
                 SedString+='\\\n'
 
         SedString+= '|'
-        print(SedString)
         Sed = ['sed','-i']
         Sed+= [SedString]
         Sed+= [self.p.QUARTUS_FILE]
@@ -162,30 +162,18 @@ architecture struct of aegean is
 ''')
 
         for i in range(0,len(self.nodes)):
+            f.write('''
+            io_master_'''+str(i)+'''_M_Cmd        : in std_logic_vector(2 downto 0);
+            io_master_'''+str(i)+'''_M_Addr       : in std_logic_vector(20 downto 0);
+            io_master_'''+str(i)+'''_M_Data       : in std_logic_vector(31 downto 0);
+            io_master_'''+str(i)+'''_M_DataValid  : in std_logic;
+            io_master_'''+str(i)+'''_M_DataByteEn : in std_logic_vector(3 downto 0);
+            io_master_'''+str(i)+'''_S_Resp       : out std_logic_vector(1 downto 0);
+            io_master_'''+str(i)+'''_S_Data       : out std_logic_vector(31 downto 0);
+            io_master_'''+str(i)+'''_S_CmdAccept  : out std_logic;
+            io_master_'''+str(i)+'''_S_DataAccept : out std_logic''')
             if i != len(self.nodes)-1:
-                f.write('''
-            io_master_'''+str(i)+'''_M_Cmd        : in std_logic_vector(2 downto 0);
-            io_master_'''+str(i)+'''_M_Addr       : in std_logic_vector(20 downto 0);
-            io_master_'''+str(i)+'''_M_Data       : in std_logic_vector(31 downto 0);
-            io_master_'''+str(i)+'''_M_DataValid  : in std_logic;
-            io_master_'''+str(i)+'''_M_DataByteEn : in std_logic_vector(3 downto 0);
-            io_master_'''+str(i)+'''_S_Resp       : out std_logic_vector(1 downto 0);
-            io_master_'''+str(i)+'''_S_Data       : out std_logic_vector(31 downto 0);
-            io_master_'''+str(i)+'''_S_CmdAccept  : out std_logic;
-            io_master_'''+str(i)+'''_S_DataAccept : out std_logic;
-''')
-            else:
-                f.write('''
-            io_master_'''+str(i)+'''_M_Cmd        : in std_logic_vector(2 downto 0);
-            io_master_'''+str(i)+'''_M_Addr       : in std_logic_vector(20 downto 0);
-            io_master_'''+str(i)+'''_M_Data       : in std_logic_vector(31 downto 0);
-            io_master_'''+str(i)+'''_M_DataValid  : in std_logic;
-            io_master_'''+str(i)+'''_M_DataByteEn : in std_logic_vector(3 downto 0);
-            io_master_'''+str(i)+'''_S_Resp       : out std_logic_vector(1 downto 0);
-            io_master_'''+str(i)+'''_S_Data       : out std_logic_vector(31 downto 0);
-            io_master_'''+str(i)+'''_S_CmdAccept  : out std_logic;
-            io_master_'''+str(i)+'''_S_DataAccept : out std_logic
-''')
+                f.write(''';''')
 
         f.write('''
         );
@@ -369,30 +357,18 @@ begin
 ''')
 
         for i in range(0,len(self.nodes)):
+            f.write('''
+            io_master_'''+str(i)+'''_M_Cmd        => ocp_burst_ms('''+str(i)+''').MCmd,
+            io_master_'''+str(i)+'''_M_Addr       => ocp_burst_ms('''+str(i)+''').MAddr,
+            io_master_'''+str(i)+'''_M_Data       => ocp_burst_ms('''+str(i)+''').MData,
+            io_master_'''+str(i)+'''_M_DataValid  => ocp_burst_ms('''+str(i)+''').MDataValid,
+            io_master_'''+str(i)+'''_M_DataByteEn => ocp_burst_ms('''+str(i)+''').MDataByteEn,
+            io_master_'''+str(i)+'''_S_Resp       => ocp_burst_ss('''+str(i)+''').SResp,
+            io_master_'''+str(i)+'''_S_Data       => ocp_burst_ss('''+str(i)+''').SData,
+            io_master_'''+str(i)+'''_S_CmdAccept  => ocp_burst_ss('''+str(i)+''').SCmdAccept,
+            io_master_'''+str(i)+'''_S_DataAccept => ocp_burst_ss('''+str(i)+''').SDataAccept''')
             if i != len(self.nodes)-1:
-                f.write('''
-            io_master_'''+str(i)+'''_M_Cmd        => ocp_burst_ms('''+str(i)+''').MCmd,
-            io_master_'''+str(i)+'''_M_Addr       => ocp_burst_ms('''+str(i)+''').MAddr,
-            io_master_'''+str(i)+'''_M_Data       => ocp_burst_ms('''+str(i)+''').MData,
-            io_master_'''+str(i)+'''_M_DataValid  => ocp_burst_ms('''+str(i)+''').MDataValid,
-            io_master_'''+str(i)+'''_M_DataByteEn => ocp_burst_ms('''+str(i)+''').MDataByteEn,
-            io_master_'''+str(i)+'''_S_Resp       => ocp_burst_ss('''+str(i)+''').SResp,
-            io_master_'''+str(i)+'''_S_Data       => ocp_burst_ss('''+str(i)+''').SData,
-            io_master_'''+str(i)+'''_S_CmdAccept  => ocp_burst_ss('''+str(i)+''').SCmdAccept,
-            io_master_'''+str(i)+'''_S_DataAccept => ocp_burst_ss('''+str(i)+''').SDataAccept,
-''')
-            else:
-                f.write('''
-            io_master_'''+str(i)+'''_M_Cmd        => ocp_burst_ms('''+str(i)+''').MCmd,
-            io_master_'''+str(i)+'''_M_Addr       => ocp_burst_ms('''+str(i)+''').MAddr,
-            io_master_'''+str(i)+'''_M_Data       => ocp_burst_ms('''+str(i)+''').MData,
-            io_master_'''+str(i)+'''_M_DataValid  => ocp_burst_ms('''+str(i)+''').MDataValid,
-            io_master_'''+str(i)+'''_M_DataByteEn => ocp_burst_ms('''+str(i)+''').MDataByteEn,
-            io_master_'''+str(i)+'''_S_Resp       => ocp_burst_ss('''+str(i)+''').SResp,
-            io_master_'''+str(i)+'''_S_Data       => ocp_burst_ss('''+str(i)+''').SData,
-            io_master_'''+str(i)+'''_S_CmdAccept  => ocp_burst_ss('''+str(i)+''').SCmdAccept,
-            io_master_'''+str(i)+'''_S_DataAccept => ocp_burst_ss('''+str(i)+''').SDataAccept
-''')
+                f.write(''',''')
 
         f.write('''
         );
