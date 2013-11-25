@@ -16,7 +16,7 @@
 	<!-- An entry point for an ipcore -->
 	<xs:element name="entry">
 		<xs:complexType>
-			<xs:attribute ref="idRef" use="required"/>
+			<xs:attribute name="node" type="xs:IDREF" />
 			<xs:attribute name="entity" type="xs:string" />
 			<xs:attribute name="parameters" type="xs:string" />
 			<xs:attribute name="srcFile" type="xs:anyURI" />
@@ -120,20 +120,20 @@
 
 	<xs:element name="ports">
 		<xs:complexType>
-			<xs:sequence maxOccurs="unbounded" minOccurs="0">
-				<xs:element ref="inport" minOccurs="0" />
-				<xs:element ref="outport" minOccurs="0" />
-			</xs:sequence>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="inport" />
+				<xs:element ref="outport" />
+			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 
 	<xs:element name="IOPort">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="out" maxOccurs="unbounded" minOccurs="0" />
-				<xs:element ref="in" maxOccurs="unbounded" minOccurs="0" />
-				<xs:element ref="inout" maxOccurs="unbounded" minOccurs="0" />
-			</xs:sequence>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="out" />
+				<xs:element ref="in" />
+				<xs:element ref="inout" />
+			</xs:choice>
 			<xs:attribute name="name" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
@@ -275,13 +275,33 @@
 		</xs:complexType>
 
 		<xs:key name="node.id">
-			<xs:selector xpath="platform/nodes/node" />
+			<xs:selector xpath="platform/nodes/node|platform/memory" />
 			<xs:field xpath="@id" />
 		</xs:key>
 		<xs:keyref name="noderef.id" refer="node.id">
-			<xs:selector xpath="platform/IOPorts/IOPort/out/noderef" />
-			<xs:field xpath="@id" />
+			<xs:selector xpath="platform/IOPorts/IOPort/out|application/entries/entry" />
+			<xs:field xpath="@node" />
 		</xs:keyref>
+
+		<xs:key name="IPCore.IPType">
+			<xs:selector xpath="platform/IPCores/IPCore" />
+			<xs:field xpath="@IPType" />
+		</xs:key>
+		<xs:keyref name="IPCore.IPTypeRef" refer="IPCore.IPType">
+			<xs:selector xpath="platform/nodes/node" />
+			<xs:field xpath="@IPTypeRef" />
+		</xs:keyref>
+
+
+		<xs:key name="IODev.IODevType">
+			<xs:selector xpath="platform/IODevs/IODev" />
+			<xs:field xpath="@IODevType" />
+		</xs:key>
+		<xs:keyref name="IODev.IODevTypeRef" refer="IODev.IODevType">
+			<xs:selector xpath="platform/IPCores/IPCore/patmos/IOs/IO|platform/memory" />
+			<xs:field xpath="@IODevTypeRef" />
+		</xs:keyref>
+
 	</xs:element>
 
 </xs:schema>
