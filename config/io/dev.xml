@@ -1,0 +1,37 @@
+<IODevs>
+    <IODev IODevType="UART" entity="UART" iface="OcpCore">
+        <!-- Maybe the IODev should also have a srcfile attribute -->
+        <params>
+            <param name="baud" value="115200" />
+        </params>
+        <ports>
+            <inport name="rxd" />
+            <outport name="txd" />
+        </ports>
+    </IODev>
+    <IODev IODevType="Leds" entity="Leds" iface="OcpCore">
+        <ports>
+            <outport name="led" width="9" />
+        </ports>
+    </IODev>
+    <IODev IODevType="Ssram" entity="SsramBurstRW" iface="OcpBurst">
+        <params>
+            <param name="addr_width" value="21" />
+        </params>
+        <ports>
+            <outport name="io_ram_out_addr" width="19" />
+            <outport name="io_ram_out_dout" width="32" />
+            <inport  name="io_ram_in_din" width="32" />
+            <outport name="io_ram_out_dout_ena" />
+            <outport name="io_ram_out_noe" />
+            <outport name="io_ram_out_nbwe" />
+            <outport name="io_ram_out_nbw" width="4" />
+            <outport name="io_ram_out_ngw" />
+            <outport name="io_ram_out_nce1" />
+            <outport name="io_ram_out_ce2" />
+            <outport name="io_ram_out_nce3" />
+            <outport name="io_ram_out_nadsp" />
+            <outport name="io_ram_out_nadv" />
+        </ports>
+    </IODev>
+</IODevs>

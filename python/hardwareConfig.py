@@ -1,6 +1,6 @@
-from nocGen import NoCGen
-from cmpGen import CMPGen
-from testGen import TestGen
+from codeGen.nocGen import NoCGen
+from codeGen.aegeanGen import AegeanGen
+from codeGen.testGen import TestGen
 from lxml import etree
 import paths
 import subprocess
@@ -21,7 +21,7 @@ class HWConfig(object):
         noc = NoCGen(self.p,self.platform)
         noc.config()
         noc.generate()
-        cmp = CMPGen(self.p,self.platform)
+        cmp = AegeanGen(self.p,self.platform)
         cmp.generate()
         test = TestGen(self.p,self.platform)
         test.generate()

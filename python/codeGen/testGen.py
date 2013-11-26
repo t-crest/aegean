@@ -1,5 +1,5 @@
 import util
-import testCode
+from codeGen import testCode
 
 class TestGen(object):
     """

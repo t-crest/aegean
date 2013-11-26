@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<aegean version="0.1">
+<aegean version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude" >
     <description>Test platform</description>
 
 	<platform width="3" height="2">
@@ -34,116 +34,12 @@
 
 		<memory id="ram0" IODevTypeRef="Ssram" size="2M" />
 
-		<IPCores>
-			<IPCore IPType="patmosD">
-				<patmos>
-					<description>Dual issue slot patmos</description>
-
-					<frequency Hz="80000000" />
-					<pipeline dual="true" />
-					<bootrom app="bootable-mandelbrot_par"/>
-					<MCache size="4k" blocks="16" repl="" />
-					<DCache size="2k" assoc="1" repl="" />
-					<ISPM size="8k" />
-					<DSPM size="2k" />
-					<BootSPM size="2k" />
-
-					<ExtMem size="2M" />
-
-					<!-- currently unused -->
-					<SCache size="0" />
-				</patmos>
-			</IPCore>
-			<IPCore IPType="patmosS">
-				<patmos>
-					<description>Single issue slot patmos</description>
-
-					<frequency Hz="80000000" />
-					<pipeline dual="false" />
-					<bootrom app="bootable-mandelbrot_par"/>
-					<MCache size="4k" blocks="16" repl="" />
-					<DCache size="2k" assoc="1" repl="" />
-					<ISPM size="8k" />
-					<DSPM size="2k" />
-					<BootSPM size="2k" />
-
-					<ExtMem size="2M" />
-
-					<IOs>
-						<IO IODevTypeRef="UART" offset="8" />
-						<IO IODevTypeRef="Leds" offset="9" />
-					</IOs>
-
-					<!-- currently unused -->
-					<SCache size="0" />
-
-				</patmos>
-			</IPCore>
-		</IPCores>
-		<!-- Maybe an IO device could also be an IPCore -->
-		<IODevs>
-			<IODev IODevType="UART" entity="UART" iface="OcpCore">
-				<!-- Maybe the IODev should also have a srcfile attribute -->
-				<params>
-					<param name="baud" value="115200" />
-				</params>
-				<ports>
-					<inport name="rxd" />
-					<outport name="txd" />
-				</ports>
-			</IODev>
-			<IODev IODevType="Leds" entity="Leds" iface="OcpCore">
-				<ports>
-					<outport name="led" width="9" />
-				</ports>
-			</IODev>
-			<IODev IODevType="Ssram" entity="SsramBurstRW" iface="OcpBurst">
-				<params>
-					<param name="addr_width" value="21" />
-				</params>
-				<ports>
-					<outport name="io_ram_out_addr" width="19" />
-					<outport name="io_ram_out_dout" width="32" />
-					<inport  name="io_ram_in_din" width="32" />
-					<outport name="io_ram_out_dout_ena" />
-					<outport name="io_ram_out_noe" />
-					<outport name="io_ram_out_nbwe" />
-					<outport name="io_ram_out_nbw" width="4" />
-					<outport name="io_ram_out_ngw" />
-					<outport name="io_ram_out_nce1" />
-					<outport name="io_ram_out_ce2" />
-					<outport name="io_ram_out_nce3" />
-					<outport name="io_ram_out_nadsp" />
-					<outport name="io_ram_out_nadv" />
-				</ports>
-			</IODev>
-		</IODevs>
-
-		<IOPorts>
-			<IOPort name="SRAM">
-				<out node="ram0" name="A" width="19" pin="AF11,AE11,AG20,AF20,AC16,AF15,AE15,AG14,AF14,AE13,AD13,AG12,AE12,AG5,AG6,AG7,AH7,AF8,AG8" />
-				<out node="ram0" name="ADSC_N" pin="AG17" />
-				<out node="ram0" name="ADSP_N" pin="AC18" />
-				<out node="ram0" name="ADV_N" pin="AD16" />
-				<out node="ram0" name="BE_N" pin="AH20,AD20,AC20,AC21" />
-				<out node="ram0" name="CE1_N" pin="AH19" />
-				<out node="ram0" name="CE2" pin="AG19" />
-				<out node="ram0" name="CE3_N" pin="AD22" />
-				<out node="ram0" name="CLK" pin="AD7" />
-				<out node="ram0" name="DPA" pin="AJ9,AK20,AJ23,AK9" />
-				<out node="ram0" name="GW_N" pin="AG18" />
-				<out node="ram0" name="OE_N" pin="AD18" />
-				<out node="ram0" name="WE_N" pin="AF18" />
-				<inout node="ram0" name="DQ" outname="dout" inname="din" width="32" enaname="dout_ena" pin="AK8,AJ8,AK7,AK12,AH13,AJ13,AJ14,AK14,AJ16,AJ15,AH15,AJ22,AK22,AJ21,AK21,AJ20,AK23,AJ19,AK19,AH18,AJ18,AH17,AJ17,AK17,AH16,AJ12,AH12,AK11,AJ11,AK10,AJ10,AH10" />
-			</IOPort>
-			<IOPort name="UartPins">
-				<out node="pat0" name="rxd" pin="D21" />
-				<in node="pat0" name="txd" pin="E21" />
-			</IOPort>
-			<IOPort name="LedPins">
-				<out node="pat0" name="led" pin="AC14,AA24,AA27,Y23,Y24,Y27,W23,W25,W27" />
-			</IOPort>
-		</IOPorts>
+		<!-- The standard IP cores are included -->
+		<xi:include href="./ip/ip.xml" />
+		<!-- The standard IO devices are included -->
+		<xi:include href="./io/dev.xml" />
+		<!-- The IO ports for the de2-70 board are included-->
+		<xi:include href="./boards/de2-70.xml" />
 
 	</platform>
 

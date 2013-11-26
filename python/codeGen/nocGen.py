@@ -2,7 +2,7 @@
 #import string
 import paths
 import util
-import nocCode
+from codeGen import nocCode
 from lxml import etree
 
 class NoCGen(object):

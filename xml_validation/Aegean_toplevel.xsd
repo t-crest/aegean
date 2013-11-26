@@ -2,6 +2,7 @@
 <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xs:include schemaLocation="simple.xsd"/>
 	<xs:include schemaLocation="patmos.xsd"/>
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/03/xml.xsd" />
 
 	<!-- A memory region -->
 	<xs:element name="mem">
@@ -170,6 +171,12 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="include">
+		<xs:complexType>
+			<xs:attribute name="href" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="topology">
 		<xs:complexType>
 			<xs:sequence>
@@ -195,6 +202,7 @@
 			<xs:sequence>
 				<xs:element ref="IOPort" maxOccurs="unbounded"/>
 			</xs:sequence>
+			<xs:attribute ref="xml:base" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -204,6 +212,7 @@
 			<xs:sequence>
 				<xs:element ref="IODev" maxOccurs="unbounded"/>
 			</xs:sequence>
+			<xs:attribute ref="xml:base" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -213,6 +222,7 @@
 			<xs:sequence>
 				<xs:element ref="IPCore" maxOccurs="unbounded"/>
 			</xs:sequence>
+			<xs:attribute ref="xml:base" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -243,12 +253,16 @@
 				<xs:element ref="topology"/>
 				<xs:element ref="nodes"/>
 				<xs:element ref="memory" />
-				<xs:element ref="IPCores"/>
-				<xs:element ref="IODevs" />
-				<xs:element ref="IOPorts" />
+				<xs:element ref="include" minOccurs="0" />
+				<xs:element ref="IPCores" maxOccurs="2" />
+				<xs:element ref="include" minOccurs="0" />
+				<xs:element ref="IODevs" maxOccurs="2" />
+				<xs:element ref="include" minOccurs="0" />
+				<xs:element ref="IOPorts" maxOccurs="2" />
 			</xs:sequence>
 			<xs:attribute ref="width" use="required"/>
 			<xs:attribute ref="height" use="required"/>
+			<xs:attribute ref="xml:base" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -268,7 +282,8 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="description" type="xs:string"/>
-				<xs:element ref="platform"/>
+				<xs:element ref="include" minOccurs="0" />
+				<xs:element ref="platform" maxOccurs="1"/>
 				<xs:element ref="application"/>
 			</xs:sequence>
 			<xs:attribute ref="version" use="required"/>

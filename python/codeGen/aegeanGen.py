@@ -2,11 +2,11 @@ from lxml import etree
 import paths
 import subprocess
 import util
-import aegeanCode
+from codeGen import aegeanCode
 
-class CMPGen(object):
+class AegeanGen(object):
     """
-    The CMPGen class handles the generation of the Aegean hardware platform
+    The AegeanGen class handles the generation of the Aegean hardware platform
     """
     def __init__(self,p,platform):
         self.p = p
@@ -17,6 +17,14 @@ class CMPGen(object):
         self.IODevs = util.findTag(self.platform,"IODevs")
         self.IOPorts = util.findTag(self.platform,"IOPorts")
 
+    def parseIODevs(self):
+        IODevs = list(self.IODevs)
+        for i in range(0,len(IODevs)):
+            IODev = IODevs[i]
+            name = IODev.get("IODevType")
+            entity = IODev.get("entity")
+            iface = IODev.get("iface")
+            params = util.findTag(IODev,"params")
 
     def IPgen(self):
         self.ssramGen(21)
@@ -91,11 +99,12 @@ class CMPGen(object):
             for j in range(0,len(signals)): # For each signal
                 sig = signals[j].get("name")
                 pins = signals[j].get("pin").split(',')
+                pins.reverse()
 
-                for k in range(0,len(pins)):
+                for k in reversed(range(0,len(pins))):
                     PinName = 'PIN_'+pins[k]
                     SignalName = topSig+'_'+sig+'['+str(k)+']'
-                    print('SignalName: ' + SignalName)
+                    print('PinName: '+ PinName + ' SignalName: ' + SignalName)
 
 
     def arbiterGen(self,cnt,addr,data,burstLength):
@@ -110,7 +119,7 @@ class CMPGen(object):
 
     def generate(self):
         self.IPgen()
-        #self.genPins()
+        self.genPins()
         f = open(self.p.AegeanFile, 'w')
         aegeanCode.writeHeader(f)
 

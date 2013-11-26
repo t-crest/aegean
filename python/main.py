@@ -14,6 +14,7 @@ from softwareConfig import SWConfig
 def parseXML(filename,xmlscheme):
     parser = etree.XMLParser(remove_comments=True)
     tree = etree.parse(filename, parser=parser)
+    tree.xinclude()
     xmlschema_doc = etree.parse(xmlscheme)
     xmlschema = etree.XMLSchema(xmlschema_doc)
     xmlschema.assertValid(tree)
