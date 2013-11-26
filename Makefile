@@ -73,9 +73,9 @@ all: sim
 # Call make platform
 #########################################################################
 
-platform: $(BUILD_PATH)/aegean.vhd
+platform: $(BUILD_PATH)/init.h
 
-$(BUILD_PATH)/aegean.vhd: $(PGEN)
+$(BUILD_PATH)/init.h: $(PGEN)
 
 #platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
 #	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)

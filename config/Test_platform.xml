@@ -41,7 +41,7 @@
 
 					<frequency Hz="80000000" />
 					<pipeline dual="true" />
-					<bootrom app="bootable-mandelbrot"/>
+					<bootrom app="bootable-mandelbrot_par"/>
 					<MCache size="4k" blocks="16" repl="" />
 					<DCache size="2k" assoc="1" repl="" />
 					<ISPM size="8k" />
@@ -60,7 +60,7 @@
 
 					<frequency Hz="80000000" />
 					<pipeline dual="false" />
-					<bootrom app="bootable-mandelbrot"/>
+					<bootrom app="bootable-mandelbrot_par"/>
 					<MCache size="4k" blocks="16" repl="" />
 					<DCache size="2k" assoc="1" repl="" />
 					<ISPM size="8k" />
@@ -98,6 +98,9 @@
 				</ports>
 			</IODev>
 			<IODev IODevType="Ssram" entity="SsramBurstRW" iface="OcpBurst">
+				<params>
+					<param name="addr_width" value="21" />
+				</params>
 				<ports>
 					<outport name="io_ram_out_addr" width="19" />
 					<outport name="io_ram_out_dout" width="32" />
