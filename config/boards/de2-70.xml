@@ -1,3 +1,4 @@
+<!-- The pins are listed (width-1 DOWNTO 0) -->
 <IOPorts>
     <IOPort name="SRAM">
         <out node="ram0" name="A" width="19" pin="AF11,AE11,AG20,AF20,AC16,AF15,AE15,AG14,AF14,AE13,AD13,AG12,AE12,AG5,AG6,AG7,AH7,AF8,AG8" />
