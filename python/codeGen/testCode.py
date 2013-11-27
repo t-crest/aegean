@@ -88,8 +88,8 @@ def writeUartSpy(f,label):
         variable buf: LINE;
         constant CORE_ID : STRING ('''+str(len(label)+2)+''' downto 1):="'''+label.upper()+''': ";
     begin
-        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/uart/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/uart/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/UART/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/UART/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge('''+label+'''_uart_tx_status_reg(0));
@@ -117,7 +117,7 @@ def writeWait(f):
 
 def writeUartForce(f,label,value):
     f.write('''
-            signal_force("/aegean_testbench/aegean/'''+label+'''/iocomp/uart/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);''')
+            signal_force("/aegean_testbench/aegean/'''+label+'''/iocomp/UART/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);''')
 
 
 def writeBaudIncEnd(f):

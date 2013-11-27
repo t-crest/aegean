@@ -126,7 +126,7 @@ def writePatmosComp(f,IPType):
         io_comSpm_S_Resp            : in  std_logic_vector(1 downto 0);
         io_comSpm_S_Data            : in  std_logic_vector(31 downto 0);
         -- Simple IO signals
-        io_led                      : out std_logic_vector(8 downto 0);
+        io_ledPins_led              : out std_logic_vector(8 downto 0);
         io_uartPins_tx              : out std_logic;
         io_uartPins_rx              : in  std_logic;
         -- Memory port signals
@@ -185,7 +185,7 @@ def writePatmosInst(f,label,IPType,p,ledPort,txdPort,rxdPort):
         io_comSpm_M_ByteEn            => ocp_core_ms('''+str(p)+''').MByteEn,
         io_comSpm_S_Resp              => ocp_core_ss('''+str(p)+''').SResp,
         io_comSpm_S_Data              => ocp_core_ss('''+str(p)+''').SData,
-        io_led                        => '''+ledPort+''',
+        io_ledPins_led                => '''+ledPort+''',
         io_uartPins_tx                => '''+txdPort+''',
         io_uartPins_rx                => '''+rxdPort+''',
         io_memPort_M_Cmd              => ocp_burst_ms('''+str(p)+''').MCmd,
