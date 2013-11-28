@@ -17,8 +17,8 @@
         <inout node="ram0" name="DQ" outname="dout" inname="din" width="32" enaname="dout_ena" pin="AK8,AJ8,AK7,AK12,AH13,AJ13,AJ14,AK14,AJ16,AJ15,AH15,AJ22,AK22,AJ21,AK21,AJ20,AK23,AJ19,AK19,AH18,AJ18,AH17,AJ17,AK17,AH16,AJ12,AH12,AK11,AJ11,AK10,AJ10,AH10" />
     </IOPort>
     <IOPort name="UartPins">
-        <out node="pat0" name="rxd" pin="D21" />
-        <in node="pat0" name="txd" pin="E21" />
+        <in node="pat0" name="rxd" pin="D21" />
+        <out node="pat0" name="txd" pin="E21" />
     </IOPort>
     <IOPort name="LedPins">
         <out node="pat0" name="led" pin="AC14,AA24,AA27,Y23,Y24,Y27,W23,W25,W27" />
