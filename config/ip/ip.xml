@@ -14,6 +14,11 @@
 
             <ExtMem size="2M" />
 
+            <IOs>
+                <IO IODevTypeRef="CpuInfo" offset="0"/>
+                <IO IODevTypeRef="Timer" offset="2"/>
+            </IOs>
+
             <!-- currently unused -->
             <SCache size="0" />
         </patmos>
@@ -34,7 +39,36 @@
             <ExtMem size="2M" />
 
             <IOs>
-                <IO IODevTypeRef="UART" offset="8" />
+                <IO IODevTypeRef="CpuInfo" offset="0"/>
+                <IO IODevTypeRef="Timer" offset="2"/>
+                <IO IODevTypeRef="Uart" offset="8" />
+                <IO IODevTypeRef="Leds" offset="9" />
+            </IOs>
+
+            <!-- currently unused -->
+            <SCache size="0" />
+
+        </patmos>
+    </IPCore>
+    <IPCore IPType="patmos">
+        <patmos>
+            <description>Single issue slot patmos</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bootrom app="bootable-mandelbrot_par"/>
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <ISPM size="8k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO IODevTypeRef="CpuInfo" offset="0"/>
+                <IO IODevTypeRef="Timer" offset="2"/>
+                <IO IODevTypeRef="Uart" offset="8" />
                 <IO IODevTypeRef="Leds" offset="9" />
             </IOs>
 

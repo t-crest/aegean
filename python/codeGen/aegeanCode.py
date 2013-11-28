@@ -85,7 +85,10 @@ architecture struct of aegean is
         io_slave_S_DataAccept : in  std_logic;
 ''')
 
-def writeArbiterCompPort(f,i):
+def writeArbiterCompPort(f,i,last):
+    end = ''
+    if not last:
+        end = ';'
     f.write('''
         io_master_'''+str(i)+'''_M_Cmd        : in std_logic_vector(2 downto 0);
         io_master_'''+str(i)+'''_M_Addr       : in std_logic_vector(20 downto 0);
@@ -95,7 +98,7 @@ def writeArbiterCompPort(f,i):
         io_master_'''+str(i)+'''_S_Resp       : out std_logic_vector(1 downto 0);
         io_master_'''+str(i)+'''_S_Data       : out std_logic_vector(31 downto 0);
         io_master_'''+str(i)+'''_S_CmdAccept  : out std_logic;
-        io_master_'''+str(i)+'''_S_DataAccept : out std_logic''')
+        io_master_'''+str(i)+'''_S_DataAccept : out std_logic'''+end)
 
 def writeArbiterCompEnd(f):
     f.write('''
@@ -103,13 +106,12 @@ def writeArbiterCompEnd(f):
     end component;
 ''')
 
-def writePatmosComp(f,IPType):
+def writePatmosComp(f,IPType,ledPort=None,txdPort=None,rxdPort=None):
     f.write('''
     component '''+IPType+'''PatmosCore is
     port(
         clk                         : in  std_logic;
         reset                       : in  std_logic;
-        io_cpuId                    : in  std_logic_vector(31 downto 0);
         -- Communication scratch pad signals
         io_comConf_M_Cmd            : out std_logic_vector(2 downto 0);
         io_comConf_M_Addr           : out std_logic_vector(31 downto 0);
@@ -125,10 +127,21 @@ def writePatmosComp(f,IPType):
         io_comSpm_M_ByteEn          : out std_logic_vector(3 downto 0);
         io_comSpm_S_Resp            : in  std_logic_vector(1 downto 0);
         io_comSpm_S_Data            : in  std_logic_vector(31 downto 0);
-        -- Simple IO signals
-        io_ledPins_led              : out std_logic_vector(8 downto 0);
+''')
+    if ledPort is not None:
+        f.write('''\
+        io_ledsPins_led              : out std_logic_vector(8 downto 0);
+''')
+    if txdPort is not None:
+        f.write('''\
         io_uartPins_tx              : out std_logic;
+''')
+    if rxdPort is not None:
+        f.write('''\
         io_uartPins_rx              : in  std_logic;
+''')
+    f.write('''\
+        io_cpuInfoPins_id           : in  std_logic_vector(31 downto 0);
         -- Memory port signals
         io_memPort_M_Cmd            : out std_logic_vector(2 downto 0);
         io_memPort_M_Addr           : out std_logic_vector(20 downto 0);
@@ -165,12 +178,11 @@ def writeSignals(f):
 begin
 ''')
 
-def writePatmosInst(f,label,IPType,p,ledPort,txdPort,rxdPort):
+def writePatmosInst(f,label,IPType,p,ledPort=None,txdPort=None,rxdPort=None):
     f.write('''
     '''+label+''' : '''+IPType+'''PatmosCore port map(
         clk                           => clk,
         reset                         => reset,
-        io_cpuId                      => std_logic_vector(to_unsigned('''+str(p)+''',32)),
         io_comConf_M_Cmd              => ocp_io_ms('''+str(p)+''').MCmd,
         io_comConf_M_Addr             => ocp_io_ms('''+str(p)+''').MAddr,
         io_comConf_M_Data             => ocp_io_ms('''+str(p)+''').MData,
@@ -185,9 +197,21 @@ def writePatmosInst(f,label,IPType,p,ledPort,txdPort,rxdPort):
         io_comSpm_M_ByteEn            => ocp_core_ms('''+str(p)+''').MByteEn,
         io_comSpm_S_Resp              => ocp_core_ss('''+str(p)+''').SResp,
         io_comSpm_S_Data              => ocp_core_ss('''+str(p)+''').SData,
-        io_ledPins_led                => '''+ledPort+''',
+''')
+    if ledPort is not None:
+        f.write('''\
+        io_ledsPins_led                => '''+ledPort+''',
+''')
+    if txdPort is not None:
+        f.write('''\
         io_uartPins_tx                => '''+txdPort+''',
+''')
+    if rxdPort is not None:
+        f.write('''\
         io_uartPins_rx                => '''+rxdPort+''',
+''')
+    f.write('''
+        io_cpuInfoPins_id             => std_logic_vector(to_unsigned('''+str(p)+''',32)),
         io_memPort_M_Cmd              => ocp_burst_ms('''+str(p)+''').MCmd,
         io_memPort_M_Addr             => ocp_burst_ms('''+str(p)+''').MAddr,
         io_memPort_M_Data             => ocp_burst_ms('''+str(p)+''').MData,
@@ -268,7 +292,10 @@ def writeInterconnect(f):
         io_slave_S_DataAccept     => ocp_burst_s_mem.SDataAccept,
 ''')
 
-def writeArbiterInstPort(f,i):
+def writeArbiterInstPort(f,i,last):
+    end = ''
+    if not last:
+        end = ','
     f.write('''
         io_master_'''+str(i)+'''_M_Cmd        => ocp_burst_ms('''+str(i)+''').MCmd,
         io_master_'''+str(i)+'''_M_Addr       => ocp_burst_ms('''+str(i)+''').MAddr,
@@ -278,7 +305,7 @@ def writeArbiterInstPort(f,i):
         io_master_'''+str(i)+'''_S_Resp       => ocp_burst_ss('''+str(i)+''').SResp,
         io_master_'''+str(i)+'''_S_Data       => ocp_burst_ss('''+str(i)+''').SData,
         io_master_'''+str(i)+'''_S_CmdAccept  => ocp_burst_ss('''+str(i)+''').SCmdAccept,
-        io_master_'''+str(i)+'''_S_DataAccept => ocp_burst_ss('''+str(i)+''').SDataAccept''')
+        io_master_'''+str(i)+'''_S_DataAccept => ocp_burst_ss('''+str(i)+''').SDataAccept'''+end)
 
 def writeFooter(f):
     f.write('''

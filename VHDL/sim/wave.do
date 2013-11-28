@@ -30,14 +30,14 @@ add wave -hexadecimal /aegean_testbench/aegean/spms(1)/spm/spm_l_0/mem
 
 add wave -position end  sim:/aegean_testbench/pat0_uart_tx_reg
 add wave -position end  sim:/aegean_testbench/pat0_uart_tx_status_reg
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_reg
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_baud_tick
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_state
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/tx_buff
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/io_ocp_M_Cmd
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/io_ocp_M_Addr
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/io_ocp_M_Data
-add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/uart/uartS_Data
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/tx_reg
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/tx_baud_tick
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/tx_state
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/tx_buff
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/io_ocp_M_Cmd
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/io_ocp_M_Addr
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/io_ocp_M_Data
+add wave -hexadecimal /aegean_testbench/aegean/pat0/iocomp/Uart/uartS_Data
 
 
 

@@ -3,6 +3,7 @@ import paths
 import subprocess
 import util
 from codeGen import aegeanCode
+from codeGen import topCode
 
 class AegeanGen(object):
     '''
@@ -13,30 +14,28 @@ class AegeanGen(object):
         self.platform = platform
         self.nodes = util.findTag(self.platform,'nodes')
         self.memory = util.findTag(self.platform,'memory')
-        self.IPCores = util.findTag(self.platform,'IPCores')
-        self.IODevs = util.findTag(self.platform,'IODevs')
-        self.IOPorts = util.findTag(self.platform,'IOPorts')
-        self.Devices = dict({})
-        self.Cores = dict({})
-        self.generated = dict({})
+        self.IOPorts = []
+        self.IPCores = dict({})
+        self.IODevs = dict({})
+        self.genIPCores = dict({})
 
     def parseIODevs(self):
-        IODevs = list(self.IODevs)
+        IODevs = list(util.findTag(self.platform,'IODevs'))
         for i in range(0,len(IODevs)):
             IODev = IODevs[i]
             name = IODev.get('IODevType')
-            self.Devices[name] = IODev
+            self.IODevs[name] = IODev
 
     def parseIPCores(self):
-        IPCores = list(self.IPCores)
+        IPCores = list(util.findTag(self.platform,'IPCores'))
         for i in range(0,len(IPCores)):
             IPCore = IPCores[i]
             name = IPCore.get('IPType')
             r = util.findTag(IPCore,'patmos')
             if str(r) == 'None': # The IPCore is not a patmos processor
-                self.Devices[name] = IPCore
+                self.IPCores[name] = IPCore
             else: # The IPCore is a patmos processor
-                self.Devices[name] = r
+                self.IPCores[name] = r
 
 
     def generateNodes(self):
@@ -44,8 +43,8 @@ class AegeanGen(object):
         for i in range(0,len(nodes)):
             node = nodes[i]
             IPTypeRef = node.get('IPTypeRef')
-            if IPTypeRef not in self.generated:
-                IPCore = self.Devices[IPTypeRef]
+            if IPTypeRef not in self.genIPCores:
+                IPCore = self.IPCores[IPTypeRef]
                 b = util.findTag(IPCore,'bootrom')
                 if str(b) == 'None':
                     if IPCore.tag == 'patmos':
@@ -61,9 +60,11 @@ class AegeanGen(object):
                 IOsT = util.findTag(IPCore,'IOs')
                 if str(IOsT) != 'None':
                     IOs = list(IOsT)
+                    IODevs = etree.Element('IODevs')
                     for j in range(0,len(IOs)):
                         IODevTypeRef = IOs[j].get('IODevTypeRef')
-                        IPCore.append(self.Devices[IODevTypeRef])
+                        IODevs.append(self.IODevs[IODevTypeRef])
+                    IPCore.append(IODevs)
 
                 # Write the patmos configration file
                 et = etree.ElementTree(IPCore)
@@ -71,22 +72,42 @@ class AegeanGen(object):
 
                 # Generate the patmos file
                 self.patmosGen(IPTypeRef,bootapp,self.p.TMP_BUILD_PATH + '/' + IPTypeRef + '.xml')
-                self.generated[IPTypeRef] = True
+                self.genIPCores[IPTypeRef] = IPCore
 
+        self.addGeneratedFiles()
+
+    def addGeneratedFiles(self):
+        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../PatmosCore.v' + '|'
+        index = 0
+        for IPType in self.genIPCores.keys():
+            SedString+= 'set_global_assignment -name VERILOG_FILE ../'+IPType+'PatmosCore.v'
+            if index < len(self.genIPCores.keys())-1:
+                SedString+='\\\n'
+            index=index+1
+
+        SedString+= '|'
+        Sed = ['sed','-i']
+        Sed+= [SedString]
+        Sed+= [self.p.QUARTUS_FILE]
+        subprocess.call(Sed)
 
     def generateMemory(self):
+        if str(self.memory) == 'None':
+            return
         IODevTypeRef = self.memory.get('IODevTypeRef')
         ID = self.memory.get('id')
-        memory = self.Devices[IODevTypeRef]
+        memory = self.IODevs[IODevTypeRef]
         params = util.findTag(memory,'params')
-        param = util.findTag(params,'param')
-        addrWidth = param.get('addr_width')
+        for i in range(0,len(list(params))):
+            if params[i].get('name') == 'addr_width':
+                addrWidth = params[i].get('value')
+                break
         self.ssramGen(addrWidth)
         self.arbiterGen(len(self.nodes),addrWidth,32,4)
 
     def generateIOPorts(self):
         SedString = 's|' + 'set_location_assignment PIN_XXX -to XXX' + '|'
-        ports = list(self.IOPorts)
+        ports = list(util.findTag(self.platform,'IOPorts'))
         for i in range(0,len(ports)): # For each port
             topSig = ports[i].get('name')
             signals = list(ports[i])
@@ -100,10 +121,12 @@ class AegeanGen(object):
                 elif signal.tag == 'inout':
                     prefix=''
 
+                #node = signals[j].get('node')
                 sig = signals[j].get('name')
                 pins = signals[j].get('pin').split(',')
                 pins.reverse()
-
+                IOPort = [topSig,prefix+topSig+'_'+sig,signal.tag,len(pins)]
+                self.IOPorts.append(IOPort)
                 for k in reversed(range(0,len(pins))):
                     PinName = 'PIN_'+pins[k]
                     SignalName = prefix+topSig+'_'+sig+'['+str(k)+']'
@@ -116,42 +139,67 @@ class AegeanGen(object):
         subprocess.call(Sed)
 
     def generateTopLevel(self):
-        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../PatmosCore.v' + '|'
-        index = 0
-        for i in self.generated.keys():
-            IPType = i
-            print('IPType: '+IPType)
+        f = open(self.p.TopFile, 'w')
+        topCode.beginEntity(f)
 
-            SedString+= 'set_global_assignment -name VERILOG_FILE ../'+IPType+'PatmosCore.v'
-            if index < len(self.generated.keys())-1:
-                SedString+='\\\n'
-            index=index+1
+        # One Port for each signal in for loop
+        for i in range(0,len(self.IOPorts)):
+            IOPort = self.IOPorts[i]
+            last = True
+            if i != len(self.IOPorts)-1:
+                last = False
+            topCode.writePort(f,IOPort[1],IOPort[2],IOPort[3],last)
 
-        SedString+= '|'
-        Sed = ['sed','-i']
-        Sed+= [SedString]
-        Sed+= [self.p.QUARTUS_FILE]
-        subprocess.call(Sed)
+        topCode.endEntity(f)
+        topCode.arch(f)
+
+        # Declaration of the Tri state signals
+        # One tri state for the sram possibly in a for loop for more tri states
+        for IOPort in self.IOPorts:
+            if IOPort[2] == 'inout':
+                topCode.writeTriStateSig(f,IOPort[0],IOPort[3])
+
+        topCode.beginArch(f)
+
+        # The tristate logic and registers
+        for IOPort in self.IOPorts:
+            if IOPort[2] == 'inout':
+                topCode.writeTriState(f,IOPort[0],IOPort[1])
+
+        topCode.aegean(f)
+        topCode.endArch(f)
+        f.close()
 
     def generate(self):
         self.parseIODevs()
         self.parseIPCores()
         self.generateNodes()
+        self.generateMemory()
         self.generateIOPorts()
         self.generateTopLevel()
+
         f = open(self.p.AegeanFile, 'w')
         aegeanCode.writeHeader(f)
 
         for i in range(0,len(self.nodes)):
-            aegeanCode.writeArbiterCompPort(f,i)
+            last = True
             if i != len(self.nodes)-1:
-                f.write(';')
+                last = False
+            aegeanCode.writeArbiterCompPort(f,i,last)
 
         aegeanCode.writeArbiterCompEnd(f)
 
-        for i in range(0,len(self.IPCores)):
-            IPType = self.IPCores[i].get('IPType')
-            aegeanCode.writePatmosComp(f,IPType)
+        for IPType in self.genIPCores.keys():
+            IPCore = self.genIPCores[IPType]
+            IOs = util.findTag(IPCore,'IOs')
+            ledPort = None
+            txdPort = None
+            rxdPort = None
+            if IOs is not None:
+                ledPort = True
+                txdPort = True
+                rxdPort = True
+            aegeanCode.writePatmosComp(f,IPType,ledPort,txdPort,rxdPort)
 
         aegeanCode.writeSignals(f)
 
@@ -159,12 +207,17 @@ class AegeanGen(object):
             patmos = self.nodes[p]
             label = patmos.get('id')
             IPType = patmos.get('IPTypeRef')
+
+            IOs = util.findTag(self.genIPCores[IPType],'IOs')
             # TODO: this assumes that core 0 handles all I/O
+            ledPort = None
+            txdPort = None
+            rxdPort = None
             if p == 0:
                 ledPort = 'led'
                 txdPort = 'txd'
                 rxdPort = 'rxd'
-            else:
+            elif IOs is not None:
                 ledPort = 'open'
                 txdPort = 'open'
                 rxdPort = "'1'"
@@ -173,12 +226,12 @@ class AegeanGen(object):
         aegeanCode.writeInterconnect(f)
 
         for i in range(0,len(self.nodes)):
-            aegeanCode.writeArbiterInstPort(f,i)
+            last = True
             if i != len(self.nodes)-1:
-                f.write(',')
+                last = False
+            aegeanCode.writeArbiterInstPort(f,i,last)
 
         aegeanCode.writeFooter(f)
-
         f.close()
 
     def patmosGen(self,IPType,bootapp,configfile):

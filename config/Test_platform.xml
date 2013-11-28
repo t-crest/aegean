@@ -24,9 +24,9 @@
 		</topology>
 
 		<nodes>
-			<node id="pat0" loc="(0,0)" IPTypeRef="patmosD" />
+			<node id="pat0" loc="(0,0)" IPTypeRef="patmosS" />
 			<node id="pat1" loc="(1,0)" IPTypeRef="patmosD" />
-			<node id="pat2" loc="(2,0)" IPTypeRef="patmosS" />
+			<node id="pat2" loc="(2,0)" IPTypeRef="patmosD" />
 			<node id="pat3" loc="(0,1)" IPTypeRef="patmosS" />
 			<node id="pat4" loc="(1,1)" IPTypeRef="patmosS" />
 			<node id="pat5" loc="(2,1)" IPTypeRef="patmosS" />

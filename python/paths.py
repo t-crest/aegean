@@ -32,6 +32,7 @@ class Paths(object):
         self.CSCHED = self.BUILD_PATH + '/init.h'
         self.NOCFile = self.BUILD_PATH + '/noc.vhd'
         self.AegeanFile = self.BUILD_PATH + '/aegean.vhd'
+        self.TopFile = self.BUILD_PATH + '/top.vhd'
         self.TestFile = self.BUILD_PATH + '/aegean_testbench.vhd'
         self.ConfFile = self.BUILD_PATH + '/config.vhd'
         self.QUARTUS_FILE = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.qsf'

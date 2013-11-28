@@ -1,8 +1,10 @@
 <IODevs>
-    <IODev IODevType="UART" entity="UART" iface="OcpCore">
+    <IODev IODevType="CpuInfo" entity="CpuInfo" iface="OcpCore" />
+    <IODev IODevType="Timer" entity="Timer" iface="OcpCore" />
+    <IODev IODevType="Uart" entity="Uart" iface="OcpCore">
         <!-- Maybe the IODev should also have a srcfile attribute -->
         <params>
-            <param name="baud" value="115200" />
+            <param name="baud_rate" value="115200" />
         </params>
         <ports>
             <inport name="rxd" />
@@ -10,6 +12,9 @@
         </ports>
     </IODev>
     <IODev IODevType="Leds" entity="Leds" iface="OcpCore">
+        <params>
+            <param name="ledCount" value="9" />
+        </params>
         <ports>
             <outport name="led" width="9" />
         </ports>

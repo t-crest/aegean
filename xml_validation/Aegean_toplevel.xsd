@@ -252,7 +252,7 @@
 			<xs:sequence>
 				<xs:element ref="topology"/>
 				<xs:element ref="nodes"/>
-				<xs:element ref="memory" />
+				<xs:element ref="memory" minOccurs="0" maxOccurs="1" />
 				<xs:element ref="include" minOccurs="0" />
 				<xs:element ref="IPCores" maxOccurs="2" />
 				<xs:element ref="include" minOccurs="0" />
