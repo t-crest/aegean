@@ -106,7 +106,7 @@ def writeArbiterCompEnd(f):
     end component;
 ''')
 
-def writePatmosComp(f,IPType,ledPort=None,txdPort=None,rxdPort=None):
+def writePatmosComp(f,IPType,ledPort=None,uartPort=None):
     f.write('''
     component '''+IPType+'''PatmosCore is
     port(
@@ -132,12 +132,9 @@ def writePatmosComp(f,IPType,ledPort=None,txdPort=None,rxdPort=None):
         f.write('''\
         io_ledsPins_led              : out std_logic_vector(8 downto 0);
 ''')
-    if txdPort is not None:
+    if uartPort is not None:
         f.write('''\
         io_uartPins_tx              : out std_logic;
-''')
-    if rxdPort is not None:
-        f.write('''\
         io_uartPins_rx              : in  std_logic;
 ''')
     f.write('''\

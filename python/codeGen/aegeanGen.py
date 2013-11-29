@@ -190,16 +190,17 @@ class AegeanGen(object):
         aegeanCode.writeArbiterCompEnd(f)
 
         for IPType in self.genIPCores.keys():
+            ledPort = None
+            uartPort = None
             IPCore = self.genIPCores[IPType]
             IOs = util.findTag(IPCore,'IOs')
-            ledPort = None
-            txdPort = None
-            rxdPort = None
-            if IOs is not None:
-                ledPort = True
-                txdPort = True
-                rxdPort = True
-            aegeanCode.writePatmosComp(f,IPType,ledPort,txdPort,rxdPort)
+            for IO in list(IOs):
+                IODevTypeRef = IO.get('IODevTypeRef')
+                if IODevTypeRef == 'Leds':
+                    ledPort = True
+                elif IODevTypeRef == 'Uart':
+                    uartPort = True
+            aegeanCode.writePatmosComp(f,IPType,ledPort,uartPort)
 
         aegeanCode.writeSignals(f)
 
@@ -208,19 +209,25 @@ class AegeanGen(object):
             label = patmos.get('id')
             IPType = patmos.get('IPTypeRef')
 
-            IOs = util.findTag(self.genIPCores[IPType],'IOs')
-            # TODO: this assumes that core 0 handles all I/O
             ledPort = None
             txdPort = None
             rxdPort = None
-            if p == 0:
-                ledPort = 'led'
-                txdPort = 'txd'
-                rxdPort = 'rxd'
-            elif IOs is not None:
-                ledPort = 'open'
-                txdPort = 'open'
-                rxdPort = "'1'"
+            # TODO: this assumes that core 0 handles all I/O
+            IOs = util.findTag(self.genIPCores[IPType],'IOs')
+            for IO in list(IOs):
+                IODevTypeRef = IO.get('IODevTypeRef')
+                if p == 0:
+                    if IODevTypeRef == 'Leds':
+                        ledPort = 'led'
+                    elif IODevTypeRef == 'Uart':
+                        txdPort = 'txd'
+                        rxdPort = 'rxd'
+                elif IODevTypeRef == 'Leds':
+                    ledPort = 'open'
+                elif IODevTypeRef == 'Uart':
+                    txdPort = 'open'
+                    rxdPort = "'1'"
+
             aegeanCode.writePatmosInst(f,label,IPType,p,ledPort,txdPort,rxdPort)
 
         aegeanCode.writeInterconnect(f)

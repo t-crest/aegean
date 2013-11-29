@@ -24,11 +24,17 @@ class TestGen(object):
             for IPCore in list(self.IPCores):
                 if IPCore.get('IPType') == IPTypeRef:
                     pat = util.findTag(IPCore,'patmos')
-                    if util.findTag(pat,'IOs') is None:
+                    IOs = util.findTag(pat,'IOs')
+                    for IO in list(IOs):
+                        IODevTypeRef = IO.get('IODevTypeRef')
+                        if IODevTypeRef == 'Uart':
+                            self.spys[label] = True
+                            testCode.writeSignalSpySignals(f,label)
+                            break
                         self.spys[label] = False
-                        break
-                    self.spys[label] = True
-                    testCode.writeSignalSpySignals(f,label)
+                    break
+
+
 
         testCode.writeAegeanInst(f)
 
