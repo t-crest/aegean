@@ -19,7 +19,7 @@ class Port(object):
     def __init__(self, name, direction, portType, width):
         super(Port, self).__init__()
         self.name = name
-        self.direction = Direction
+        self.direction = direction
         self.portType = portType
         self.width = width
 
@@ -44,8 +44,8 @@ class Entity(object):
         s+= '\nend entity;\n'
         return s
 
-    def addPort(self,portName,portDirection,portType,portWidth):
-        self.ports.append(Port(portName, portDirection, portType, portWidth))
+    def addPort(self,name,direction,portType,width):
+        self.ports.append(Port(name, direction, portType, width))
 
     def bindPort(self,portName,signalName):
         self.portmap[portName] = signalName
@@ -86,40 +86,39 @@ class Architecture(object):
         s+= '\nend architecture;\n'
         return s
 
+    def declSignal(self,name, sigType, width, initial):
+        self.declaration.append(Signal(name, sigType, width, initial))
+
+    def declComp(self,comp):
+        self.declaration.append(comp)
+
     def printDecl(self):
         s = ''
         for d in self.declaration:
             if isinstance(d, Component):
                 s+=d.entity.printCompDecl()
             elif isinstance(d, Signal):
-                pass
+                s+=str(d)
         return s
 
+    def instComp(self,comp):
+        self.declComp(comp)
+        self.body.append(comp)
 
+    def addToBody(self,s):
+        self.body.append(s)
 
     def printBody(self):
         s = ''
         for b in self.body:
             if isinstance(b, str):
                 s+= b
+            elif isinstance(b,Component):
+                s+= b.entity.printInstance()
             else:
                 pass
         return s
 
-    def declSignal(self):
-        pass
-
-    def declComp(self):
-        pass
-
-    def instComp(self):
-        pass
-
-    def addProcess(self):
-        pass
-
-    def addAsignment(self):
-        pass
 
 class Component(object):
     """docstring for Component"""
