@@ -4,6 +4,7 @@ import subprocess
 import util
 from codeGen import aegeanCode
 from codeGen import topCode
+from codeGen.Component import Component
 
 class AegeanGen(object):
     '''
@@ -18,6 +19,7 @@ class AegeanGen(object):
         self.IPCores = dict({})
         self.IODevs = dict({})
         self.genIPCores = dict({})
+        self.genComps = dict({})
 
     def parseIODevs(self):
         IODevs = list(util.findTag(self.platform,'IODevs'))
@@ -105,7 +107,7 @@ class AegeanGen(object):
         self.ssramGen(addrWidth)
         self.arbiterGen(len(self.nodes),addrWidth,32,4)
 
-    def generateIOPorts(self):
+    def addPinsToQPF(self):
         SedString = 's|' + 'set_location_assignment PIN_XXX -to XXX' + '|'
         ports = list(util.findTag(self.platform,'IOPorts'))
         for i in range(0,len(ports)): # For each port
@@ -138,56 +140,63 @@ class AegeanGen(object):
         Sed+= [self.p.QUARTUS_FILE]
         subprocess.call(Sed)
 
-    def generateTopLevel(self):
-        f = open(self.p.TopFile, 'w')
-        topCode.beginEntity(f)
+    def generateTopLevel(self,aegean):
+        top = topCode.getTop()
 
-        # One Port for each signal in for loop
+         # One Port for each signal in for loop
         for i in range(0,len(self.IOPorts)):
             IOPort = self.IOPorts[i]
-            last = True
-            if i != len(self.IOPorts)-1:
-                last = False
-            topCode.writePort(f,IOPort[1],IOPort[2],IOPort[3],last)
+            portType = 'std_logic'
+            if IOPort[3] > 1:
+                portType = 'std_logic_vector'
+            top.entity.addPort(IOPort[1],IOPort[2],portType,IOPort[3])
 
-        topCode.endEntity(f)
-        topCode.arch(f)
+
+        top.arch.declConstant('pll_mult','natural',1,'8')
+        top.arch.declConstant('pll_div','natural',1,'5')
+        top.arch.declSignal('clk_int','std_logic')
+
+        top.arch.declSignal('int_res','std_logic')
+        top.arch.declSignal('res_reg1,res_reg2','std_logic')
+        top.arch.declSignal('res_cnt','unsigned',3,'"000"')
 
         # Declaration of the Tri state signals
         # One tri state for the sram possibly in a for loop for more tri states
         for IOPort in self.IOPorts:
             if IOPort[2] == 'inout':
-                topCode.writeTriStateSig(f,IOPort[0],IOPort[3])
+                topCode.writeTriStateSig(top,IOPort[0],IOPort[3])
 
-        topCode.beginArch(f)
+        topCode.attr(top)
+        topCode.pll_reset(top)
 
-        # The tristate logic and registers
+         # The tristate logic and registers
         for IOPort in self.IOPorts:
             if IOPort[2] == 'inout':
-                topCode.writeTriState(f,IOPort[0],IOPort[1])
+                topCode.writeTriState(top,IOPort[0],IOPort[1])
 
-        topCode.aegean(f)
-        topCode.endArch(f)
-        f.close()
+        topCode.bindAegean(aegean)
+        top.arch.instComp(aegean,'cmp',True)
+        top.writeComp(self.p.TopFile)
 
-    def generate(self):
+
+    def generate(self,noc):
         self.parseIODevs()
         self.parseIPCores()
         self.generateNodes()
         self.generateMemory()
-        self.generateIOPorts()
-        self.generateTopLevel()
+        self.addPinsToQPF()
 
-        f = open(self.p.AegeanFile, 'w')
-        aegeanCode.writeHeader(f)
+        aegean = aegeanCode.getAegean()
+        # add IO pins
+        aegean.entity.addPort('led','out','std_logic_vector',9)
+        aegean.entity.addPort('txd','out')
+        aegean.entity.addPort('rxd','in')
 
-        for i in range(0,len(self.nodes)):
-            last = True
-            if i != len(self.nodes)-1:
-                last = False
-            aegeanCode.writeArbiterCompPort(f,i,last)
+        sram = aegeanCode.getSram()
+        aegean.arch.declComp(sram)
+        arbiter = aegeanCode.getArbiter(len(self.nodes))
+        aegean.arch.declComp(arbiter)
 
-        aegeanCode.writeArbiterCompEnd(f)
 
         for IPType in self.genIPCores.keys():
             ledPort = None
@@ -200,9 +209,11 @@ class AegeanGen(object):
                     ledPort = True
                 elif IODevTypeRef == 'Uart':
                     uartPort = True
-            aegeanCode.writePatmosComp(f,IPType,ledPort,uartPort)
+            patmos = aegeanCode.getPatmos(IPType,ledPort,uartPort)
+            aegean.arch.declComp(patmos)
+            self.genComps[IPType] = patmos
 
-        aegeanCode.writeSignals(f)
+        aegeanCode.declareSignals(aegean)
 
         for p in range(0,len(self.nodes)):
             patmos = self.nodes[p]
@@ -227,19 +238,22 @@ class AegeanGen(object):
                 elif IODevTypeRef == 'Uart':
                     txdPort = 'open'
                     rxdPort = "'1'"
+            comp = self.genComps[IPType]
+            aegeanCode.bindPatmos(comp,p,ledPort,txdPort,rxdPort)
+            aegean.arch.instComp(comp,label)
 
-            aegeanCode.writePatmosInst(f,label,IPType,p,ledPort,txdPort,rxdPort)
+        aegean.arch.addToBody(aegeanCode.addSPM())
+        aegeanCode.bindNoc(noc)
+        aegean.arch.instComp(noc,'noc',True)
+        aegeanCode.bindSram(sram)
+        aegean.arch.instComp(sram,'ssram')
+        aegeanCode.bindArbiter(arbiter,len(self.nodes))
+        aegean.arch.instComp(arbiter,'arbit')
 
-        aegeanCode.writeInterconnect(f)
+        aegean.writeComp(self.p.AegeanFile)
 
-        for i in range(0,len(self.nodes)):
-            last = True
-            if i != len(self.nodes)-1:
-                last = False
-            aegeanCode.writeArbiterInstPort(f,i,last)
-
-        aegeanCode.writeFooter(f)
-        f.close()
+        self.generateTopLevel(aegean)
+        return aegean
 
     def patmosGen(self,IPType,bootapp,configfile):
         Patmos = ['make','-C',self.p.CHISEL_PATH]

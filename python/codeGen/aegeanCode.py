@@ -1,230 +1,188 @@
-def writeHeader(f):
-    f.write('''\
---------------------------------------------------------------------------------
--- Auto generated entity for the aegean platform,
--- processors, communication scratch pads and network on chip.
---------------------------------------------------------------------------------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+from codeGen.Component import Component
 
-use work.config.all;
-use work.ocp.all;
-use work.noc_interface.all;
+def getAegean():
+    aegean = Component('aegean')
+    aegean.addPackage('ieee','std_logic_1164')
+    aegean.addPackage('ieee','numeric_std')
+    aegean.addPackage('work','config')
+    aegean.addPackage('work','ocp')
+    aegean.addPackage('work','noc_interface')
 
-entity aegean is
-    port(
-        clk   : in  std_logic;
-        reset : in std_logic;
-        led   : out std_logic_vector(8 downto 0);
-        txd   : out std_logic;
-        rxd   : in  std_logic;
+    aegean.entity.addPort('clk')
+    aegean.entity.addPort('reset')
 
-        -- Sram signals
-        io_sramPins_ram_out_addr    : out std_logic_vector(18 downto 0);
-        io_sramPins_ram_out_dout_ena: out std_logic;
-        io_sramPins_ram_out_nadsc   : out std_logic;
-        io_sramPins_ram_out_noe     : out std_logic;
-        io_sramPins_ram_out_nbwe    : out std_logic;
-        io_sramPins_ram_out_nbw     : out std_logic_vector(3 downto 0);
-        io_sramPins_ram_out_ngw     : out std_logic;
-        io_sramPins_ram_out_nce1    : out std_logic;
-        io_sramPins_ram_out_ce2     : out std_logic;
-        io_sramPins_ram_out_nce3    : out std_logic;
-        io_sramPins_ram_out_nadsp   : out std_logic;
-        io_sramPins_ram_out_nadv    : out std_logic;
-        io_sramPins_ram_out_dout    : out std_logic_vector(31 downto 0);
-        io_sramPins_ram_in_din      : in  std_logic_vector(31 downto 0)
-    );
-end entity ; -- aegean
+    aegean.entity.addPort('io_sramPins_ram_out_addr','out','std_logic_vector',19)
+    aegean.entity.addPort('io_sramPins_ram_out_dout_ena','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_nadsc','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_noe','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_nbwe','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_nbw','out','std_logic_vector',4)
+    aegean.entity.addPort('io_sramPins_ram_out_ngw','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_nce1','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_ce2','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_nce3','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_nadsp','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_nadv','out','std_logic')
+    aegean.entity.addPort('io_sramPins_ram_out_dout','out','std_logic_vector',32)
+    aegean.entity.addPort('io_sramPins_ram_in_din','in','std_logic_vector',32)
 
-architecture struct of aegean is
-    component SsramBurstRW is
-    port (
-        clk                       :   in  std_logic;
-        reset                     :   in  std_logic;
-        io_ocp_port_M_Cmd         :   in  std_logic_vector(2 downto 0);
-        io_ocp_port_M_Addr        :   in  std_logic_vector(20 downto 0);
-        io_ocp_port_M_Data        :   in  std_logic_vector(31 downto 0);
-        io_ocp_port_M_DataValid   :   in  std_logic;
-        io_ocp_port_M_DataByteEn  :   in  std_logic_vector(3 downto 0);
-        io_ocp_port_S_Resp        :   out std_logic_vector(1 downto 0);
-        io_ocp_port_S_Data        :   out std_logic_vector(31 downto 0);
-        io_ocp_port_S_CmdAccept   :   out std_logic;
-        io_ocp_port_S_DataAccept  :   out std_logic;
-        io_ram_out_addr           :   out std_logic_vector(18 downto 0);
-        io_ram_out_dout_ena       :   out std_logic;
-        io_ram_out_nadsc          :   out std_logic;
-        io_ram_out_noe            :   out std_logic;
-        io_ram_out_nbwe           :   out std_logic;
-        io_ram_out_nbw            :   out std_logic_vector(3 downto 0);
-        io_ram_out_ngw            :   out std_logic;
-        io_ram_out_nce1           :   out std_logic;
-        io_ram_out_ce2            :   out std_logic;
-        io_ram_out_nce3           :   out std_logic;
-        io_ram_out_nadsp          :   out std_logic;
-        io_ram_out_nadv           :   out std_logic;
-        io_ram_out_dout           :   out std_logic_vector(31 downto 0);
-        io_ram_in_din             :   in  std_logic_vector(31 downto 0)
-        );
-    end component;
+    return aegean
 
-    component Arbiter is
-    port (
-        clk                   : in std_logic;
-        reset                 : in std_logic;
+def getSram():
+    sram = Component('SsramBurstRW')
+    sram.entity.addPort('clk')
+    sram.entity.addPort('reset')
+    sram.entity.addPort('io_ocp_port_M_Cmd','in','std_logic_vector',3)
+    sram.entity.addPort('io_ocp_port_M_Addr','in','std_logic_vector',21)
+    sram.entity.addPort('io_ocp_port_M_Data','in','std_logic_vector',32)
+    sram.entity.addPort('io_ocp_port_M_DataValid','in','std_logic')
+    sram.entity.addPort('io_ocp_port_M_DataByteEn','in','std_logic_vector',4)
+    sram.entity.addPort('io_ocp_port_S_Resp','out','std_logic_vector',2)
+    sram.entity.addPort('io_ocp_port_S_Data','out','std_logic_vector',32)
+    sram.entity.addPort('io_ocp_port_S_CmdAccept','out','std_logic')
+    sram.entity.addPort('io_ocp_port_S_DataAccept','out','std_logic')
+    sram.entity.addPort('io_ram_out_addr','out','std_logic_vector',19)
+    sram.entity.addPort('io_ram_out_dout_ena','out','std_logic')
+    sram.entity.addPort('io_ram_out_nadsc','out','std_logic')
+    sram.entity.addPort('io_ram_out_noe','out','std_logic')
+    sram.entity.addPort('io_ram_out_nbwe','out','std_logic')
+    sram.entity.addPort('io_ram_out_nbw','out','std_logic_vector',4)
+    sram.entity.addPort('io_ram_out_ngw','out','std_logic')
+    sram.entity.addPort('io_ram_out_nce1','out','std_logic')
+    sram.entity.addPort('io_ram_out_ce2','out','std_logic')
+    sram.entity.addPort('io_ram_out_nce3','out','std_logic')
+    sram.entity.addPort('io_ram_out_nadsp','out','std_logic')
+    sram.entity.addPort('io_ram_out_nadv','out','std_logic')
+    sram.entity.addPort('io_ram_out_dout','out','std_logic_vector',32)
+    sram.entity.addPort('io_ram_in_din','in','std_logic_vector',32)
+    return sram
 
-        io_slave_M_Cmd        : out std_logic_vector(2 downto 0);
-        io_slave_M_Addr       : out std_logic_vector(20 downto 0);
-        io_slave_M_Data       : out std_logic_vector(31 downto 0);
-        io_slave_M_DataValid  : out std_logic;
-        io_slave_M_DataByteEn : out std_logic_vector(3 downto 0);
-        io_slave_S_Resp       : in  std_logic_vector(1 downto 0);
-        io_slave_S_Data       : in  std_logic_vector(31 downto 0);
-        io_slave_S_CmdAccept  : in  std_logic;
-        io_slave_S_DataAccept : in  std_logic;
-''')
 
-def writeArbiterCompPort(f,i,last):
-    end = ''
-    if not last:
-        end = ';'
-    f.write('''
-        io_master_'''+str(i)+'''_M_Cmd        : in std_logic_vector(2 downto 0);
-        io_master_'''+str(i)+'''_M_Addr       : in std_logic_vector(20 downto 0);
-        io_master_'''+str(i)+'''_M_Data       : in std_logic_vector(31 downto 0);
-        io_master_'''+str(i)+'''_M_DataValid  : in std_logic;
-        io_master_'''+str(i)+'''_M_DataByteEn : in std_logic_vector(3 downto 0);
-        io_master_'''+str(i)+'''_S_Resp       : out std_logic_vector(1 downto 0);
-        io_master_'''+str(i)+'''_S_Data       : out std_logic_vector(31 downto 0);
-        io_master_'''+str(i)+'''_S_CmdAccept  : out std_logic;
-        io_master_'''+str(i)+'''_S_DataAccept : out std_logic'''+end)
+def getArbiter(numPorts):
+    arbiter = Component('Arbiter')
+    arbiter.entity.addPort('clk')
+    arbiter.entity.addPort('reset')
+    arbiter.entity.addPort('io_slave_M_Cmd','out','std_logic_vector',3)
+    arbiter.entity.addPort('io_slave_M_Addr','out','std_logic_vector',21)
+    arbiter.entity.addPort('io_slave_M_Data','out','std_logic_vector',32)
+    arbiter.entity.addPort('io_slave_M_DataValid','out','std_logic')
+    arbiter.entity.addPort('io_slave_M_DataByteEn','out','std_logic_vector',4)
+    arbiter.entity.addPort('io_slave_S_Resp','in','std_logic_vector',2)
+    arbiter.entity.addPort('io_slave_S_Data','in','std_logic_vector',32)
+    arbiter.entity.addPort('io_slave_S_CmdAccept','in','std_logic')
+    arbiter.entity.addPort('io_slave_S_DataAccept','in','std_logic')
+    for i in range(0,numPorts):
+        arbiter.entity.addPort('io_master_'+str(i)+'_M_Cmd','in','std_logic_vector',3)
+        arbiter.entity.addPort('io_master_'+str(i)+'_M_Addr','in','std_logic_vector',21)
+        arbiter.entity.addPort('io_master_'+str(i)+'_M_Data','in','std_logic_vector',32)
+        arbiter.entity.addPort('io_master_'+str(i)+'_M_DataValid','in','std_logic')
+        arbiter.entity.addPort('io_master_'+str(i)+'_M_DataByteEn','in','std_logic_vector',4)
+        arbiter.entity.addPort('io_master_'+str(i)+'_S_Resp','out','std_logic_vector',2)
+        arbiter.entity.addPort('io_master_'+str(i)+'_S_Data','out','std_logic_vector',32)
+        arbiter.entity.addPort('io_master_'+str(i)+'_S_CmdAccept','out','std_logic')
+        arbiter.entity.addPort('io_master_'+str(i)+'_S_DataAccept','out','std_logic')
+    return arbiter
 
-def writeArbiterCompEnd(f):
-    f.write('''
-        );
-    end component;
-''')
 
-def writePatmosComp(f,IPType,ledPort=None,uartPort=None):
-    f.write('''
-    component '''+IPType+'''PatmosCore is
-    port(
-        clk                         : in  std_logic;
-        reset                       : in  std_logic;
-        -- Communication scratch pad signals
-        io_comConf_M_Cmd            : out std_logic_vector(2 downto 0);
-        io_comConf_M_Addr           : out std_logic_vector(31 downto 0);
-        io_comConf_M_Data           : out std_logic_vector(31 downto 0);
-        io_comConf_M_ByteEn         : out std_logic_vector(3 downto 0);
-        io_comConf_M_RespAccept     : out std_logic;
-        io_comConf_S_Resp           : in  std_logic_vector(1 downto 0);
-        io_comConf_S_Data           : in  std_logic_vector(31 downto 0);
-        io_comConf_S_CmdAccept      : in  std_logic;
-        io_comSpm_M_Cmd             : out std_logic_vector(2 downto 0);
-        io_comSpm_M_Addr            : out std_logic_vector(31 downto 0);
-        io_comSpm_M_Data            : out std_logic_vector(31 downto 0);
-        io_comSpm_M_ByteEn          : out std_logic_vector(3 downto 0);
-        io_comSpm_S_Resp            : in  std_logic_vector(1 downto 0);
-        io_comSpm_S_Data            : in  std_logic_vector(31 downto 0);
-''')
+def getPatmos(IPType,ledPort=None,uartPort=None):
+    patmos = Component(IPType+'PatmosCore')
+    patmos.entity.addPort('clk')
+    patmos.entity.addPort('reset')
+
+    patmos.entity.addPort('io_comConf_M_Cmd','out', 'std_logic_vector',3)
+    patmos.entity.addPort('io_comConf_M_Addr','out', 'std_logic_vector',32)
+    patmos.entity.addPort('io_comConf_M_Data','out', 'std_logic_vector',32)
+    patmos.entity.addPort('io_comConf_M_ByteEn','out', 'std_logic_vector',4)
+    patmos.entity.addPort('io_comConf_M_RespAccept','out', 'std_logic')
+    patmos.entity.addPort('io_comConf_S_Resp','in', 'std_logic_vector',2)
+    patmos.entity.addPort('io_comConf_S_Data','in', 'std_logic_vector',32)
+    patmos.entity.addPort('io_comConf_S_CmdAccept','in', 'std_logic')
+    patmos.entity.addPort('io_comSpm_M_Cmd','out', 'std_logic_vector',3)
+    patmos.entity.addPort('io_comSpm_M_Addr','out', 'std_logic_vector',32)
+    patmos.entity.addPort('io_comSpm_M_Data','out', 'std_logic_vector',32)
+    patmos.entity.addPort('io_comSpm_M_ByteEn','out', 'std_logic_vector',4)
+    patmos.entity.addPort('io_comSpm_S_Resp','in', 'std_logic_vector',2)
+    patmos.entity.addPort('io_comSpm_S_Data','in', 'std_logic_vector',32)
+    patmos.entity.addPort('io_cpuInfoPins_id','in', 'std_logic_vector',32)
+    patmos.entity.addPort('io_memPort_M_Cmd','out', 'std_logic_vector',3)
+    patmos.entity.addPort('io_memPort_M_Addr','out', 'std_logic_vector',21)
+    patmos.entity.addPort('io_memPort_M_Data','out', 'std_logic_vector',32)
+    patmos.entity.addPort('io_memPort_M_DataValid','out', 'std_logic')
+    patmos.entity.addPort('io_memPort_M_DataByteEn','out', 'std_logic_vector',4)
+    patmos.entity.addPort('io_memPort_S_Resp','in', 'std_logic_vector',2)
+    patmos.entity.addPort('io_memPort_S_Data','in', 'std_logic_vector',32)
+    patmos.entity.addPort('io_memPort_S_CmdAccept','in', 'std_logic')
+    patmos.entity.addPort('io_memPort_S_DataAccept','in', 'std_logic')
+
     if ledPort is not None:
-        f.write('''\
-        io_ledsPins_led              : out std_logic_vector(8 downto 0);
-''')
+        patmos.entity.addPort('io_ledsPins_led','out','std_logic_vector',9)
     if uartPort is not None:
-        f.write('''\
-        io_uartPins_tx              : out std_logic;
-        io_uartPins_rx              : in  std_logic;
-''')
-    f.write('''\
-        io_cpuInfoPins_id           : in  std_logic_vector(31 downto 0);
-        -- Memory port signals
-        io_memPort_M_Cmd            : out std_logic_vector(2 downto 0);
-        io_memPort_M_Addr           : out std_logic_vector(20 downto 0);
-        io_memPort_M_Data           : out std_logic_vector(31 downto 0);
-        io_memPort_M_DataValid      : out std_logic;
-        io_memPort_M_DataByteEn     : out std_logic_vector(3 downto 0);
-        io_memPort_S_Resp           : in  std_logic_vector(1 downto 0);
-        io_memPort_S_Data           : in  std_logic_vector(31 downto 0);
-        io_memPort_S_CmdAccept      : in  std_logic;
-        io_memPort_S_DataAccept     : in  std_logic
-        );
-    end component;
-''')
+        patmos.entity.addPort('io_uartPins_tx','out','std_logic')
+        patmos.entity.addPort('io_uartPins_rx','in','std_logic')
 
-def writeSignals(f):
-    f.write('''
-    signal ocp_io_ms : ocp_io_m_a;
-    signal ocp_io_ss : ocp_io_s_a;
+    return patmos
 
 
-    signal ocp_core_ms : ocp_core_m_a;
-    signal ocp_core_ss : ocp_core_s_a;
+def declareSignals(aegean):
+    aegean.arch.declSignal('ocp_io_ms','ocp_io_m_a')
+    aegean.arch.declSignal('ocp_io_ss','ocp_io_s_a')
+    aegean.arch.declSignal('ocp_core_ms','ocp_core_m_a')
+    aegean.arch.declSignal('ocp_core_ss','ocp_core_s_a')
+    aegean.arch.declSignal('ocp_burst_ms','ocp_burst_m_a')
+    aegean.arch.declSignal('ocp_burst_ss','ocp_burst_s_a')
+    aegean.arch.declSignal('ocp_burst_m_mem','ocp_burst_m')
+    aegean.arch.declSignal('ocp_burst_s_mem','ocp_burst_s')
+    aegean.arch.declSignal('spm_ms','spm_masters')
+    aegean.arch.declSignal('spm_ss','spm_slaves')
 
-    signal ocp_burst_ms : ocp_burst_m_a;
-    signal ocp_burst_ss : ocp_burst_s_a;
 
-    signal ocp_burst_m_mem : ocp_burst_m;
-    signal ocp_burst_s_mem : ocp_burst_s;
+def bindPatmos(patmos,p,ledPort=None,txdPort=None,rxdPort=None):
 
-    signal spm_ms : spm_masters;
-    signal spm_ss : spm_slaves;
+    patmos.entity.bindPort('clk','clk')
+    patmos.entity.bindPort('reset','reset')
+    patmos.entity.bindPort('io_comConf_M_Cmd','ocp_io_ms('+str(p)+').MCmd')
+    patmos.entity.bindPort('io_comConf_M_Addr','ocp_io_ms('+str(p)+').MAddr')
+    patmos.entity.bindPort('io_comConf_M_Data','ocp_io_ms('+str(p)+').MData')
+    patmos.entity.bindPort('io_comConf_M_ByteEn','ocp_io_ms('+str(p)+').MByteEn')
+    patmos.entity.bindPort('io_comConf_M_RespAccept','ocp_io_ms('+str(p)+').MRespAccept')
+    patmos.entity.bindPort('io_comConf_S_Resp','ocp_io_ss('+str(p)+').SResp')
+    patmos.entity.bindPort('io_comConf_S_Data','ocp_io_ss('+str(p)+').SData')
+    patmos.entity.bindPort('io_comConf_S_CmdAccept','ocp_io_ss('+str(p)+').SCmdAccept')
+    patmos.entity.bindPort('io_comSpm_M_Cmd','ocp_core_ms('+str(p)+').MCmd')
+    patmos.entity.bindPort('io_comSpm_M_Addr','ocp_core_ms('+str(p)+').MAddr')
+    patmos.entity.bindPort('io_comSpm_M_Data','ocp_core_ms('+str(p)+').MData')
+    patmos.entity.bindPort('io_comSpm_M_ByteEn','ocp_core_ms('+str(p)+').MByteEn')
+    patmos.entity.bindPort('io_comSpm_S_Resp','ocp_core_ss('+str(p)+').SResp')
+    patmos.entity.bindPort('io_comSpm_S_Data','ocp_core_ss('+str(p)+').SData')
+    patmos.entity.bindPort('io_cpuInfoPins_id','std_logic_vector(to_unsigned('+str(p)+',32))')
+    patmos.entity.bindPort('io_memPort_M_Cmd','ocp_burst_ms('+str(p)+').MCmd')
+    patmos.entity.bindPort('io_memPort_M_Addr','ocp_burst_ms('+str(p)+').MAddr')
+    patmos.entity.bindPort('io_memPort_M_Data','ocp_burst_ms('+str(p)+').MData')
+    patmos.entity.bindPort('io_memPort_M_DataValid','ocp_burst_ms('+str(p)+').MDataValid')
+    patmos.entity.bindPort('io_memPort_M_DataByteEn','ocp_burst_ms('+str(p)+').MDataByteEn')
+    patmos.entity.bindPort('io_memPort_S_Resp','ocp_burst_ss('+str(p)+').SResp')
+    patmos.entity.bindPort('io_memPort_S_Data','ocp_burst_ss('+str(p)+').SData')
+    patmos.entity.bindPort('io_memPort_S_CmdAccept','ocp_burst_ss('+str(p)+').SCmdAccept')
+    patmos.entity.bindPort('io_memPort_S_DataAccept','ocp_burst_ss('+str(p)+').SDataAccept')
 
-
-begin
-''')
-
-def writePatmosInst(f,label,IPType,p,ledPort=None,txdPort=None,rxdPort=None):
-    f.write('''
-    '''+label+''' : '''+IPType+'''PatmosCore port map(
-        clk                           => clk,
-        reset                         => reset,
-        io_comConf_M_Cmd              => ocp_io_ms('''+str(p)+''').MCmd,
-        io_comConf_M_Addr             => ocp_io_ms('''+str(p)+''').MAddr,
-        io_comConf_M_Data             => ocp_io_ms('''+str(p)+''').MData,
-        io_comConf_M_ByteEn           => ocp_io_ms('''+str(p)+''').MByteEn,
-        io_comConf_M_RespAccept       => ocp_io_ms('''+str(p)+''').MRespAccept,
-        io_comConf_S_Resp             => ocp_io_ss('''+str(p)+''').SResp,
-        io_comConf_S_Data             => ocp_io_ss('''+str(p)+''').SData,
-        io_comConf_S_CmdAccept        => ocp_io_ss('''+str(p)+''').SCmdAccept,
-        io_comSpm_M_Cmd               => ocp_core_ms('''+str(p)+''').MCmd,
-        io_comSpm_M_Addr              => ocp_core_ms('''+str(p)+''').MAddr,
-        io_comSpm_M_Data              => ocp_core_ms('''+str(p)+''').MData,
-        io_comSpm_M_ByteEn            => ocp_core_ms('''+str(p)+''').MByteEn,
-        io_comSpm_S_Resp              => ocp_core_ss('''+str(p)+''').SResp,
-        io_comSpm_S_Data              => ocp_core_ss('''+str(p)+''').SData,
-''')
     if ledPort is not None:
-        f.write('''\
-        io_ledsPins_led                => '''+ledPort+''',
-''')
+        patmos.entity.bindPort('io_ledsPins_led',ledPort)
     if txdPort is not None:
-        f.write('''\
-        io_uartPins_tx                => '''+txdPort+''',
-''')
+        patmos.entity.bindPort('io_uartPins_tx',txdPort)
     if rxdPort is not None:
-        f.write('''\
-        io_uartPins_rx                => '''+rxdPort+''',
-''')
-    f.write('''
-        io_cpuInfoPins_id             => std_logic_vector(to_unsigned('''+str(p)+''',32)),
-        io_memPort_M_Cmd              => ocp_burst_ms('''+str(p)+''').MCmd,
-        io_memPort_M_Addr             => ocp_burst_ms('''+str(p)+''').MAddr,
-        io_memPort_M_Data             => ocp_burst_ms('''+str(p)+''').MData,
-        io_memPort_M_DataValid        => ocp_burst_ms('''+str(p)+''').MDataValid,
-        io_memPort_M_DataByteEn       => ocp_burst_ms('''+str(p)+''').MDataByteEn,
-        io_memPort_S_Resp             => ocp_burst_ss('''+str(p)+''').SResp,
-        io_memPort_S_Data             => ocp_burst_ss('''+str(p)+''').SData,
-        io_memPort_S_CmdAccept        => ocp_burst_ss('''+str(p)+''').SCmdAccept,
-        io_memPort_S_DataAccept       => ocp_burst_ss('''+str(p)+''').SDataAccept
-    );
+        patmos.entity.bindPort('io_uartPins_rx',rxdPort)
 
-''')
 
-def writeInterconnect(f):
-    f.write('''\
+def bindNoc(noc):
+    noc.entity.bindPort('clk','clk')
+    noc.entity.bindPort('reset','reset')
+    noc.entity.bindPort('ocp_io_ms','ocp_io_ms')
+    noc.entity.bindPort('ocp_io_ss','ocp_io_ss')
+    noc.entity.bindPort('spm_ports_m','spm_ms')
+    noc.entity.bindPort('spm_ports_s','spm_ss')
 
+def addSPM():
+    return '''
     spms : for i in 0 to NODES-1 generate
         spm : entity work.com_spm port map(
             p_clk => clk,
@@ -236,79 +194,57 @@ def writeInterconnect(f):
             spm_s => spm_ss(i)
             );
     end generate ; -- spms
+'''
 
-    noc : entity work.noc port map(
-        clk => clk,
-        reset => reset,
-        ocp_io_ms => ocp_io_ms,
-        ocp_io_ss => ocp_io_ss,
-        spm_ports_m => spm_ms,
-        spm_ports_s => spm_ss
-    );
 
-    ssram : SsramBurstRW port map(
-        clk                       => clk,
-        reset                     => reset,
-        io_ocp_port_M_Cmd         => ocp_burst_m_mem.MCmd,
-        io_ocp_port_M_Addr        => ocp_burst_m_mem.MAddr(20 downto 0),
-        io_ocp_port_M_Data        => ocp_burst_m_mem.MData,
-        io_ocp_port_M_DataValid   => ocp_burst_m_mem.MDataValid,
-        io_ocp_port_M_DataByteEn  => ocp_burst_m_mem.MDataByteEn,
-        io_ocp_port_S_Resp        => ocp_burst_s_mem.SResp,
-        io_ocp_port_S_Data        => ocp_burst_s_mem.SData,
-        io_ocp_port_S_CmdAccept   => ocp_burst_s_mem.SCmdAccept,
-        io_ocp_port_S_DataAccept  => ocp_burst_s_mem.SDataAccept,
-        io_ram_out_addr           => io_sramPins_ram_out_addr    ,
-        io_ram_out_dout_ena       => io_sramPins_ram_out_dout_ena,
-        io_ram_out_nadsc          => io_sramPins_ram_out_nadsc   ,
-        io_ram_out_noe            => io_sramPins_ram_out_noe     ,
-        io_ram_out_nbwe           => io_sramPins_ram_out_nbwe    ,
-        io_ram_out_nbw            => io_sramPins_ram_out_nbw     ,
-        io_ram_out_ngw            => io_sramPins_ram_out_ngw     ,
-        io_ram_out_nce1           => io_sramPins_ram_out_nce1    ,
-        io_ram_out_ce2            => io_sramPins_ram_out_ce2     ,
-        io_ram_out_nce3           => io_sramPins_ram_out_nce3    ,
-        io_ram_out_nadsp          => io_sramPins_ram_out_nadsp   ,
-        io_ram_out_nadv           => io_sramPins_ram_out_nadv    ,
-        io_ram_out_dout           => io_sramPins_ram_out_dout    ,
-        io_ram_in_din             => io_sramPins_ram_in_din
-    );
+def bindSram(sram):
+    sram.entity.bindPort('clk','clk')
+    sram.entity.bindPort('reset','reset')
+    sram.entity.bindPort('io_ocp_port_M_Cmd','ocp_burst_m_mem.MCmd')
+    sram.entity.bindPort('io_ocp_port_M_Addr','ocp_burst_m_mem.MAddr')
+    sram.entity.bindPort('io_ocp_port_M_Data','ocp_burst_m_mem.MData')
+    sram.entity.bindPort('io_ocp_port_M_DataValid','ocp_burst_m_mem.MDataValid')
+    sram.entity.bindPort('io_ocp_port_M_DataByteEn','ocp_burst_m_mem.MDataByteEn')
+    sram.entity.bindPort('io_ocp_port_S_Resp','ocp_burst_s_mem.SResp')
+    sram.entity.bindPort('io_ocp_port_S_Data','ocp_burst_s_mem.SData')
+    sram.entity.bindPort('io_ocp_port_S_CmdAccept','ocp_burst_s_mem.SCmdAccept')
+    sram.entity.bindPort('io_ocp_port_S_DataAccept','ocp_burst_s_mem.SDataAccept')
+    sram.entity.bindPort('io_ram_out_addr','io_sramPins_ram_out_addr')
+    sram.entity.bindPort('io_ram_out_dout_ena','io_sramPins_ram_out_dout_ena')
+    sram.entity.bindPort('io_ram_out_nadsc','io_sramPins_ram_out_nadsc')
+    sram.entity.bindPort('io_ram_out_noe','io_sramPins_ram_out_noe')
+    sram.entity.bindPort('io_ram_out_nbwe','io_sramPins_ram_out_nbwe')
+    sram.entity.bindPort('io_ram_out_nbw','io_sramPins_ram_out_nbw')
+    sram.entity.bindPort('io_ram_out_ngw','io_sramPins_ram_out_ngw')
+    sram.entity.bindPort('io_ram_out_nce1','io_sramPins_ram_out_nce1')
+    sram.entity.bindPort('io_ram_out_ce2','io_sramPins_ram_out_ce2')
+    sram.entity.bindPort('io_ram_out_nce3','io_sramPins_ram_out_nce3')
+    sram.entity.bindPort('io_ram_out_nadsp','io_sramPins_ram_out_nadsp')
+    sram.entity.bindPort('io_ram_out_nadv','io_sramPins_ram_out_nadv')
+    sram.entity.bindPort('io_ram_out_dout','io_sramPins_ram_out_dout')
+    sram.entity.bindPort('io_ram_in_din','io_sramPins_ram_in_din')
 
-    arbit : Arbiter port map(
-        clk                       => clk,
-        reset                     => reset,
+def bindArbiter(arbiter,numPorts):
+    arbiter.entity.bindPort('clk','clk')
+    arbiter.entity.bindPort('reset','reset')
+    arbiter.entity.bindPort('io_slave_M_Cmd','ocp_burst_m_mem.MCmd')
+    arbiter.entity.bindPort('io_slave_M_Addr','ocp_burst_m_mem.MAddr')
+    arbiter.entity.bindPort('io_slave_M_Data','ocp_burst_m_mem.MData')
+    arbiter.entity.bindPort('io_slave_M_DataValid','ocp_burst_m_mem.MDataValid')
+    arbiter.entity.bindPort('io_slave_M_DataByteEn','ocp_burst_m_mem.MDataByteEn')
+    arbiter.entity.bindPort('io_slave_S_Resp','ocp_burst_s_mem.SResp')
+    arbiter.entity.bindPort('io_slave_S_Data','ocp_burst_s_mem.SData')
+    arbiter.entity.bindPort('io_slave_S_CmdAccept','ocp_burst_s_mem.SCmdAccept')
+    arbiter.entity.bindPort('io_slave_S_DataAccept','ocp_burst_s_mem.SDataAccept')
 
-        io_slave_M_Cmd            => ocp_burst_m_mem.MCmd,
-        io_slave_M_Addr           => ocp_burst_m_mem.MAddr(20 downto 0),
-        io_slave_M_Data           => ocp_burst_m_mem.MData,
-        io_slave_M_DataValid      => ocp_burst_m_mem.MDataValid,
-        io_slave_M_DataByteEn     => ocp_burst_m_mem.MDataByteEn,
-        io_slave_S_Resp           => ocp_burst_s_mem.SResp,
-        io_slave_S_Data           => ocp_burst_s_mem.SData,
-        io_slave_S_CmdAccept      => ocp_burst_s_mem.SCmdAccept,
-        io_slave_S_DataAccept     => ocp_burst_s_mem.SDataAccept,
-''')
-
-def writeArbiterInstPort(f,i,last):
-    end = ''
-    if not last:
-        end = ','
-    f.write('''
-        io_master_'''+str(i)+'''_M_Cmd        => ocp_burst_ms('''+str(i)+''').MCmd,
-        io_master_'''+str(i)+'''_M_Addr       => ocp_burst_ms('''+str(i)+''').MAddr,
-        io_master_'''+str(i)+'''_M_Data       => ocp_burst_ms('''+str(i)+''').MData,
-        io_master_'''+str(i)+'''_M_DataValid  => ocp_burst_ms('''+str(i)+''').MDataValid,
-        io_master_'''+str(i)+'''_M_DataByteEn => ocp_burst_ms('''+str(i)+''').MDataByteEn,
-        io_master_'''+str(i)+'''_S_Resp       => ocp_burst_ss('''+str(i)+''').SResp,
-        io_master_'''+str(i)+'''_S_Data       => ocp_burst_ss('''+str(i)+''').SData,
-        io_master_'''+str(i)+'''_S_CmdAccept  => ocp_burst_ss('''+str(i)+''').SCmdAccept,
-        io_master_'''+str(i)+'''_S_DataAccept => ocp_burst_ss('''+str(i)+''').SDataAccept'''+end)
-
-def writeFooter(f):
-    f.write('''
-    );
-
-end architecture ; -- struct
-
-''')
+    for i in range(0,numPorts):
+        arbiter.entity.bindPort('io_master_'+str(i)+'_M_Cmd       ','ocp_burst_ms('+str(i)+').MCmd')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_M_Addr      ','ocp_burst_ms('+str(i)+').MAddr')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_M_Data      ','ocp_burst_ms('+str(i)+').MData')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_M_DataValid ','ocp_burst_ms('+str(i)+').MDataValid')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_M_DataByteEn','ocp_burst_ms('+str(i)+').MDataByteEn')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_S_Resp      ','ocp_burst_ss('+str(i)+').SResp')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_S_Data      ','ocp_burst_ss('+str(i)+').SData')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_S_CmdAccept ','ocp_burst_ss('+str(i)+').SCmdAccept')
+        arbiter.entity.bindPort('io_master_'+str(i)+'_S_DataAccept','ocp_burst_ss('+str(i)+').SDataAccept')
 

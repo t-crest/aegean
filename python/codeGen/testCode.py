@@ -1,89 +1,81 @@
-def writeHeader(f):
-    f.write('''\
---------------------------------------------------------------------------------
--- Auto generated entity for the aegean_testbench.
---------------------------------------------------------------------------------
-library ieee;
-library ieee;
-library modelsim_lib;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use std.textio.all;
-use modelsim_lib.util.all;
-use work.test.all;
+from codeGen.Component import Component
 
-entity aegean_testbench is
-end entity ; -- aegean_testbench
+def getTest():
+    test = Component('aegean_testbench')
+    test.addPackage('ieee','std_logic_1164')
+    test.addPackage('ieee','numeric_std')
+    test.addPackage('std','textio')
+    test.addPackage('modelsim_lib','util')
+    test.addPackage('work','test')
+    declareSignals(test)
+    return test
 
-architecture arch of aegean_testbench is
-    signal clk : std_logic;
-    signal reset : std_logic;
-    signal led : std_logic_vector(8 downto 0);
+def declareSignals(test):
+    test.arch.declSignal('clk','std_logic')
+    test.arch.declSignal('reset','std_logic')
+    test.arch.declSignal('led','std_logic_vector',9)
 
-    signal io_sramPins_ram_out_addr    : std_logic_vector(18 downto 0);
-    signal io_sramPins_ram_out_dout_ena: std_logic;
-    signal io_sramPins_ram_out_nadsc   : std_logic;
-    signal io_sramPins_ram_out_noe     : std_logic;
-    signal io_sramPins_ram_out_nbwe    : std_logic;
-    signal io_sramPins_ram_out_nbw     : std_logic_vector(3 downto 0);
-    signal io_sramPins_ram_out_ngw     : std_logic;
-    signal io_sramPins_ram_out_nce1    : std_logic;
-    signal io_sramPins_ram_out_ce2     : std_logic;
-    signal io_sramPins_ram_out_nce3    : std_logic;
-    signal io_sramPins_ram_out_nadsp   : std_logic;
-    signal io_sramPins_ram_out_nadv    : std_logic;
-    signal io_sramPins_ram_out_dout    : std_logic_vector(31 downto 0);
-    signal io_sramPins_ram_in_din      : std_logic_vector(31 downto 0);
-    signal io_sramPins_ram_inout_d     : std_logic_vector(31 downto 0);
-    signal io_sramPins_ram_in_din_reg  : std_logic_vector(31 downto 0);
-    signal pull_down                   : std_logic;
+    test.arch.declConstant('PERIOD','time',1,'10 ns')
+    test.arch.declConstant('RESET_TIME','time',1,'40 ns')
 
-    -- Add signals for uart spy''')
+    test.arch.declSignal('io_sramPins_ram_out_addr','std_logic_vector',19)
+    test.arch.declSignal('io_sramPins_ram_out_dout_ena','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_nadsc','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_noe','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_nbwe','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_nbw','std_logic_vector',4)
+    test.arch.declSignal('io_sramPins_ram_out_ngw','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_nce1','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_ce2','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_nce3','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_nadsp','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_nadv','std_logic')
+    test.arch.declSignal('io_sramPins_ram_out_dout','std_logic_vector',32)
+    test.arch.declSignal('io_sramPins_ram_in_din','std_logic_vector',32)
+    test.arch.declSignal('io_sramPins_ram_inout_d','std_logic_vector',32)
+    test.arch.declSignal('io_sramPins_ram_in_din_reg','std_logic_vector',32)
+    test.arch.declSignal('pull_down','std_logic')
 
-def writeSignalSpySignals(f,label):
-    f.write('''
-    signal '''+label+'''_uart_tx_reg : std_logic_vector(7 downto 0);
-    signal '''+label+'''_uart_tx_status_reg : std_logic_vector(0 downto 0);''')
 
-def writeAegeanInst(f):
-    f.write('''
+
+def writeSignalSpySignals(test,label):
+    test.arch.declSignal(label+'_uart_tx_reg','std_logic_vector',8)
+    test.arch.declSignal(label+'_uart_tx_status_reg','std_logic_vector(0 downto 0)')
+
+
+def writeAegeanInst(test):
+    test.arch.decl('''
     file OUTPUT: TEXT open WRITE_MODE is "STD_OUTPUT";
-
-    constant PERIOD : time := 10 ns;
-    constant RESET_TIME : time := 40 ns;
-
-begin
-    aegean : entity work.aegean port map (
-        clk => clk,
-        reset => reset,
-        led => led,
-        txd => open,
-        rxd => '0',
-
-        io_sramPins_ram_out_addr     => io_sramPins_ram_out_addr    ,
-        io_sramPins_ram_out_dout_ena => io_sramPins_ram_out_dout_ena,
-        io_sramPins_ram_out_nadsc    => io_sramPins_ram_out_nadsc   ,
-        io_sramPins_ram_out_noe      => io_sramPins_ram_out_noe     ,
-        io_sramPins_ram_out_nbwe     => io_sramPins_ram_out_nbwe    ,
-        io_sramPins_ram_out_nbw      => io_sramPins_ram_out_nbw     ,
-        io_sramPins_ram_out_ngw      => io_sramPins_ram_out_ngw     ,
-        io_sramPins_ram_out_nce1     => io_sramPins_ram_out_nce1    ,
-        io_sramPins_ram_out_ce2      => io_sramPins_ram_out_ce2     ,
-        io_sramPins_ram_out_nce3     => io_sramPins_ram_out_nce3    ,
-        io_sramPins_ram_out_nadsp    => io_sramPins_ram_out_nadsp   ,
-        io_sramPins_ram_out_nadv     => io_sramPins_ram_out_nadv    ,
-        io_sramPins_ram_out_dout     => io_sramPins_ram_out_dout    ,
-        io_sramPins_ram_in_din       => io_sramPins_ram_in_din
-        );
+''')
+    test.arch.addToBody('''
 
     clock_gen(clk,PERIOD);
     reset_gen(reset,RESET_TIME);
-
-    -- Add processes for writing output from each core uart
 ''')
 
-def writeUartSpy(f,label):
-    f.write('''
+def bindAegean(aegean):
+    aegean.entity.bindPort('clk','clk')
+    aegean.entity.bindPort('reset','reset')
+    aegean.entity.bindPort('led','led')
+    aegean.entity.bindPort('txd','open')
+    aegean.entity.bindPort('rxd',"'0'")
+    aegean.entity.bindPort('io_sramPins_ram_out_addr','io_sramPins_ram_out_addr')
+    aegean.entity.bindPort('io_sramPins_ram_out_dout_ena','io_sramPins_ram_out_dout_ena')
+    aegean.entity.bindPort('io_sramPins_ram_out_nadsc','io_sramPins_ram_out_nadsc')
+    aegean.entity.bindPort('io_sramPins_ram_out_noe','io_sramPins_ram_out_noe')
+    aegean.entity.bindPort('io_sramPins_ram_out_nbwe','io_sramPins_ram_out_nbwe')
+    aegean.entity.bindPort('io_sramPins_ram_out_nbw','io_sramPins_ram_out_nbw')
+    aegean.entity.bindPort('io_sramPins_ram_out_ngw','io_sramPins_ram_out_ngw')
+    aegean.entity.bindPort('io_sramPins_ram_out_nce1','io_sramPins_ram_out_nce1')
+    aegean.entity.bindPort('io_sramPins_ram_out_ce2','io_sramPins_ram_out_ce2')
+    aegean.entity.bindPort('io_sramPins_ram_out_nce3','io_sramPins_ram_out_nce3')
+    aegean.entity.bindPort('io_sramPins_ram_out_nadsp','io_sramPins_ram_out_nadsp')
+    aegean.entity.bindPort('io_sramPins_ram_out_nadv','io_sramPins_ram_out_nadv')
+    aegean.entity.bindPort('io_sramPins_ram_out_dout','io_sramPins_ram_out_dout')
+    aegean.entity.bindPort('io_sramPins_ram_in_din','io_sramPins_ram_in_din')
+
+def writeUartSpy(test,label):
+    test.arch.addToBody('''
     '''+label+'''_uart_spy : process
         variable buf: LINE;
         constant CORE_ID : STRING ('''+str(len(label)+2)+''' downto 1):="'''+label.upper()+''': ";
@@ -104,31 +96,31 @@ def writeUartSpy(f,label):
 
 ''')
 
-def writeBaudIncBegin(f):
-    f.write('''
+def writeBaudIncBegin():
+    return '''
     -- Add uart ticker to increase the UART speed to reduce simulation time
     baud_inc : process
     begin
-        loop''')
+        loop'''
 
-def writeWait(f):
-    f.write('''
-            wait until rising_edge(clk);''')
+def writeWait():
+    return '''
+            wait until rising_edge(clk);'''
 
-def writeUartForce(f,label,value):
-    f.write('''
-            signal_force("/aegean_testbench/aegean/'''+label+'''/iocomp/Uart/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);''')
+def writeUartForce(label,value):
+    return '''
+            signal_force("/aegean_testbench/aegean/'''+label+'''/iocomp/Uart/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);'''
 
 
-def writeBaudIncEnd(f):
-    f.write('''
+def writeBaudIncEnd():
+    return '''
             wait for 3*PERIOD;
         end loop;
     end process ; -- baud_inc
-''')
+'''
 
-def writeSimMem(f,MAIN_MEM):
-    f.write('''
+def writeSimMem(test,MAIN_MEM):
+    test.arch.addToBody('''
 
     -- capture input from ssram on falling clk edge
     process(clk, reset)
@@ -333,7 +325,5 @@ def writeSimMem(f,MAIN_MEM):
             MODE => '1',
             ZZ => '0'
             );
-
-end architecture ; -- arch
 
 ''')

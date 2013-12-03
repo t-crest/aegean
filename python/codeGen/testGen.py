@@ -13,9 +13,8 @@ class TestGen(object):
         self.spys = dict({})
 
 
-    def generate(self):
-        f = open(self.p.TestFile, 'w')
-        testCode.writeHeader(f)
+    def generate(self,aegean):
+        test = testCode.getTest()
 
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
@@ -29,38 +28,41 @@ class TestGen(object):
                         IODevTypeRef = IO.get('IODevTypeRef')
                         if IODevTypeRef == 'Uart':
                             self.spys[label] = True
-                            testCode.writeSignalSpySignals(f,label)
+                            testCode.writeSignalSpySignals(test,label)
                             break
                         self.spys[label] = False
                     break
 
 
-
-        testCode.writeAegeanInst(f)
+        testCode.bindAegean(aegean)
+        test.arch.instComp(aegean,'aegean',True)
+        testCode.writeAegeanInst(test)
 
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
             label = node.get('id')
             if self.spys[label]:
-                testCode.writeUartSpy(f,label)
+                testCode.writeUartSpy(test,label)
 
-        testCode.writeBaudIncBegin(f)
+        s = testCode.writeBaudIncBegin()
 
-        testCode.writeWait(f)
+        s+= testCode.writeWait()
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
             label = node.get('id')
             if self.spys[label]:
-                testCode.writeUartForce(f,label,1)
+                s+= testCode.writeUartForce(label,1)
 
-        testCode.writeWait(f)
+        s+= testCode.writeWait()
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
             label = node.get('id')
             if self.spys[label]:
-                testCode.writeUartForce(f,label,0)
+                s+= testCode.writeUartForce(label,0)
 
-        testCode.writeBaudIncEnd(f)
+        s+= testCode.writeBaudIncEnd()
+        test.arch.addToBody(s)
 
-        testCode.writeSimMem(f,self.p.MAIN_MEM)
-        f.close()
+        testCode.writeSimMem(test,self.p.MAIN_MEM)
+
+        test.writeComp(self.p.TestFile)

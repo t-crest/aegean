@@ -18,15 +18,19 @@ class HWConfig(object):
         et.write(self.p.GEN_PLAT)
 
     def config(self):
-        noc = NoCGen(self.p,self.platform)
-        noc.config()
-        noc.generate()
-        cmp = AegeanGen(self.p,self.platform)
-        cmp.generate()
-        test = TestGen(self.p,self.platform)
-        test.generate()
+        nocComp = NoCGen(self.p,self.platform)
+        nocComp.config()
+        noc = nocComp.generate()
+        aegeanGen = AegeanGen(self.p,self.platform)
+        aegean = aegeanGen.generate(noc)
+        testGen = TestGen(self.p,self.platform)
+        test = testGen.generate(aegean)
 
-
-
-
+        VCOM = ['vcom','-quiet',self.p.NOCFile]
+        VCOM+= [self.p.AegeanFile]
+        VCOM+= [self.p.TopFile]
+        VCOM+= [self.p.TestFile]
+        VCOM+= [self.p.ConfFile]
+        VCOM+= ['-work',self.p.BUILD_PATH+'/work']
+        subprocess.call(VCOM)
 
