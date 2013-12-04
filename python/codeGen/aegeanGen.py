@@ -131,7 +131,9 @@ class AegeanGen(object):
                 self.IOPorts.append(IOPort)
                 for k in reversed(range(0,len(pins))):
                     PinName = 'PIN_'+pins[k]
-                    SignalName = prefix+topSig+'_'+sig+'['+str(k)+']'
+                    SignalName = prefix+topSig+'_'+sig
+                    if len(pins) > 1:
+                        SignalName += '['+str(k)+']'
                     SedString+='set_location_assignment '+ PinName + ' -to ' + SignalName + '\\\n'
 
         SedString+= '|'
