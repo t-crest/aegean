@@ -14,7 +14,7 @@ class Paths(object):
         self.POSEIDON = self.POSEIDON_PATH + '/build/Poseidon'
 
         self.PATMOS_PATH = self.AEGEAN_PATH + '/../patmos'
-        self.CHISEL_PATH = self.PATMOS_PATH + '/chisel'
+        self.PATMOSHW_PATH = self.PATMOS_PATH + '/hardware'
         self.BUILD_PATH = self.AEGEAN_PATH + '/build/' + str(projectname)
         self.TMP_BUILD_PATH = self.BUILD_PATH + '/xml'
 

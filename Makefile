@@ -1,6 +1,3 @@
-TCREST_TOOL_PATH?=$(CURDIR)/../local/bin
-PATH:=$(PATH):$(TCREST_TOOL_PATH)
-
 AEGEAN_PATH?=$(CURDIR)
 #AEGEAN_PLATFORM?=Test_platform
 AEGEAN_PLATFORM?=mandelbrot_demo
@@ -19,7 +16,7 @@ AEGEAN_CONFIG_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	config.vhd)
 TEST_SRC=$(patsubst %,$(AEGEAN_SRC_PATH)/%,\
 	packages/test.vhd)
-MEM_SRC=$(patsubst %,$(PATMOS_PATH)/chisel/modelsim/%,\
+MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
 	conversions.vhd gen_utils.vhd sim_ssram_512x36.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	aegean_testbench.vhd)
@@ -85,7 +82,6 @@ $(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
 	@echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
 
 $(BUILD_PATH):
-	mkdir -p $(BUILD_PATH)/quartus
 	mkdir -p $(BUILD_PATH)/xml
 
 quartus_files: \
@@ -94,13 +90,17 @@ quartus_files: \
 	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf \
 	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc
 
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.cdf: $(AEGEAN_PATH)/quartus/aegean_top.cdf $(BUILD_PATH)
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.cdf: $(AEGEAN_PATH)/quartus/aegean_top.cdf
+	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qpf: $(AEGEAN_PATH)/quartus/aegean_top.qpf $(BUILD_PATH)
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qpf: $(AEGEAN_PATH)/quartus/aegean_top.qpf
+	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf: $(AEGEAN_PATH)/quartus/aegean_top.qsf $(BUILD_PATH)
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf: $(AEGEAN_PATH)/quartus/aegean_top.qsf
+	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_top.sdc $(BUILD_PATH)
+$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_top.sdc
+	-mkdir -p $(dir $@)
 	-cp $< $@
 
 ##########################################################################
@@ -118,7 +118,7 @@ compile-argo: $(BUILD_PATH)/work compile-config $(ARGO_SRC)
 	$(WINE) $(VCOM) $(ARGO_SRC)
 
 #$(PATMOS_SOURCE): $(PATMOS_PATH)/c/init.h .FORCE
-#	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) CHISELBUILDDIR=$(BUILD_PATH) gen
+#	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
 
 compile-patmos: $(BUILD_PATH)/work $(PATMOS_SOURCE)
 	$(WINE) $(VLOG) $(PATMOS_SOURCE)

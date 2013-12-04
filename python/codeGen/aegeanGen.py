@@ -256,25 +256,25 @@ class AegeanGen(object):
         return aegean
 
     def patmosGen(self,IPType,bootapp,configfile):
-        Patmos = ['make','-C',self.p.CHISEL_PATH]
+        Patmos = ['make','-C',self.p.PATMOSHW_PATH]
         Patmos+= ['BOOTAPP='+bootapp]
         Patmos+= ['BOOTBUILDDIR='+self.p.BUILD_PATH]
-        Patmos+= ['CHISELBUILDDIR='+self.p.BUILD_PATH]
+        Patmos+= ['HWBUILDDIR='+self.p.BUILD_PATH]
         Patmos+= ['HWMODULEPREFIX='+IPType]
         Patmos+= ['CONFIGFILE='+configfile]
         Patmos+= [self.p.BUILD_PATH+'/'+IPType+'PatmosCore.v']
         subprocess.call(Patmos)
 
     def ssramGen(self,addr):
-        Ssram = ['make','-C',self.p.CHISEL_PATH]
-        Ssram+= ['CHISELBUILDDIR='+self.p.BUILD_PATH]
+        Ssram = ['make','-C',self.p.PATMOSHW_PATH]
+        Ssram+= ['HWBUILDDIR='+self.p.BUILD_PATH]
         Ssram+= ['MEMCTRL_ADDR_WIDTH='+str(addr)]
         Ssram+= [self.p.BUILD_PATH+'/SsramBurstRW.v']
         subprocess.call(Ssram)
 
     def arbiterGen(self,cnt,addr,data,burstLength):
-        Arbiter = ['make','-C',self.p.CHISEL_PATH]
-        Arbiter+= ['CHISELBUILDDIR='+self.p.BUILD_PATH]
+        Arbiter = ['make','-C',self.p.PATMOSHW_PATH]
+        Arbiter+= ['HWBUILDDIR='+self.p.BUILD_PATH]
         Arbiter+= ['ARBITER_CNT='+str(cnt)]
         Arbiter+= ['ARBITER_ADDR_WIDTH='+str(addr)]
         Arbiter+= ['ARBITER_DATA_WIDTH='+str(data)]
