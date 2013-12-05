@@ -40,25 +40,28 @@ class TestGen(object):
 
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
+            IPTypeRef = node.get('IPTypeRef')
             label = node.get('id')
             if self.spys[label]:
-                testCode.writeUartSpy(test,label)
+                testCode.writeUartSpy(test,label,IPTypeRef)
 
         s = testCode.writeBaudIncBegin()
 
         s+= testCode.writeWait()
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
+            IPTypeRef = node.get('IPTypeRef')
             label = node.get('id')
             if self.spys[label]:
-                s+= testCode.writeUartForce(label,1)
+                s+= testCode.writeUartForce(label,1,IPTypeRef)
 
         s+= testCode.writeWait()
         for p in range(0,len(self.nodes)):
+            IPTypeRef = node.get('IPTypeRef')
             node = self.nodes[p]
             label = node.get('id')
             if self.spys[label]:
-                s+= testCode.writeUartForce(label,0)
+                s+= testCode.writeUartForce(label,0,IPTypeRef)
 
         s+= testCode.writeBaudIncEnd()
         test.arch.addToBody(s)

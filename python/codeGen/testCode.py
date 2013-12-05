@@ -74,14 +74,14 @@ def bindAegean(aegean):
     aegean.entity.bindPort('io_sramPins_ram_out_dout','io_sramPins_ram_out_dout')
     aegean.entity.bindPort('io_sramPins_ram_in_din','io_sramPins_ram_in_din')
 
-def writeUartSpy(test,label):
+def writeUartSpy(test,label,hwprefix):
     test.arch.addToBody('''
     '''+label+'''_uart_spy : process
         variable buf: LINE;
         constant CORE_ID : STRING ('''+str(len(label)+2)+''' downto 1):="'''+label.upper()+''': ";
     begin
-        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/Uart/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/Uart/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge('''+label+'''_uart_tx_status_reg(0));
@@ -107,9 +107,9 @@ def writeWait():
     return '''
             wait until rising_edge(clk);'''
 
-def writeUartForce(label,value):
+def writeUartForce(label,value,hwprefix):
     return '''
-            signal_force("/aegean_testbench/aegean/'''+label+'''/iocomp/Uart/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);'''
+            signal_force("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);'''
 
 
 def writeBaudIncEnd():
