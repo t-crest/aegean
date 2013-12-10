@@ -9,7 +9,7 @@ PATMOS_PATH?=$(CURDIR)/../patmos
 PATMOS_SOURCE?=$(BUILD_PATH)/*.v
 PATMOS_BOOTAPP?=bootable-mandelbrot_par
 
-AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/VHDL
+AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/vhdl
 AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	noc.vhd aegean.vhd)
 AEGEAN_CONFIG_SRC=$(patsubst %,$(BUILD_PATH)/%,\
