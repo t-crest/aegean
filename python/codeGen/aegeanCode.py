@@ -135,6 +135,14 @@ def declareSignals(aegean):
     aegean.arch.declSignal('spm_ms','spm_masters')
     aegean.arch.declSignal('spm_ss','spm_slaves')
 
+def setSPMSize(aegean,sizes):
+    aegean.arch.decl('''
+    type size_array is array(0 to NODES-1) of integer;
+''')
+    #name, constType, width, value
+    s = ',\n\t\t'.join(str(size) for size in sizes)
+    aegean.arch.declConstant('SPM_SIZE', 'size_array', 1, '('+ s +')')
+
 
 def bindPatmos(patmos,p,ledPort=None,txdPort=None,rxdPort=None):
 
@@ -184,7 +192,11 @@ def bindNoc(noc):
 def addSPM():
     return '''
     spms : for i in 0 to NODES-1 generate
-        spm : entity work.com_spm port map(
+        spm : entity work.com_spm
+        generic map(
+            SPM_IDX_SIZE => SPM_SIZE(i)
+            )
+        port map(
             p_clk => clk,
             n_clk => clk,
             reset => reset,

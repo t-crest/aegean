@@ -5,6 +5,7 @@ import util
 from codeGen import aegeanCode
 from codeGen import topCode
 from codeGen.Component import Component
+import re
 
 class AegeanGen(object):
     '''
@@ -20,6 +21,7 @@ class AegeanGen(object):
         self.IODevs = dict({})
         self.genIPCores = dict({})
         self.genComps = dict({})
+        self.SPMSizes = []
 
     def parseIODevs(self):
         IODevs = list(util.findTag(self.platform,'IODevs'))
@@ -39,12 +41,26 @@ class AegeanGen(object):
             else: # The IPCore is a patmos processor
                 self.IPCores[name] = r
 
+    def parseSize(self,s):
+        m = re.split('(\d+)([KMG]?)',s.upper())
+        while '' in m:
+            m.remove('')
+        suffixMult = (1 << 0)
+        if m[1]=='K':
+            suffixMult = (1 << 10)
+        elif m[1]=='M':
+            suffixMult = (1 << 20)
+        elif m[1]=='G':
+            suffixMult = (1 << 30)
+        return int(m[0])*suffixMult
 
     def generateNodes(self):
         nodes = list(self.nodes)
         for i in range(0,len(nodes)):
             node = nodes[i]
             IPTypeRef = node.get('IPTypeRef')
+            SPMSize = node.get('SPMSize')
+            self.SPMSizes.append(self.parseSize(SPMSize))
             if IPTypeRef not in self.genIPCores:
                 IPCore = self.IPCores[IPTypeRef]
                 b = util.findTag(IPCore,'bootrom')
@@ -216,6 +232,7 @@ class AegeanGen(object):
             self.genComps[IPType] = patmos
 
         aegeanCode.declareSignals(aegean)
+        aegeanCode.setSPMSize(aegean,self.SPMSizes)
 
         for p in range(0,len(self.nodes)):
             patmos = self.nodes[p]

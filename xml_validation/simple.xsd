@@ -27,6 +27,12 @@
 	</xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="routerTypeString">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="sync-2stage|sync-3stage|async"/>
+	</xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="memorySize">
 	<xs:restriction base="xs:string">
 		<xs:pattern value="[0-9]+[kKmMgG]?"/>
@@ -49,6 +55,8 @@
 <xs:attribute name="cached" type="xs:boolean"/>
 <xs:attribute name="routerDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="linkDepth" type="xs:nonNegativeInteger"/>
+<xs:attribute name="SPMSize" type="memorySize"/>
+<xs:attribute name="routerType" type="routerTypeString"/>
 
 <xs:attribute name="start" type="address"/>
 <xs:attribute name="end" type="address"/>

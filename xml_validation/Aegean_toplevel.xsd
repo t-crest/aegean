@@ -30,6 +30,7 @@
 			<xs:attribute ref="id" use="required"/>
 			<xs:attribute ref="loc" use="required"/>
 			<xs:attribute ref="IPTypeRef" use="required"/>
+			<xs:attribute ref="SPMSize" use="required"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -185,6 +186,7 @@
 			<xs:attribute ref="topoType" use="required"/>
 			<xs:attribute ref="routerDepth" use="required"/>
 			<xs:attribute ref="linkDepth" use="required"/>
+			<xs:attribute ref="routerType" use="required"/>
 		</xs:complexType>
 	</xs:element>
 

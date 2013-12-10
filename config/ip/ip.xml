@@ -78,4 +78,32 @@
         </patmos>
     </IPCore>
     <IPCore IPType="ACC" entity="accelerator" srcFile="../vhdl/accelerator.vhd" />
+    <IPCore IPType="patmosPhase">
+        <patmos>
+            <description>syncphase</description>
+
+            <frequency Hz="10000000" />
+            <pipeline dual="false" />
+            <bootrom app="bootable-mandelbrot_par"/>
+            <MCache size="16" blocks="16" repl="" />
+            <DCache size="32" assoc="1" repl="" />
+            <ISPM size="128" />
+            <DSPM size="128" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO IODevTypeRef="CpuInfo" offset="0"/>
+                <IO IODevTypeRef="Timer" offset="2"/>
+                <IO IODevTypeRef="Uart" offset="8" />
+                <IO IODevTypeRef="Leds" offset="9" />
+            </IOs>
+
+            <!-- currently unused -->
+            <SCache size="0" />
+
+        </patmos>
+    </IPCore>
 </IPCores>
+
