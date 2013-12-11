@@ -37,14 +37,14 @@ class NoCGen(object):
         nocNode.entity.addPort('proc_s','out','ocp_io_s')
         nocNode.entity.addPort('spm_m','out','spm_master')
         nocNode.entity.addPort('spm_s','in','spm_slave')
-        nocNode.entity.addPort('inNorth','in','network_link')
-        nocNode.entity.addPort('inSouth','in','network_link')
-        nocNode.entity.addPort('inEast','in','network_link')
-        nocNode.entity.addPort('inWest','in','network_link')
-        nocNode.entity.addPort('outNorth','out','network_link')
-        nocNode.entity.addPort('outSouth','out','network_link')
-        nocNode.entity.addPort('outEast','out','network_link')
-        nocNode.entity.addPort('outWest','out','network_link')
+        nocNode.entity.addPort('inNorth','in','link_t')
+        nocNode.entity.addPort('inSouth','in','link_t')
+        nocNode.entity.addPort('inEast','in','link_t')
+        nocNode.entity.addPort('inWest','in','link_t')
+        nocNode.entity.addPort('outNorth','out','link_t')
+        nocNode.entity.addPort('outSouth','out','link_t')
+        nocNode.entity.addPort('outEast','out','link_t')
+        nocNode.entity.addPort('outWest','out','link_t')
         return nocNode
 
     def bindNocNode(self,nocNode,k,i,j):
