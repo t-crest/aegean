@@ -9,9 +9,9 @@ class Paths(object):
 
         self.XMLSCHEME = self.AEGEAN_PATH + '/xmlNotes/Aegean.xsd'
 
-        self.POSEIDON_PATH = self.AEGEAN_PATH + '/../poseidon'
-        self.POSEIDON_CONV = self.POSEIDON_PATH + '/Converter/build'
-        self.POSEIDON = self.POSEIDON_PATH + '/build/Poseidon'
+        self.POSEIDON_PATH = self.AEGEAN_PATH + '/../local/bin'
+        self.POSEIDON_CONV = self.POSEIDON_PATH + '/poseidon_converter.sh'
+        self.POSEIDON = self.POSEIDON_PATH + '/Poseidon'
 
         self.PATMOS_PATH = self.AEGEAN_PATH + '/../patmos'
         self.PATMOSHW_PATH = self.PATMOS_PATH + '/hardware'

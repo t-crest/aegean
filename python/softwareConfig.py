@@ -44,8 +44,7 @@ class SWConfig(object):
         Poseidon+= ['-d']                  # Draw the topology
         subprocess.call(Poseidon)
         print('Converting schedule')
-        Converter = ['java']
-        Converter+= ['-cp',self.p.POSEIDON_CONV,'converter.Converter']
+        Converter = [self.p.POSEIDON_CONV]
         Converter+= [self.p.GEN_SCHED,self.p.CSCHED,'Aegean-c']
         subprocess.call(Converter)
         print('Copying schedule')

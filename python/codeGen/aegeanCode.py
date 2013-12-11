@@ -1,4 +1,5 @@
 from codeGen.Component import Component
+import math
 
 def getAegean():
     aegean = Component('aegean')
@@ -140,8 +141,8 @@ def setSPMSize(aegean,sizes):
     type size_array is array(0 to NODES-1) of integer;
 ''')
     #name, constType, width, value
-    s = ',\n\t\t'.join(str(size) for size in sizes)
-    aegean.arch.declConstant('SPM_SIZE', 'size_array', 1, '('+ s +')')
+    s = ',\n\t\t'.join(str(math.ceil(math.log(size,2))) for size in sizes)
+    aegean.arch.declConstant('SPM_WIDTH', 'size_array', 1, '('+ s +')')
 
 
 def bindPatmos(patmos,p,ledPort=None,txdPort=None,rxdPort=None):
@@ -194,7 +195,7 @@ def addSPM():
     spms : for i in 0 to NODES-1 generate
         spm : entity work.com_spm
         generic map(
-            SPM_IDX_SIZE => SPM_SIZE(i)
+            SPM_IDX_SIZE => SPM_WIDTH(i)
             )
         port map(
             p_clk => clk,
