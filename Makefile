@@ -27,12 +27,14 @@ POSEIDON_CONV=java -cp $(POSEIDON_PATH)/Converter/build/ converter.Converter
 
 
 ARGO_PATH?=$(CURDIR)/../argo
+ARGO_COMMON_PATH?=$(ARGO_PATH)/common
+ARGO_COMMON_SRC=$(patsubst %,$(ARGO_COMMON_PATH)/%,\
+	ocp.vhd noc_defs.vhd noc_interface.vhd bram.vhd bram_tdp.vhd counter.vhd\
+	dma.vhd com_spm.vhd)
 ARGO_SRC_PATH?=$(ARGO_PATH)/noc/src
 ARGO_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
-	noc_defs.vhd noc_interface.vhd bram.vhd bram_tdp.vhd counter.vhd\
-	dma.vhd nAdapter.vhd hpu.vhd xbar.vhd router.vhd com_spm.vhd noc_node.vhd)
-CONFIG_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
-	ocp.vhd)
+	nAdapter.vhd hpu.vhd xbar.vhd router.vhd noc_node.vhd)
+
 
 
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
@@ -123,9 +125,9 @@ compile-argo: $(BUILD_PATH)/work compile-config $(ARGO_SRC)
 compile-patmos: $(BUILD_PATH)/work $(PATMOS_SOURCE)
 	$(WINE) $(VLOG) $(PATMOS_SOURCE)
 
-compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC) $(CONFIG_SRC)
+compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC) $(ARGO_COMMON_SRC)
 	$(WINE) $(VCOM) $(AEGEAN_CONFIG_SRC)
-	$(WINE) $(VCOM) $(CONFIG_SRC)
+	$(WINE) $(VCOM) $(ARGO_COMMON_SRC)
 
 #########################################################################
 # Simulation of source code for the platform described in AEGEAN_PLATFORM
