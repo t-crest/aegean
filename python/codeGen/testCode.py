@@ -78,17 +78,24 @@ def writeUartSpy(test,label,hwprefix):
     test.arch.addToBody('''
     '''+label+'''_uart_spy : process
         variable buf: LINE;
-        constant CORE_ID : STRING ('''+str(len(label)+2)+''' downto 1):="'''+label.upper()+''': ";
+        constant CORE_ID : STRING ('''+str(len(label)+6)+''' downto 1):="'''+label.upper()+''': at: ";
+        variable i : integer := 0;
     begin
         init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
         init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge('''+label+'''_uart_tx_status_reg(0));
+            if i = 0 then
+                write(buf,time'image(NOW) & " : ");
+                --write(buf,real'image(real(NOW/time'val(1000000))/1000.0) & " us : ");
+            end if;
             write(buf,character'val(to_integer(unsigned('''+label+'''_uart_tx_reg))));
+            i := i + 1;
             --writeline(OUTPUT,buf);
             if to_integer(unsigned('''+label+'''_uart_tx_reg)) = 10 then
                 writeline(OUTPUT,buf);
+                i := 0;
                 write(buf,CORE_ID);
             end if;
         end loop;

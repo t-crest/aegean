@@ -27,9 +27,15 @@
 	</xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="schedTypeString">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="Aegean-phase-c|Aegean-c"/>
+	</xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="routerTypeString">
 	<xs:restriction base="xs:string">
-		<xs:pattern value="sync-2stage|sync-3stage|async"/>
+		<xs:pattern value="sync|sync-phase|async-phase"/>
 	</xs:restriction>
 </xs:simpleType>
 
@@ -44,6 +50,7 @@
 <xs:attribute name="projectname" type="xs:string"/>
 <xs:attribute name="width" type="xs:positiveInteger"/>
 <xs:attribute name="height" type="xs:positiveInteger"/>
+<xs:attribute name="depth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="phits" type="xs:nonNegativeInteger"/>
 <xs:attribute name="bandwidth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="id" type="xs:ID"/>
@@ -56,6 +63,7 @@
 <xs:attribute name="routerDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="linkDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="SPMSize" type="memorySize"/>
+<xs:attribute name="schedType" type="schedTypeString"/>
 <xs:attribute name="routerType" type="routerTypeString"/>
 
 <xs:attribute name="start" type="address"/>

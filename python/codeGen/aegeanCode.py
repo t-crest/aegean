@@ -141,7 +141,7 @@ def setSPMSize(aegean,sizes):
     type size_array is array(0 to NODES-1) of integer;
 ''')
     #name, constType, width, value
-    s = ',\n\t\t'.join(str(math.ceil(math.log(size,2))) for size in sizes)
+    s = ', '.join(str(math.ceil(math.log(size,2))) for size in sizes)
     aegean.arch.declConstant('SPM_WIDTH', 'size_array', 1, '('+ s +')')
 
 

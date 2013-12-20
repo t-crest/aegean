@@ -39,7 +39,7 @@
 		<xs:complexType>
 			<xs:attribute ref="source" use="required"/>
 			<xs:attribute ref="sink" use="required"/>
-			<xs:attribute ref="linkDepth" use="required"/>
+			<xs:attribute ref="depth" use="required"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -185,7 +185,8 @@
 			</xs:sequence>
 			<xs:attribute ref="topoType" use="required"/>
 			<xs:attribute ref="routerDepth" use="required"/>
-			<xs:attribute ref="linkDepth" use="required"/>
+			<xs:attribute ref="linkDepth" use="optional"/>
+			<xs:attribute ref="schedType" use="required"/>
 			<xs:attribute ref="routerType" use="required"/>
 		</xs:complexType>
 	</xs:element>

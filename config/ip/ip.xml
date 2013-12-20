@@ -87,8 +87,8 @@
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="16" blocks="16" repl="" />
             <DCache size="32" assoc="1" repl="" />
-            <ISPM size="128" />
-            <DSPM size="128" />
+            <ISPM size="2k" />
+            <DSPM size="2k" />
             <BootSPM size="2k" />
 
             <ExtMem size="2M" />

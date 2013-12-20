@@ -1,6 +1,6 @@
 AEGEAN_PATH?=$(CURDIR)
-#AEGEAN_PLATFORM?=sync-phase
-AEGEAN_PLATFORM?=mandelbrot_demo
+AEGEAN_PLATFORM?=sync-phase
+#AEGEAN_PLATFORM?=mandelbrot_demo
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
 BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
@@ -31,9 +31,18 @@ ARGO_COMMON_PATH?=$(ARGO_PATH)/common
 ARGO_COMMON_SRC=$(patsubst %,$(ARGO_COMMON_PATH)/%,\
 	ocp.vhd noc_defs.vhd noc_interface.vhd bram.vhd bram_tdp.vhd counter.vhd\
 	dma.vhd com_spm.vhd)
-ARGO_SRC_PATH?=$(ARGO_PATH)/noc/src
+
+## Sync argo
+#ARGO_SRC_PATH?=$(ARGO_PATH)/noc/src
+#ARGO_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
+#	nAdapter.vhd hpu.vhd xbar.vhd router.vhd noc_node.vhd)
+#
+# Async argo
+ARGO_SRC_PATH?=$(ARGO_PATH)/async_noc/src
 ARGO_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
-	nAdapter.vhd hpu.vhd xbar.vhd router.vhd noc_node.vhd)
+	sr_latch.vhd c_gate_generic.vhd  crossbar.vhd  latch_controller.vhd channel_latch.vhd \
+	hpu_comb.vhd  nAdapter.vhd crossbar_stage.vhd  hpu.vhd router.vhd noc_node.vhd)
+
 
 
 
@@ -42,7 +51,8 @@ SYNTH_PATH=$(BUILD_PATH)/quartus
 VLIB=vlib -quiet work
 VCOM=vcom -quiet -93 -work $(BUILD_PATH)/work
 VLOG=vlog -quiet -work $(BUILD_PATH)/work
-VSIM=vsim -novopt -lib $(BUILD_PATH)/work
+# -novopt
+VSIM=vsim -voptargs=+acc -debugDB -lib $(BUILD_PATH)/work
 
 ifeq ($(WINDIR),)
 	S=:
@@ -109,15 +119,15 @@ $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_
 # Compilation of source code for the platform described in AEGEAN_PLATFORM
 # Call make compile
 ##########################################################################
-compile: $(BUILD_PATH)/work compile-config compile-patmos compile-argo $(AEGEAN_SRC)
+compile: $(BUILD_PATH)/work compile-config compile-argo compile-patmos  $(AEGEAN_SRC)
 	$(WINE) $(VCOM) $(AEGEAN_SRC)
 
 $(BUILD_PATH)/work:
 	mkdir -p $(BUILD_PATH)
 	cd $(BUILD_PATH) && $(WINE) $(VLIB)
 
-compile-argo: $(BUILD_PATH)/work compile-config $(ARGO_SRC)
-	$(WINE) $(VCOM) $(ARGO_SRC)
+compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(BUILD_PATH)/.argo_src)
+	$(WINE) $(VCOM) $(shell cat $(BUILD_PATH)/.argo_src)
 
 #$(PATMOS_SOURCE): $(PATMOS_PATH)/c/init.h .FORCE
 #	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
@@ -125,9 +135,8 @@ compile-argo: $(BUILD_PATH)/work compile-config $(ARGO_SRC)
 compile-patmos: $(BUILD_PATH)/work $(PATMOS_SOURCE)
 	$(WINE) $(VLOG) $(PATMOS_SOURCE)
 
-compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC) $(ARGO_COMMON_SRC)
+compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC)
 	$(WINE) $(VCOM) $(AEGEAN_CONFIG_SRC)
-	$(WINE) $(VCOM) $(ARGO_COMMON_SRC)
 
 #########################################################################
 # Simulation of source code for the platform described in AEGEAN_PLATFORM
@@ -137,7 +146,7 @@ sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
 	$(WINE) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(WINE) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
-synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(ARGO_SRC) $(AEGEAN_SRC)
+synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(BUILD_PATH)/.argo_src) $(AEGEAN_SRC)
 	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
 	quartus_fit $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
 	quartus_asm $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
@@ -145,16 +154,6 @@ synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(ARGO_SRC) $(AEGEAN_SRC)
 
 config:
 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf
-
-
-update_hw: update_argo update_patmos
-
-update_patmos:
-	cd .. && ./misc/build.sh -u patmos
-
-update_argo:
-	cd $(ARGO_PATH) && git pull
-
 
 clean:
 	-rm -r $(BUILD_PATH)

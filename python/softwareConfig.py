@@ -22,7 +22,7 @@ class SWConfig(object):
         self.application = util.findTag(aegean,"application")
         self.p = p
 
-    def config(self):
+    def config(self,routerDepth,schedType='Aegean-c'):
 #        tags = list(self.application)
 #        for i in range(0,len(tags)):
 #            if tags[i].tag == 'communication':
@@ -31,10 +31,10 @@ class SWConfig(object):
         communication = util.findTag(self.application,"communication")
         et = etree.ElementTree(communication)
         et.write(self.p.GEN_COM)
-        self.createSched()
+        self.createSched(routerDepth,schedType)
         self.createScript()
 
-    def createSched(self):
+    def createSched(self,routerDepth,schedType):
         print('Creating schedule')
         Poseidon = [self.p.POSEIDON]
         Poseidon+= ['-p',self.p.GEN_PLAT]  # Platform specification
@@ -45,7 +45,7 @@ class SWConfig(object):
         subprocess.call(Poseidon)
         print('Converting schedule')
         Converter = [self.p.POSEIDON_CONV]
-        Converter+= [self.p.GEN_SCHED,self.p.CSCHED,'Aegean-c']
+        Converter+= [self.p.GEN_SCHED,self.p.CSCHED,schedType,routerDepth]
         subprocess.call(Converter)
         print('Copying schedule')
         Cp = ['cp']              # Copy

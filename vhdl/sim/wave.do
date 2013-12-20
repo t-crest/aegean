@@ -1,6 +1,8 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 
+add log -r /*
+
 add wave /aegean_testbench/clk
 add wave /aegean_testbench/reset
 

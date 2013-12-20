@@ -21,6 +21,9 @@ class NoCGen(object):
     def getTopType(self):
         return util.findTag(self.platform,"topology").get('topoType')
 
+    def getRouterType(self):
+        return util.findTag(self.platform,"topology").get('routerType')
+
     def config(self):
         N = self.platform.get('width')
         M = self.platform.get('height')
@@ -66,22 +69,22 @@ class NoCGen(object):
         nocNode.entity.bindPort('spm_m','spm_ports_m('+str(k)+')')
         nocNode.entity.bindPort('spm_s','spm_ports_s('+str(k)+')')
 
-        nocNode.entity.bindPort('north_in_f','north_in('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('north_in_b','north_in('+str(i)+')('+str(j)+').backward')
-        nocNode.entity.bindPort('south_in_f','south_in('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('south_in_b','south_in('+str(i)+')('+str(j)+').backward')
-        nocNode.entity.bindPort('east_in_f','east_in('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('east_in_b','east_in('+str(i)+')('+str(j)+').backward')
-        nocNode.entity.bindPort('west_in_f','west_in('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('west_in_b','west_in('+str(i)+')('+str(j)+').backward')
-        nocNode.entity.bindPort('north_out_f','north_out('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('north_out_b','north_out('+str(i)+')('+str(j)+').backward')
-        nocNode.entity.bindPort('south_out_f','south_out('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('south_out_b','south_out('+str(i)+')('+str(j)+').backward')
-        nocNode.entity.bindPort('east_out_f','east_out('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('east_out_b','east_out('+str(i)+')('+str(j)+').backward')
-        nocNode.entity.bindPort('west_out_f','west_out('+str(i)+')('+str(j)+').forward')
-        nocNode.entity.bindPort('west_out_b','west_out('+str(i)+')('+str(j)+').backward')
+        nocNode.entity.bindPort('north_in_f','north_in_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('north_in_b','north_in_b('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('south_in_f','south_in_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('south_in_b','south_in_b('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('east_in_f','east_in_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('east_in_b','east_in_b('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('west_in_f','west_in_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('west_in_b','west_in_b('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('north_out_f','north_out_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('north_out_b','north_out_b('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('south_out_f','south_out_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('south_out_b','south_out_b('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('east_out_f','east_out_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('east_out_b','east_out_b('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('west_out_f','west_out_f('+str(i)+')('+str(j)+')')
+        nocNode.entity.bindPort('west_out_b','west_out_b('+str(i)+')('+str(j)+')')
 
         return nocNode
 
@@ -110,8 +113,10 @@ class NoCGen(object):
         noc.entity.addPort('spm_ports_s','in','spm_slaves',1)
 
 
-        noc.arch.declSignal('north_in, east_in, south_in, west_in','link_m')
-        noc.arch.declSignal('north_out, east_out, south_out, west_out','link_m')
+        noc.arch.declSignal('north_in_f, east_in_f, south_in_f, west_in_f','link_m_f')
+        noc.arch.declSignal('north_in_b, east_in_b, south_in_b, west_in_b','link_m_b')
+        noc.arch.declSignal('north_out_f, east_out_f, south_out_f, west_out_f','link_m_f')
+        noc.arch.declSignal('north_out_b, east_out_b, south_out_b, west_out_b','link_m_b')
 
         for k in range(0,len(nodes)):
             j, i = nodes[k].get('loc').strip('()').split(',')
@@ -162,5 +167,38 @@ class NoCGen(object):
 
         noc.writeComp(self.p.NOCFile)
 
+        routerType = self.getRouterType()
+        argo_src = open(self.p.BUILD_PATH+'/.argo_src','w')
+        argo_src.write(self.p.ARGO_PATH+'/common/ocp.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/common/noc_defs.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/common/noc_interface.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/common/bram.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/common/bram_tdp.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/common/counter.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/common/dma.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/common/com_spm.vhd ')
+
+        if routerType == 'sync':
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/nAdapter.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/hpu.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/xbar.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/router.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/noc_node.vhd ')
+        elif routerType == 'sync-phase':
+            raise SystemExit(' error: routerType: ' + routerType + ' is not yet implemented.')
+        elif routerType == 'async-phase':
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/sr_latch.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/c_gate_generic.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/crossbar.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/latch_controller.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/channel_latch.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/hpu_comb.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/nAdapter.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/crossbar_stage.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/hpu.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/router.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/noc_node.vhd ')
+
+        argo_src.close()
         return noc
 
