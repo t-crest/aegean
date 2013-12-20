@@ -5,6 +5,7 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="true" />
+            <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
@@ -29,6 +30,7 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
@@ -56,6 +58,7 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
@@ -84,6 +87,7 @@
 
             <frequency Hz="10000000" />
             <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="16" blocks="16" repl="" />
             <DCache size="32" assoc="1" repl="" />
