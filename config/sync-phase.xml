@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <aegean version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude" >
-	<description>Mandelbrot demonstration</description>
+	<description>Demonstration of a system with the phase enabled NI</description>
 
 	<platform width="2" height="2">
 
 		<!-- <topology topotype="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
-		<topology topoType="bitorus" routerDepth="1" linkDepth="0" schedType="Aegean-c" routerType="sync" />
+		<topology topoType="bitorus" routerDepth="2" linkDepth="0" schedType="Aegean-phase-c" routerType="async-phase" />
 
 		<nodes>
-			<node id="pat0" loc="(0,0)" IPTypeRef="patmos" SPMSize="4K" />
-			<node id="pat1" loc="(1,0)" IPTypeRef="patmos" SPMSize="4K" />
-			<node id="pat2" loc="(0,1)" IPTypeRef="patmos" SPMSize="4K" />
-			<node id="pat3" loc="(1,1)" IPTypeRef="patmos" SPMSize="4K" />
+			<node id="pat0" loc="(0,0)" IPTypeRef="patmosPhase" SPMSize="1K" />
+			<node id="pat1" loc="(1,0)" IPTypeRef="patmosPhase" SPMSize="1K" />
+			<node id="pat2" loc="(0,1)" IPTypeRef="patmosPhase" SPMSize="1K" />
+			<node id="pat3" loc="(1,1)" IPTypeRef="patmosPhase" SPMSize="1K" />
 		</nodes>
 
 		<memory id="ram0" IODevTypeRef="Ssram" size="2M" />
@@ -40,7 +40,7 @@
 		</memMap>
 
 		<!-- <communication comtype="all2all"/"custom" phits="s"> -->
-		<communication comType="all2all" phits="1">
+		<communication comType="all2all" phits="3">
 
 		</communication>
 	</application>
