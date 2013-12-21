@@ -1,14 +1,28 @@
-AEGEAN_PATH?=$(CURDIR)
-#AEGEAN_PLATFORM?=sync-phase
+##############################################################
+# Main makefile for the Aegean repo.
+# From the Aegean repo you can build a multicore patmos
+# system with an argo NoC.
+##############################################################
+# Copyright:
+# 	DTU, BSD License
+# Authors:
+# 	Wolfgang Puffitsch
+# 	Rasmus Bo Sorensen
+##############################################################
+# Include user makefile for local configurations
+include config.mk
+# The project being build when calling
+# "make platform|compile|sim|synth|config"
 AEGEAN_PLATFORM?=mandelbrot_demo
+# Aegean path names
+AEGEAN_PATH?=$(CURDIR)
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
 BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
+# Source file variables
 PATMOS_PATH?=$(CURDIR)/../patmos
 PATMOS_SOURCE?=$(BUILD_PATH)/*.v
-PATMOS_BOOTAPP?=bootable-mandelbrot_par
-
 AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/vhdl
 AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	noc.vhd aegean.vhd)
@@ -21,38 +35,13 @@ MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	aegean_testbench.vhd)
 
-POSEIDON_PATH?=$(CURDIR)/../poseidon
-POSEIDON?=$(POSEIDON_PATH)/build/Poseidon
-POSEIDON_CONV=java -cp $(POSEIDON_PATH)/Converter/build/ converter.Converter
-
-
-ARGO_PATH?=$(CURDIR)/../argo
-ARGO_COMMON_PATH?=$(ARGO_PATH)/common
-ARGO_COMMON_SRC=$(patsubst %,$(ARGO_COMMON_PATH)/%,\
-	ocp.vhd noc_defs.vhd noc_interface.vhd bram.vhd bram_tdp.vhd counter.vhd\
-	dma.vhd com_spm.vhd)
-
-## Sync argo
-#ARGO_SRC_PATH?=$(ARGO_PATH)/noc/src
-#ARGO_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
-#	nAdapter.vhd hpu.vhd xbar.vhd router.vhd noc_node.vhd)
-#
-# Async argo
-ARGO_SRC_PATH?=$(ARGO_PATH)/async_noc/src
-ARGO_SRC=$(patsubst %,$(ARGO_SRC_PATH)/%,\
-	sr_latch.vhd c_gate_generic.vhd  crossbar.vhd  latch_controller.vhd channel_latch.vhd \
-	hpu_comb.vhd  nAdapter.vhd crossbar_stage.vhd  hpu.vhd router.vhd noc_node.vhd)
-
-
-
-
+# Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
 SYNTH_PATH=$(BUILD_PATH)/quartus
 VLIB=vlib -quiet work
-VCOM=vcom -quiet -93 -work $(BUILD_PATH)/work
-VLOG=vlog -quiet -work $(BUILD_PATH)/work
-# -novopt
-VSIM=vsim -voptargs=+acc -debugDB -lib $(BUILD_PATH)/work
+VCOM?=vcom -quiet -93 -work $(BUILD_PATH)/work
+VLOG?=vlog -quiet -work $(BUILD_PATH)/work
+VSIM?=vsim -novopt -lib $(BUILD_PATH)/work
 
 ifeq ($(WINDIR),)
 	S=:
@@ -71,6 +60,7 @@ endif
 
 # Temporary file specifying the configuration of the latest platform build
 PGEN=$(BUILD_PATH)/.pgen
+ARGO_SRC=$(BUILD_PATH)/.argo_src
 
 .PHONY: sim synth config platform compile
 .FORCE:
@@ -126,8 +116,8 @@ $(BUILD_PATH)/work:
 	mkdir -p $(BUILD_PATH)
 	cd $(BUILD_PATH) && $(WINE) $(VLIB)
 
-compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(BUILD_PATH)/.argo_src)
-	$(WINE) $(VCOM) $(shell cat $(BUILD_PATH)/.argo_src)
+compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(ARGO_SRC)) $(ARGO_SRC)
+	$(WINE) $(VCOM) $(shell cat $(ARGO_SRC))
 
 #$(PATMOS_SOURCE): $(PATMOS_PATH)/c/init.h .FORCE
 #	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
@@ -146,7 +136,7 @@ sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
 	$(WINE) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(WINE) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
-synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(BUILD_PATH)/.argo_src) $(AEGEAN_SRC)
+synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(ARGO_SRC)
 	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
 	quartus_fit $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
 	quartus_asm $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
@@ -168,18 +158,17 @@ help:
 	@echo "== in the config directory."
 	@echo "=="
 	@echo "== Targets:"
-	@echo "==     all        : Builds all that is needed to simulate thedescribed platform."
+	@echo "==     all        : Builds all that is needed to simulate the"
+	@echo "==                   described platform."
 	@echo "=="
 	@echo "==     platform   : Generates the source files for the platform described"
-	@echo "==                  in AEGEAN_PLATFORM file."
+	@echo "==                   in AEGEAN_PLATFORM file."
 	@echo "=="
 	@echo "==     compile    : Compiles the full platform."
 	@echo "=="
 	@echo "==     sim        : Starts the simulation of the platform."
 	@echo "=="
 	@echo "==     synth      : Synthesises the platform."
-	@echo "=="
-	@echo "==     update_hw  : Updates the hardware repos."
 	@echo "=="
 	@echo "==     clean      : Cleans the build directory of the specified"
 	@echo "==                   platform specification."
