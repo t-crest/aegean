@@ -10,6 +10,7 @@
 # 	Rasmus Bo Sorensen
 ##############################################################
 # Include user makefile for local configurations
+$(touch -a config.mk)
 include config.mk
 # The project being build when calling
 # "make platform|compile|sim|synth|config"

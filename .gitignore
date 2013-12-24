@@ -1,0 +1,58 @@
+##############
+# Project specific files
+config.mk
+build/
+*.svg
+*.dbg
+transcript
+__pycache__/
+
+## Most of these rules are taken from https://github.com/github/gitignore
+
+
+##############
+# Backup files
+*~
+\#*
+*.bak
+
+
+##############
+# Compiled stuff
+*.a
+*.class
+*.com
+*.dll
+*.exe
+*.la
+*.lai
+*.lo
+*.o
+*.slo
+*.so
+
+
+##############
+# OS generated files
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+
+##############
+# Vim stuff
+.*.sw[a-z]
+*.un~
+Session.vim
+
+##############
+# vsim stuff
+*.wlf
+work/
+
+##############
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
