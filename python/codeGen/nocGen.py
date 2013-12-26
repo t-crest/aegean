@@ -185,7 +185,12 @@ class NoCGen(object):
             argo_src.write(self.p.ARGO_PATH+'/noc/src/router.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/noc/src/noc_node.vhd ')
         elif routerType == 'sync-phase':
-            raise SystemExit(' error: routerType: ' + routerType + ' is not yet implemented.')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/xbar.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/async_noc/src/nAdapter.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/hpu.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/router.vhd ')
+            argo_src.write(self.p.ARGO_PATH+'/noc/src/noc_node.vhd ')
+            #raise SystemExit(' error: routerType: ' + routerType + ' is not yet implemented.')
         elif routerType == 'async-phase':
             argo_src.write(self.p.ARGO_PATH+'/async_noc/src/sr_latch.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/async_noc/src/c_gate_generic.vhd ')
