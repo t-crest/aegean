@@ -1,3 +1,39 @@
+/*
+ * Copyright Technical University of Denmark. All rights reserved.
+ * This file is part of the T-CREST project.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY EXPRESS
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
+ * NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of the copyright holder.
+ *
+ *##############################################################################
+ * Authors:
+ *    Rasmus Bo Soerensen (rasmus@rbscloud.dk)
+ *    Thomas Timm Andersen (ttan@elektro.dtu.dk)
+ *##############################################################################
+ */
+
 #include "operator.h"
 
 void thread_init(){
@@ -5,7 +41,7 @@ void thread_init(){
 	pthread_create(&statistics, NULL, statistics_run, NULL);
 	pthread_create(&serve_ctrl, NULL, serve_ctrl_run, NULL);
 	pthread_create(&skid_motor_ctrl, NULL, skid_motor_ctrl_run, NULL);
-	pthread_create(&request_ctrl, NULL, request_ctrl_run, NULL); 
+	pthread_create(&request_ctrl, NULL, request_ctrl_run, NULL);
 	pthread_create(&belt_motor_ctrl, NULL, belt_motor_ctrl_run, NULL);
 #endif
 	return;
@@ -15,7 +51,7 @@ void thread_close(){
 #ifndef DRYRUN
 	pthread_join(statistics,NULL);
 	pthread_join(serve_ctrl,NULL);
-	pthread_join(skid_motor_ctrl,NULL); 
+	pthread_join(skid_motor_ctrl,NULL);
 	pthread_join(request_ctrl,NULL);
 	pthread_join(belt_motor_ctrl,NULL);
 #endif
@@ -61,7 +97,7 @@ int main(int argc, char const *argv[])
 
 	strcpy(input, "help");
 	while(done == 0){
-		
+
 		if (strncmp(input, "speed",5) == 0) {
 			puts("Input the desired speed in m/s between 0.2 and 1.3:");
 			fputs("... ",stdout);
@@ -131,16 +167,16 @@ int main(int argc, char const *argv[])
 			puts("\thelp   : Shows this menu");
 			puts("\tquit  : The program will terminate");
 		}
-		else 
+		else
 			puts("Command Unkown");
-		
+
 		fputs(">>> ",stdout);
 		bytes_read = getline(&input, &nbytes, stdin);
 		if (bytes_read == -1){
 			puts("ERROR!");
 			return 0;
 		}
-		
+
 	}
 	/* puts("Operator closing"); */
 
