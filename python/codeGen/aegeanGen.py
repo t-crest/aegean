@@ -1,3 +1,38 @@
+#
+# Copyright Technical University of Denmark. All rights reserved.
+# This file is part of the T-CREST project.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#    1. Redistributions of source code must retain the above copyright notice,
+#       this list of conditions and the following disclaimer.
+#
+#    2. Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY EXPRESS
+# OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
+# NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# The views and conclusions contained in the software and documentation are
+# those of the authors and should not be interpreted as representing official
+# policies, either expressed or implied, of the copyright holder.
+#
+###############################################################################
+# Authors:
+#    Rasmus Bo Soerensen (rasmus@rbscloud.dk)
+#
+###############################################################################
+
 from lxml import etree
 import paths
 import subprocess
@@ -115,12 +150,13 @@ class AegeanGen(object):
         IODevTypeRef = self.memory.get('IODevTypeRef')
         ID = self.memory.get('id')
         memory = self.IODevs[IODevTypeRef]
+        entity = memory.get('entity')
         params = util.findTag(memory,'params')
         for i in range(0,len(list(params))):
             if params[i].get('name') == 'addr_width':
                 addrWidth = params[i].get('value')
                 break
-        self.ssramGen(addrWidth)
+        self.ssramGen(entity,addrWidth)
         self.arbiterGen(len(self.nodes),addrWidth,32,4)
 
     def addPinsToQPF(self):
@@ -284,11 +320,11 @@ class AegeanGen(object):
         Patmos+= [self.p.BUILD_PATH+'/'+IPType+'PatmosCore.v']
         subprocess.call(Patmos)
 
-    def ssramGen(self,addr):
+    def ssramGen(self,entity,addr):
         Ssram = ['make','-C',self.p.PATMOSHW_PATH]
         Ssram+= ['HWBUILDDIR='+self.p.BUILD_PATH]
         Ssram+= ['MEMCTRL_ADDR_WIDTH='+str(addr)]
-        Ssram+= [self.p.BUILD_PATH+'/SsramBurstRW.v']
+        Ssram+= [self.p.BUILD_PATH+'/'+entity+'.v']
         subprocess.call(Ssram)
 
     def arbiterGen(self,cnt,addr,data,burstLength):
