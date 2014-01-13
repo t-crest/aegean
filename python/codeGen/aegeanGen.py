@@ -53,17 +53,17 @@ class AegeanGen(object):
         self.memory = util.findTag(self.platform,'memory')
         self.IOPorts = []
         self.IPCores = dict({})
-        self.IODevs = dict({})
+        self.Devs = dict({})
         self.genIPCores = dict({})
         self.genComps = dict({})
         self.SPMSizes = []
 
-    def parseIODevs(self):
-        IODevs = list(util.findTag(self.platform,'IODevs'))
-        for i in range(0,len(IODevs)):
-            IODev = IODevs[i]
-            name = IODev.get('IODevType')
-            self.IODevs[name] = IODev
+    def parseDevs(self):
+        Devs = list(util.findTag(self.platform,'Devs'))
+        for i in range(0,len(Devs)):
+            Dev = Devs[i]
+            name = Dev.get('DevType')
+            self.Devs[name] = Dev
 
     def parseIPCores(self):
         IPCores = list(util.findTag(self.platform,'IPCores'))
@@ -109,15 +109,15 @@ class AegeanGen(object):
                 # Remove the bootapp tag from the patmos config
                 IPCore.remove(b)
 
-                # Add the IODevs to the patmos configuration file
+                # Add the Devs to the patmos configuration file
                 IOsT = util.findTag(IPCore,'IOs')
                 if str(IOsT) != 'None':
                     IOs = list(IOsT)
-                    IODevs = etree.Element('IODevs')
+                    Devs = etree.Element('Devs')
                     for j in range(0,len(IOs)):
-                        IODevTypeRef = IOs[j].get('IODevTypeRef')
-                        IODevs.append(self.IODevs[IODevTypeRef])
-                    IPCore.append(IODevs)
+                        DevTypeRef = IOs[j].get('DevTypeRef')
+                        Devs.append(self.Devs[DevTypeRef])
+                    IPCore.append(Devs)
 
                 # Write the patmos configration file
                 et = etree.ElementTree(IPCore)
@@ -147,9 +147,9 @@ class AegeanGen(object):
     def generateMemory(self):
         if str(self.memory) == 'None':
             return
-        IODevTypeRef = self.memory.get('IODevTypeRef')
+        DevTypeRef = self.memory.get('DevTypeRef')
         ID = self.memory.get('id')
-        memory = self.IODevs[IODevTypeRef]
+        memory = self.Devs[DevTypeRef]
         entity = memory.get('entity')
         params = util.findTag(memory,'params')
         for i in range(0,len(list(params))):
@@ -214,6 +214,9 @@ class AegeanGen(object):
         top.arch.declSignal('res_reg1,res_reg2','std_logic')
         top.arch.declSignal('res_cnt','unsigned',3,'"000"')
 
+        top.arch.declSignal('sram_burst_m','ocp_burst_m')
+        top.arch.declSignal('sram_burst_s','ocp_burst_s')
+
         # Declaration of the Tri state signals
         # One tri state for the sram possibly in a for loop for more tri states
         for IOPort in self.IOPorts:
@@ -228,13 +231,18 @@ class AegeanGen(object):
             if IOPort[2] == 'inout':
                 topCode.writeTriState(top,IOPort[0],IOPort[1])
 
+        sram = topCode.getSram()
+        top.arch.declComp(sram)
+
         topCode.bindAegean(aegean)
         top.arch.instComp(aegean,'cmp',True)
+        topCode.bindSram(sram)
+        top.arch.instComp(sram,'ssram')
         top.writeComp(self.p.TopFile)
 
 
     def generate(self,noc):
-        self.parseIODevs()
+        self.parseDevs()
         self.parseIPCores()
         self.generateNodes()
         self.generateMemory()
@@ -246,8 +254,6 @@ class AegeanGen(object):
         aegean.entity.addPort('txd','out')
         aegean.entity.addPort('rxd','in')
 
-        sram = aegeanCode.getSram()
-        aegean.arch.declComp(sram)
         arbiter = aegeanCode.getArbiter(len(self.nodes))
         aegean.arch.declComp(arbiter)
 
@@ -258,10 +264,10 @@ class AegeanGen(object):
             IPCore = self.genIPCores[IPType]
             IOs = util.findTag(IPCore,'IOs')
             for IO in list(IOs):
-                IODevTypeRef = IO.get('IODevTypeRef')
-                if IODevTypeRef == 'Leds':
+                DevTypeRef = IO.get('DevTypeRef')
+                if DevTypeRef == 'Leds':
                     ledPort = True
-                elif IODevTypeRef == 'Uart':
+                elif DevTypeRef == 'Uart':
                     uartPort = True
             patmos = aegeanCode.getPatmos(IPType,ledPort,uartPort)
             aegean.arch.declComp(patmos)
@@ -281,16 +287,16 @@ class AegeanGen(object):
             # TODO: this assumes that core 0 handles all I/O
             IOs = util.findTag(self.genIPCores[IPType],'IOs')
             for IO in list(IOs):
-                IODevTypeRef = IO.get('IODevTypeRef')
+                DevTypeRef = IO.get('DevTypeRef')
                 if p == 0:
-                    if IODevTypeRef == 'Leds':
+                    if DevTypeRef == 'Leds':
                         ledPort = 'led'
-                    elif IODevTypeRef == 'Uart':
+                    elif DevTypeRef == 'Uart':
                         txdPort = 'txd'
                         rxdPort = 'rxd'
-                elif IODevTypeRef == 'Leds':
+                elif DevTypeRef == 'Leds':
                     ledPort = 'open'
-                elif IODevTypeRef == 'Uart':
+                elif DevTypeRef == 'Uart':
                     txdPort = 'open'
                     rxdPort = "'1'"
             comp = self.genComps[IPType]
@@ -300,8 +306,6 @@ class AegeanGen(object):
         aegean.arch.addToBody(aegeanCode.addSPM())
         aegeanCode.bindNoc(noc)
         aegean.arch.instComp(noc,'noc',True)
-        aegeanCode.bindSram(sram)
-        aegean.arch.instComp(sram,'ssram')
         aegeanCode.bindArbiter(arbiter,len(self.nodes))
         aegean.arch.instComp(arbiter,'arbit')
 

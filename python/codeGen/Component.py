@@ -116,7 +116,7 @@ class Entity(object):
                 self.portmap[portName] = signalName
                 return
 
-        raise SystemExit(' error: invalid port for binding component: ' + portName + ', for signal: ' + signalName)
+        raise SystemExit(' error: invalid port for binding component: ' + self.typeName + ', for port: ' + portName + ', for signal: ' + signalName)
 
     def printPortDecl(self):
         s = ''

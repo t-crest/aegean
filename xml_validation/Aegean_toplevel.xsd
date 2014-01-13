@@ -140,13 +140,13 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="IODev">
+	<xs:element name="Dev">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="params" maxOccurs="1" minOccurs="0" />
 				<xs:element ref="ports" maxOccurs="1" minOccurs="0" />
 			</xs:sequence>
-			<xs:attribute ref="IODevType" use="required" />
+			<xs:attribute ref="DevType" use="required" />
 			<xs:attribute name="entity" type="xs:string" />
 			<xs:attribute name="iface" type="xs:string" />
 			<xs:attribute name="srcFile" type="xs:anyURI" />
@@ -167,7 +167,7 @@
 	<xs:element name="memory">
 		<xs:complexType>
 			<xs:attribute ref="id" use="required"/>
-			<xs:attribute ref="IODevTypeRef" use="required"/>
+			<xs:attribute ref="DevTypeRef" use="required"/>
 			<xs:attribute name="size" type="memorySize"/>
 		</xs:complexType>
 	</xs:element>
@@ -206,14 +206,15 @@
 				<xs:element ref="IOPort" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute ref="xml:base" use="optional"/>
+			<xs:attribute ref="boardType" use="required"/>
 		</xs:complexType>
 	</xs:element>
 
 	<!-- A description of the processes -->
-	<xs:element name="IODevs">
+	<xs:element name="Devs">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="IODev" maxOccurs="unbounded"/>
+				<xs:element ref="Dev" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute ref="xml:base" use="optional"/>
 		</xs:complexType>
@@ -259,7 +260,7 @@
 				<xs:element ref="include" minOccurs="0" />
 				<xs:element ref="IPCores" maxOccurs="2" />
 				<xs:element ref="include" minOccurs="0" />
-				<xs:element ref="IODevs" maxOccurs="2" />
+				<xs:element ref="Devs" maxOccurs="2" />
 				<xs:element ref="include" minOccurs="0" />
 				<xs:element ref="IOPorts" maxOccurs="2" />
 			</xs:sequence>
@@ -311,13 +312,13 @@
 		</xs:keyref>
 
 
-		<xs:key name="IODev.IODevType">
-			<xs:selector xpath="platform/IODevs/IODev" />
-			<xs:field xpath="@IODevType" />
+		<xs:key name="Dev.DevType">
+			<xs:selector xpath="platform/Devs/Dev" />
+			<xs:field xpath="@DevType" />
 		</xs:key>
-		<xs:keyref name="IODev.IODevTypeRef" refer="IODev.IODevType">
+		<xs:keyref name="Dev.DevTypeRef" refer="Dev.DevType">
 			<xs:selector xpath="platform/IPCores/IPCore/patmos/IOs/IO|platform/memory" />
-			<xs:field xpath="@IODevTypeRef" />
+			<xs:field xpath="@DevTypeRef" />
 		</xs:keyref>
 
 	</xs:element>

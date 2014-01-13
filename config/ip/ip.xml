@@ -16,8 +16,8 @@
             <ExtMem size="2M" />
 
             <IOs>
-                <IO IODevTypeRef="CpuInfo" offset="0"/>
-                <IO IODevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
             </IOs>
 
             <!-- currently unused -->
@@ -41,10 +41,10 @@
             <ExtMem size="2M" />
 
             <IOs>
-                <IO IODevTypeRef="CpuInfo" offset="0"/>
-                <IO IODevTypeRef="Timer" offset="2"/>
-                <IO IODevTypeRef="Uart" offset="8" />
-                <IO IODevTypeRef="Leds" offset="9" />
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
             </IOs>
 
             <!-- currently unused -->
@@ -69,10 +69,10 @@
             <ExtMem size="2M" />
 
             <IOs>
-                <IO IODevTypeRef="CpuInfo" offset="0"/>
-                <IO IODevTypeRef="Timer" offset="2"/>
-                <IO IODevTypeRef="Uart" offset="8" />
-                <IO IODevTypeRef="Leds" offset="9" />
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
             </IOs>
 
             <!-- currently unused -->
@@ -98,10 +98,10 @@
             <ExtMem size="2M" />
 
             <IOs>
-                <IO IODevTypeRef="CpuInfo" offset="0"/>
-                <IO IODevTypeRef="Timer" offset="2"/>
-                <IO IODevTypeRef="Uart" offset="8" />
-                <IO IODevTypeRef="Leds" offset="9" />
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
             </IOs>
 
             <!-- currently unused -->

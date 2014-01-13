@@ -88,7 +88,7 @@ class SWConfig(object):
         subprocess.call(Cp)
 
     def createScript(self):
-        print('Creating compiler scripts')
+        print('Creation of compiler scripts is NOT YET IMPLEMENTED')
 
 
 

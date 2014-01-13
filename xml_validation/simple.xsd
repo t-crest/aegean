@@ -39,6 +39,12 @@
 	</xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="boardTypeString">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="de2-70|de2-115|ML605"/>
+	</xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="memorySize">
 	<xs:restriction base="xs:string">
 		<xs:pattern value="[0-9]+[kKmMgG]?"/>
@@ -57,14 +63,15 @@
 <xs:attribute name="idRef" type="xs:IDREF"/>
 <xs:attribute name="IPType" type="xs:ID"/>
 <xs:attribute name="IPTypeRef" type="xs:IDREF"/>
-<xs:attribute name="IODevType" type="xs:ID"/>
-<xs:attribute name="IODevTypeRef" type="xs:IDREF"/>
+<xs:attribute name="DevType" type="xs:ID"/>
+<xs:attribute name="DevTypeRef" type="xs:IDREF"/>
 <xs:attribute name="cached" type="xs:boolean"/>
 <xs:attribute name="routerDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="linkDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="SPMSize" type="memorySize"/>
 <xs:attribute name="schedType" type="schedTypeString"/>
 <xs:attribute name="routerType" type="routerTypeString"/>
+<xs:attribute name="boardType" type="boardTypeString"/>
 
 <xs:attribute name="start" type="address"/>
 <xs:attribute name="end" type="address"/>

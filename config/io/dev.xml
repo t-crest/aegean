@@ -1,8 +1,8 @@
-<IODevs>
-    <IODev IODevType="CpuInfo" entity="CpuInfo" iface="OcpCore" />
-    <IODev IODevType="Timer" entity="Timer" iface="OcpCore" />
-    <IODev IODevType="Uart" entity="Uart" iface="OcpCore">
-        <!-- Maybe the IODev should also have a srcfile attribute -->
+<Devs>
+    <Dev DevType="CpuInfo" entity="CpuInfo" iface="OcpCore" />
+    <Dev DevType="Timer" entity="Timer" iface="OcpCore" />
+    <Dev DevType="Uart" entity="Uart" iface="OcpCore">
+        <!-- Maybe the Dev should also have a srcfile attribute -->
         <params>
             <param name="baud_rate" value="115200" />
         </params>
@@ -10,16 +10,16 @@
             <inport name="rxd" />
             <outport name="txd" />
         </ports>
-    </IODev>
-    <IODev IODevType="Leds" entity="Leds" iface="OcpCore">
+    </Dev>
+    <Dev DevType="Leds" entity="Leds" iface="OcpCore">
         <params>
             <param name="ledCount" value="9" />
         </params>
         <ports>
             <outport name="led" width="9" />
         </ports>
-    </IODev>
-    <IODev IODevType="Ssram" entity="SsramBurstRW" iface="OcpBurst">
+    </Dev>
+    <Dev DevType="Ssram32" entity="SsramBurstRW" iface="OcpBurst">
         <params>
             <param name="addr_width" value="21" />
         </params>
@@ -38,5 +38,21 @@
             <outport name="io_ram_out_nadsp" />
             <outport name="io_ram_out_nadv" />
         </ports>
-    </IODev>
-</IODevs>
+    </Dev>
+    <Dev DevType="Ssram16" entity="SRamCtrl" iface="OcpBurst">
+        <params>
+            <param name="addr_width" value="21" />
+        </params>
+        <ports>
+            <outport name="io_ramOut_addr" width="19" />
+            <outport name="io_ramOut_dout" width="16" />
+            <inport  name="io_ramIn_din" width="16" />
+            <outport name="io_ramOut_dout_ena" />
+            <outport name="io_ramOut_nce" />
+            <outport name="io_ramOut_noe" />
+            <outport name="io_ramOut_nwe" />
+            <outport name="io_ramOut_nlb" />
+            <outport name="io_ramOut_nub" />
+        </ports>
+    </Dev>
+</Devs>

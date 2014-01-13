@@ -15,14 +15,14 @@
 			<node id="pat3" loc="(1,1)" IPTypeRef="patmosPhase" SPMSize="4K" />
 		</nodes>
 
-		<memory id="ram0" IODevTypeRef="Ssram" size="2M" />
+		<memory id="ram0" DevTypeRef="Ssram16" size="2M" />
 
 		<!-- The standard IP cores are included -->
 		<xi:include href="./ip/ip.xml" />
-		<!-- The standard IO devices are included -->
+		<!-- The standard Devices are included -->
 		<xi:include href="./io/dev.xml" />
-		<!-- The IO ports for the de2-70 board are included-->
-		<xi:include href="./boards/de2-70.xml" />
+		<!-- The IO ports for the de2-115 board are included-->
+		<xi:include href="./boards/de2-115.xml" />
 
 	</platform>
 

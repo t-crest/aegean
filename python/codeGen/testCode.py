@@ -42,31 +42,35 @@ def getTest():
     test.addPackage('std','textio')
     test.addPackage('modelsim_lib','util')
     test.addPackage('work','test')
+    test.addPackage('work','ocp')
     declareSignals(test)
     return test
 
 def declareSignals(test):
     test.arch.declSignal('clk','std_logic')
-    test.arch.declSignal('reset','std_logic')
+    test.arch.declSignal('int_res','std_logic')
     test.arch.declSignal('led','std_logic_vector',9)
 
     test.arch.declConstant('PERIOD','time',1,'10 ns')
     test.arch.declConstant('RESET_TIME','time',1,'40 ns')
 
-    test.arch.declSignal('io_sramPins_ram_out_addr','std_logic_vector',19)
-    test.arch.declSignal('io_sramPins_ram_out_dout_ena','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_nadsc','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_noe','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_nbwe','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_nbw','std_logic_vector',4)
-    test.arch.declSignal('io_sramPins_ram_out_ngw','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_nce1','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_ce2','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_nce3','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_nadsp','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_nadv','std_logic')
-    test.arch.declSignal('io_sramPins_ram_out_dout','std_logic_vector',32)
-    test.arch.declSignal('io_sramPins_ram_in_din','std_logic_vector',32)
+    test.arch.declSignal('sram_burst_m','ocp_burst_m')
+    test.arch.declSignal('sram_burst_s','ocp_burst_s')
+
+    test.arch.declSignal('oSRAM_A','std_logic_vector',19)
+    test.arch.declSignal('sram_out_dout_ena','std_logic')
+    test.arch.declSignal('oSRAM_ADSC_N','std_logic')
+    test.arch.declSignal('oSRAM_OE_N','std_logic')
+    test.arch.declSignal('oSRAM_WE_N','std_logic')
+    test.arch.declSignal('oSRAM_BE_N','std_logic_vector',4)
+    test.arch.declSignal('oSRAM_GW_N','std_logic')
+    test.arch.declSignal('oSRAM_CE1_N','std_logic')
+    test.arch.declSignal('oSRAM_CE2','std_logic')
+    test.arch.declSignal('oSRAM_CE3_N','std_logic')
+    test.arch.declSignal('oSRAM_ADSP_N','std_logic')
+    test.arch.declSignal('oSRAM_ADV_N','std_logic')
+    test.arch.declSignal('sram_out_dout','std_logic_vector',32)
+    test.arch.declSignal('sram_in_din','std_logic_vector',32)
     test.arch.declSignal('io_sramPins_ram_inout_d','std_logic_vector',32)
     test.arch.declSignal('io_sramPins_ram_in_din_reg','std_logic_vector',32)
     test.arch.declSignal('pull_down','std_logic')
@@ -85,29 +89,17 @@ def writeAegeanInst(test):
     test.arch.addToBody('''
 
     clock_gen(clk,PERIOD);
-    reset_gen(reset,RESET_TIME);
+    reset_gen(int_res,RESET_TIME);
 ''')
 
 def bindAegean(aegean):
     aegean.entity.bindPort('clk','clk')
-    aegean.entity.bindPort('reset','reset')
+    aegean.entity.bindPort('reset','int_res')
     aegean.entity.bindPort('led','led')
     aegean.entity.bindPort('txd','open')
     aegean.entity.bindPort('rxd',"'0'")
-    aegean.entity.bindPort('io_sramPins_ram_out_addr','io_sramPins_ram_out_addr')
-    aegean.entity.bindPort('io_sramPins_ram_out_dout_ena','io_sramPins_ram_out_dout_ena')
-    aegean.entity.bindPort('io_sramPins_ram_out_nadsc','io_sramPins_ram_out_nadsc')
-    aegean.entity.bindPort('io_sramPins_ram_out_noe','io_sramPins_ram_out_noe')
-    aegean.entity.bindPort('io_sramPins_ram_out_nbwe','io_sramPins_ram_out_nbwe')
-    aegean.entity.bindPort('io_sramPins_ram_out_nbw','io_sramPins_ram_out_nbw')
-    aegean.entity.bindPort('io_sramPins_ram_out_ngw','io_sramPins_ram_out_ngw')
-    aegean.entity.bindPort('io_sramPins_ram_out_nce1','io_sramPins_ram_out_nce1')
-    aegean.entity.bindPort('io_sramPins_ram_out_ce2','io_sramPins_ram_out_ce2')
-    aegean.entity.bindPort('io_sramPins_ram_out_nce3','io_sramPins_ram_out_nce3')
-    aegean.entity.bindPort('io_sramPins_ram_out_nadsp','io_sramPins_ram_out_nadsp')
-    aegean.entity.bindPort('io_sramPins_ram_out_nadv','io_sramPins_ram_out_nadv')
-    aegean.entity.bindPort('io_sramPins_ram_out_dout','io_sramPins_ram_out_dout')
-    aegean.entity.bindPort('io_sramPins_ram_in_din','io_sramPins_ram_in_din')
+    aegean.entity.bindPort('sram_burst_m','sram_burst_m')
+    aegean.entity.bindPort('sram_burst_s','sram_burst_s')
 
 def writeUartSpy(test,label,hwprefix):
     test.arch.addToBody('''
@@ -165,9 +157,9 @@ def writeSimMem(test,MAIN_MEM):
     test.arch.addToBody('''
 
     -- capture input from ssram on falling clk edge
-    process(clk, reset)
+    process(clk, int_res)
     begin
-        if reset='1' then
+        if int_res='1' then
             io_sramPins_ram_in_din_reg <= (others => '0');
         elsif falling_edge(clk) then
             io_sramPins_ram_in_din_reg <= io_sramPins_ram_inout_d;
@@ -175,10 +167,10 @@ def writeSimMem(test,MAIN_MEM):
     end process;
 
     -- tristate output to ssram
-    process(io_sramPins_ram_out_dout_ena, io_sramPins_ram_out_dout)
+    process(sram_out_dout_ena, sram_out_dout)
     begin
-        if io_sramPins_ram_out_dout_ena='1' then
-            io_sramPins_ram_inout_d <= io_sramPins_ram_out_dout;
+        if sram_out_dout_ena='1' then
+            io_sramPins_ram_inout_d <= sram_out_dout;
         else
             io_sramPins_ram_inout_d <= (others => 'Z');
         end if;
@@ -188,7 +180,7 @@ def writeSimMem(test,MAIN_MEM):
     process(clk)
     begin
         if rising_edge(clk) then
-            io_sramPins_ram_in_din <= io_sramPins_ram_in_din_reg;
+            sram_in_din <= io_sramPins_ram_in_din_reg;
         end if;
     end process;
 
@@ -293,25 +285,25 @@ def writeSimMem(test,MAIN_MEM):
             tipd_ADSCNeg => (3 ns, 3 ns)
             )
         port map (
-            A0 => io_sramPins_ram_out_addr(0),
-            A1 => io_sramPins_ram_out_addr(1),
-            A2 => io_sramPins_ram_out_addr(2),
-            A3 => io_sramPins_ram_out_addr(3),
-            A4 => io_sramPins_ram_out_addr(4),
-            A5 => io_sramPins_ram_out_addr(5),
-            A6 => io_sramPins_ram_out_addr(6),
-            A7 => io_sramPins_ram_out_addr(7),
-            A8 => io_sramPins_ram_out_addr(8),
-            A9 => io_sramPins_ram_out_addr(9),
-            A10 => io_sramPins_ram_out_addr(10),
-            A11 => io_sramPins_ram_out_addr(11),
-            A12 => io_sramPins_ram_out_addr(12),
-            A13 => io_sramPins_ram_out_addr(13),
-            A14 => io_sramPins_ram_out_addr(14),
-            A15 => io_sramPins_ram_out_addr(15),
-            A16 => io_sramPins_ram_out_addr(16),
-            A17 => io_sramPins_ram_out_addr(17),
-            A18 => io_sramPins_ram_out_addr(18),
+            A0 => oSRAM_A(0),
+            A1 => oSRAM_A(1),
+            A2 => oSRAM_A(2),
+            A3 => oSRAM_A(3),
+            A4 => oSRAM_A(4),
+            A5 => oSRAM_A(5),
+            A6 => oSRAM_A(6),
+            A7 => oSRAM_A(7),
+            A8 => oSRAM_A(8),
+            A9 => oSRAM_A(9),
+            A10 => oSRAM_A(10),
+            A11 => oSRAM_A(11),
+            A12 => oSRAM_A(12),
+            A13 => oSRAM_A(13),
+            A14 => oSRAM_A(14),
+            A15 => oSRAM_A(15),
+            A16 => oSRAM_A(16),
+            A17 => oSRAM_A(17),
+            A18 => oSRAM_A(18),
 
             DQA0 => io_sramPins_ram_inout_d(0),
             DQA1 => io_sramPins_ram_inout_d(1),
@@ -350,20 +342,20 @@ def writeSimMem(test,MAIN_MEM):
             DQD7 => io_sramPins_ram_inout_d(31),
             DPD => pull_down,
 
-            BWANeg => io_sramPins_ram_out_nbw(0),
-            BWBNeg => io_sramPins_ram_out_nbw(1),
-            BWCNeg => io_sramPins_ram_out_nbw(2),
-            BWDNeg => io_sramPins_ram_out_nbw(3),
-            GWNeg => io_sramPins_ram_out_ngw,
-            BWENeg => io_sramPins_ram_out_nbwe,
+            BWANeg => oSRAM_BE_N(0),
+            BWBNeg => oSRAM_BE_N(1),
+            BWCNeg => oSRAM_BE_N(2),
+            BWDNeg => oSRAM_BE_N(3),
+            GWNeg => oSRAM_GW_N,
+            BWENeg => oSRAM_WE_N,
             CLK => clk,
-            CE1Neg => io_sramPins_ram_out_nce1,
-            CE2 => io_sramPins_ram_out_ce2,
-            CE3Neg =>  io_sramPins_ram_out_nce3,
-            OENeg => io_sramPins_ram_out_noe,
-            ADVNeg => io_sramPins_ram_out_nadv,
-            ADSPNeg => io_sramPins_ram_out_nadsp,
-            ADSCNeg => io_sramPins_ram_out_nadsc,
+            CE1Neg => oSRAM_CE1_N,
+            CE2 => oSRAM_CE2,
+            CE3Neg =>  oSRAM_CE3_N,
+            OENeg => oSRAM_OE_N,
+            ADVNeg => oSRAM_ADV_N,
+            ADSPNeg => oSRAM_ADSP_N,
+            ADSCNeg => oSRAM_ADSC_N,
             MODE => '1',
             ZZ => '0'
             );

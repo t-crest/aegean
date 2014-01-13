@@ -35,6 +35,7 @@
 
 import util
 from codeGen import testCode
+from codeGen import topCode
 
 class TestGen(object):
     """
@@ -60,17 +61,19 @@ class TestGen(object):
                     pat = util.findTag(IPCore,'patmos')
                     IOs = util.findTag(pat,'IOs')
                     for IO in list(IOs):
-                        IODevTypeRef = IO.get('IODevTypeRef')
-                        if IODevTypeRef == 'Uart':
+                        DevTypeRef = IO.get('DevTypeRef')
+                        if DevTypeRef == 'Uart':
                             self.spys[label] = True
                             testCode.writeSignalSpySignals(test,label)
                             break
                         self.spys[label] = False
                     break
 
-
+        sram = topCode.getSram()
+        topCode.bindSram(sram)
         testCode.bindAegean(aegean)
         test.arch.instComp(aegean,'aegean',True)
+        test.arch.instComp(sram,'sram',True)
         testCode.writeAegeanInst(test)
 
         for p in range(0,len(self.nodes)):
