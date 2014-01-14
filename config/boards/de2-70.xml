@@ -1,26 +1,28 @@
-<!-- The pins are listed (width-1 DOWNTO 0) -->
-<IOPorts boardType="de2-70" >
-    <IOPort name="SRAM">
-        <out node="ram0" name="A" width="19" pin="AF11,AE11,AG20,AF20,AC16,AF15,AE15,AG14,AF14,AE13,AD13,AG12,AE12,AG5,AG6,AG7,AH7,AF8,AG8" />
-        <out node="ram0" name="ADSC_N" pin="AG17" />
-        <out node="ram0" name="ADSP_N" pin="AC18" />
-        <out node="ram0" name="ADV_N" pin="AD16" />
-        <out node="ram0" name="BE_N" pin="AH20,AD20,AC20,AC21" />
-        <out node="ram0" name="CE1_N" pin="AH19" />
-        <out node="ram0" name="CE2" pin="AG19" />
-        <out node="ram0" name="CE3_N" pin="AD22" />
-        <out node="ram0" name="CLK" pin="AD7" />
-        <out node="ram0" name="DPA" pin="AJ9,AK20,AJ23,AK9" />
-        <out node="ram0" name="GW_N" pin="AG18" />
-        <out node="ram0" name="OE_N" pin="AD18" />
-        <out node="ram0" name="WE_N" pin="AF18" />
-        <inout node="ram0" name="DQ" outname="dout" inname="din" width="32" enaname="dout_ena" pin="AK8,AJ8,AK7,AK12,AH13,AJ13,AJ14,AK14,AJ16,AJ15,AH15,AJ22,AK22,AJ21,AK21,AJ20,AK23,AJ19,AK19,AH18,AJ18,AH17,AJ17,AK17,AH16,AJ12,AH12,AK11,AJ11,AK10,AJ10,AH10" />
-    </IOPort>
-    <IOPort name="UartPins">
-        <in node="pat0" name="rxd" pin="D21" />
-        <out node="pat0" name="txd" pin="E21" />
-    </IOPort>
-    <IOPort name="LedPins">
-        <out node="pat0" name="led" pin="AC14,AA24,AA27,Y23,Y24,Y27,W23,W25,W27" />
-    </IOPort>
-</IOPorts>
+<board name="de2-70" vendor="Altera" family="Cyclone II" device="EP2C70F896C7" >
+    <!-- The pins are listed (width-1 DOWNTO 0) -->
+    <IOPorts>
+        <IOPort name="SRAM">
+            <out node="ram0" name="A" width="19" pin="AF11,AE11,AG20,AF20,AC16,AF15,AE15,AG14,AF14,AE13,AD13,AG12,AE12,AG5,AG6,AG7,AH7,AF8,AG8" />
+            <out node="ram0" name="ADSC_N" pin="AG17" />
+            <out node="ram0" name="ADSP_N" pin="AC18" />
+            <out node="ram0" name="ADV_N" pin="AD16" />
+            <out node="ram0" name="BE_N" pin="AH20,AD20,AC20,AC21" />
+            <out node="ram0" name="CE1_N" pin="AH19" />
+            <out node="ram0" name="CE2" pin="AG19" />
+            <out node="ram0" name="CE3_N" pin="AD22" />
+            <out node="ram0" name="CLK" pin="AD7" />
+            <out node="ram0" name="DPA" pin="AJ9,AK20,AJ23,AK9" />
+            <out node="ram0" name="GW_N" pin="AG18" />
+            <out node="ram0" name="OE_N" pin="AD18" />
+            <out node="ram0" name="WE_N" pin="AF18" />
+            <inout node="ram0" name="DQ" outname="dout" inname="din" width="32" enaname="dout_ena" pin="AK8,AJ8,AK7,AK12,AH13,AJ13,AJ14,AK14,AJ16,AJ15,AH15,AJ22,AK22,AJ21,AK21,AJ20,AK23,AJ19,AK19,AH18,AJ18,AH17,AJ17,AK17,AH16,AJ12,AH12,AK11,AJ11,AK10,AJ10,AH10" />
+        </IOPort>
+        <IOPort name="UartPins">
+            <in node="pat0" name="rxd" pin="D21" />
+            <out node="pat0" name="txd" pin="E21" />
+        </IOPort>
+        <IOPort name="LedPins">
+            <out node="pat0" name="led" pin="AC14,AA24,AA27,Y23,Y24,Y27,W23,W25,W27" />
+        </IOPort>
+    </IOPorts>
+</board>

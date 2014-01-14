@@ -27,21 +27,15 @@
 	</xs:restriction>
 </xs:simpleType>
 
-<xs:simpleType name="schedTypeString">
-	<xs:restriction base="xs:string">
-		<xs:pattern value="Aegean-phase-c|Aegean-c"/>
-	</xs:restriction>
-</xs:simpleType>
-
 <xs:simpleType name="routerTypeString">
 	<xs:restriction base="xs:string">
-		<xs:pattern value="sync|sync-phase|async-phase"/>
+		<xs:pattern value="sync|async"/>
 	</xs:restriction>
 </xs:simpleType>
 
-<xs:simpleType name="boardTypeString">
+<xs:simpleType name="vendorString">
 	<xs:restriction base="xs:string">
-		<xs:pattern value="de2-70|de2-115|ML605"/>
+		<xs:pattern value="Altera|Xilinx"/>
 	</xs:restriction>
 </xs:simpleType>
 
@@ -69,9 +63,7 @@
 <xs:attribute name="routerDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="linkDepth" type="xs:nonNegativeInteger"/>
 <xs:attribute name="SPMSize" type="memorySize"/>
-<xs:attribute name="schedType" type="schedTypeString"/>
 <xs:attribute name="routerType" type="routerTypeString"/>
-<xs:attribute name="boardType" type="boardTypeString"/>
 
 <xs:attribute name="start" type="address"/>
 <xs:attribute name="end" type="address"/>

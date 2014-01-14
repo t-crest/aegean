@@ -71,4 +71,4 @@ class Paths(object):
         self.TopFile = self.BUILD_PATH + '/top.vhd'
         self.TestFile = self.BUILD_PATH + '/aegean_testbench.vhd'
         self.ConfFile = self.BUILD_PATH + '/config.vhd'
-        self.QUARTUS_FILE = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.qsf'
+        self.QUARTUS_FILE_QSF = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.qsf'

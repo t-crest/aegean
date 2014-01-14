@@ -36,7 +36,7 @@
 from codeGen.Component import Component
 
 def getTop():
-    top = Component('aegean_top_de2_70')
+    top = Component('aegean_top')
     top.addPackage('ieee','std_logic_1164')
     top.addPackage('ieee','numeric_std')
     top.addPackage('work','config')

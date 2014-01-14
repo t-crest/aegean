@@ -50,7 +50,6 @@ class HWConfig(object):
         self.platform = util.findTag(aegean,'platform')
         topology = util.findTag(self.platform,'topology')
         self.routerDepth = topology.get('routerDepth')
-        self.schedType = topology.get('schedType')
         self.IPCores = util.findTag(self.platform,'IPCores')
         et = etree.ElementTree(self.platform)
         et.write(self.p.GEN_PLAT)

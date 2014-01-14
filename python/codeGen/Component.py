@@ -105,7 +105,7 @@ class Entity(object):
         direction = "".join(direction.split())
         portType = portType.strip()
         if (direction != 'in') and (direction != 'out') and (direction != 'inout'):
-            raise SystemExit(' error: invalid port direction in component: ' + self.typeName + ', for signal: ' + name)
+            raise SystemExit(' Error: invalid port direction in component: ' + self.typeName + ', for signal: ' + name)
         self.ports.append((name,Port(name, direction, portType, width)))
 
     def bindPort(self,portName,signalName):
@@ -116,7 +116,7 @@ class Entity(object):
                 self.portmap[portName] = signalName
                 return
 
-        raise SystemExit(' error: invalid port for binding component: ' + self.typeName + ', for port: ' + portName + ', for signal: ' + signalName)
+        raise SystemExit(' Error: invalid port for binding component: ' + self.typeName + ', for port: ' + portName + ', for signal: ' + signalName)
 
     def printPortDecl(self):
         s = ''

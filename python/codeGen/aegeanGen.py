@@ -51,6 +51,7 @@ class AegeanGen(object):
         self.platform = platform
         self.nodes = util.findTag(self.platform,'nodes')
         self.memory = util.findTag(self.platform,'memory')
+        self.board = util.findTag(self.platform,'board')
         self.IOPorts = []
         self.IPCores = dict({})
         self.Devs = dict({})
@@ -101,7 +102,7 @@ class AegeanGen(object):
                 b = util.findTag(IPCore,'bootrom')
                 if str(b) == 'None':
                     if IPCore.tag == 'patmos':
-                        raise SystemExit(' error: Patmos specified with no bootapp: ' + IPTypeRef)
+                        raise SystemExit(' Error: Patmos specified with no bootapp: ' + IPTypeRef)
                     else:
                         continue
                 bootapp = b.get('app')
@@ -127,23 +128,6 @@ class AegeanGen(object):
                 self.patmosGen(IPTypeRef,bootapp,self.p.TMP_BUILD_PATH + '/' + IPTypeRef + '.xml')
                 self.genIPCores[IPTypeRef] = IPCore
 
-        self.addGeneratedFiles()
-
-    def addGeneratedFiles(self):
-        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../PatmosCore.v' + '|'
-        index = 0
-        for IPType in self.genIPCores.keys():
-            SedString+= 'set_global_assignment -name VERILOG_FILE ../'+IPType+'PatmosCore.v'
-            if index < len(self.genIPCores.keys())-1:
-                SedString+='\\\n'
-            index=index+1
-
-        SedString+= '|'
-        Sed = ['sed','-i']
-        Sed+= [SedString]
-        Sed+= [self.p.QUARTUS_FILE]
-        subprocess.call(Sed)
-
     def generateMemory(self):
         if str(self.memory) == 'None':
             return
@@ -159,9 +143,46 @@ class AegeanGen(object):
         self.ssramGen(entity,addrWidth)
         self.arbiterGen(len(self.nodes),addrWidth,32,4)
 
-    def addPinsToQPF(self):
+    def addDeviceToQSF(self):
+        boardName = self.board.get('name')
+        family = self.board.get('family')
+        device = self.board.get('device')
+        SedString = 's|' + 'set_global_assignment -name FAMILY$' + '|'
+        SedString+= 'set_global_assignment -name FAMILY "'+ family + '"|'
+        Sed = ['sed','-i']
+        Sed+= [SedString]
+        Sed+= [self.p.QUARTUS_FILE_QSF]
+        subprocess.call(Sed)
+
+        SedString = 's|' + 'set_global_assignment -name DEVICE$' + '|'
+        SedString+= 'set_global_assignment -name DEVICE '+ device + '|'
+        Sed = ['sed','-i']
+        Sed+= [SedString]
+        Sed+= [self.p.QUARTUS_FILE_QSF]
+        subprocess.call(Sed)
+
+    def addGeneratedFilesToQSF(self):
+        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../PatmosCore.v' + '|'
+        for IPType in self.genIPCores.keys():
+            SedString+= 'set_global_assignment -name VERILOG_FILE ../'+IPType+'PatmosCore.v'
+            SedString+='\\\n'
+
+        f = open(self.p.BUILD_PATH+'/.argo_src','r')
+        paths = f.readline().split(' ')
+        for path in paths:
+            if path != '':
+                SedString+= 'set_global_assignment -name VHDL_FILE '+path
+                SedString+='\\\n'
+
+        SedString+= '|'
+        Sed = ['sed','-i']
+        Sed+= [SedString]
+        Sed+= [self.p.QUARTUS_FILE_QSF]
+        subprocess.call(Sed)
+
+    def addPinsToQSF(self):
         SedString = 's|' + 'set_location_assignment PIN_XXX -to XXX' + '|'
-        ports = list(util.findTag(self.platform,'IOPorts'))
+        ports = list(util.findTag(self.board,'IOPorts'))
         for i in range(0,len(ports)): # For each port
             topSig = ports[i].get('name')
             signals = list(ports[i])
@@ -191,7 +212,7 @@ class AegeanGen(object):
         SedString+= '|'
         Sed = ['sed','-i']
         Sed+= [SedString]
-        Sed+= [self.p.QUARTUS_FILE]
+        Sed+= [self.p.QUARTUS_FILE_QSF]
         subprocess.call(Sed)
 
     def generateTopLevel(self,aegean):
@@ -246,7 +267,17 @@ class AegeanGen(object):
         self.parseIPCores()
         self.generateNodes()
         self.generateMemory()
-        self.addPinsToQPF()
+        vendor = self.board.get('vendor')
+        if vendor == 'Altera':
+            self.addPinsToQSF()
+            self.addDeviceToQSF()
+            self.addGeneratedFilesToQSF()
+        elif vendor == 'Xilinx':
+            raise SystemExit(' Error: Unsupported vendor: ' + vendor)
+        else:
+            raise SystemExit(' Error: Unsupported vendor: ' + vendor)
+
+
 
         aegean = aegeanCode.getAegean()
         # add IO pins

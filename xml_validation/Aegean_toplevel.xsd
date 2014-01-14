@@ -186,7 +186,6 @@
 			<xs:attribute ref="topoType" use="required"/>
 			<xs:attribute ref="routerDepth" use="required"/>
 			<xs:attribute ref="linkDepth" use="optional"/>
-			<xs:attribute ref="schedType" use="required"/>
 			<xs:attribute ref="routerType" use="required"/>
 		</xs:complexType>
 	</xs:element>
@@ -199,14 +198,25 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- A description of the processes -->
 	<xs:element name="IOPorts">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="IOPort" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute ref="xml:base" use="optional"/>
-			<xs:attribute ref="boardType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="board">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="IOPorts" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="vendor" type="vendorString" use="required" />
+			<xs:attribute name="family" type="xs:string" use="required" />
+			<xs:attribute name="device" type="xs:string" use="required" />
+			<xs:attribute ref="xml:base" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -262,7 +272,7 @@
 				<xs:element ref="include" minOccurs="0" />
 				<xs:element ref="Devs" maxOccurs="2" />
 				<xs:element ref="include" minOccurs="0" />
-				<xs:element ref="IOPorts" maxOccurs="2" />
+				<xs:element ref="board"/>
 			</xs:sequence>
 			<xs:attribute ref="width" use="required"/>
 			<xs:attribute ref="height" use="required"/>

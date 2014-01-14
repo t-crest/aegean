@@ -6,7 +6,7 @@
 	<platform width="2" height="2">
 
 		<!-- <topology topotype="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
-		<topology topoType="bitorus" routerDepth="1" linkDepth="0" schedType="Aegean-c" routerType="sync" />
+		<topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
 
 		<nodes>
 			<node id="pat0" loc="(0,0)" IPTypeRef="patmos" SPMSize="4K" />
@@ -40,7 +40,7 @@
 		</memMap>
 
 		<!-- <communication comtype="all2all"/"custom" phits="s"> -->
-		<communication comType="all2all" phits="1">
+		<communication comType="all2all" phits="3">
 
 		</communication>
 	</application>

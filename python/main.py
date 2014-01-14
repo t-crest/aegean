@@ -75,6 +75,6 @@ hwc = HWConfig(p,aegean)
 swc = SWConfig(p,aegean)
 # At the moment software config needs to be done before hardware config
 # because the schedule (init.h) is included in the patmos.v
-swc.config(hwc.routerDepth,hwc.schedType)
+swc.config(hwc.routerDepth)
 hwc.config()
 
