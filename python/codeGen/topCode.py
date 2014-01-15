@@ -76,7 +76,7 @@ def getSram():
     return sram
 
 def bindSram(sram):
-    sram.entity.bindPort('clk','clk')
+    sram.entity.bindPort('clk','clk_int')
     sram.entity.bindPort('reset','int_res')
     sram.entity.bindPort('io_ocp_M_Cmd','sram_burst_m.MCmd')
     sram.entity.bindPort('io_ocp_M_Addr','sram_burst_m.MAddr')
