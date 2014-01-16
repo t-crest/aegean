@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP2C70F896) Path("quartus/output_files/") File("aegean_top.sof") MfrSpec(OpMask(1));
+		Device PartName(DEVICE) Path("build/PROJECTNAME/quartus/output_files/") File("PROJECTNAME_top.sof")
 
 ChainEnd;
 

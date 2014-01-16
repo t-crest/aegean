@@ -198,6 +198,15 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="clock">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="frequency" type="xs:positiveInteger" use="required" />
+			<xs:attribute name="pin" type="xs:string" use="required" />
+			<xs:attribute ref="xml:base" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="IOPorts">
 		<xs:complexType>
 			<xs:sequence>
@@ -210,6 +219,7 @@
 	<xs:element name="board">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element ref="clock" maxOccurs="1" minOccurs="1" />
 				<xs:element ref="IOPorts" maxOccurs="1"/>
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" use="required" />

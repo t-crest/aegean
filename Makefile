@@ -29,11 +29,14 @@ AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 AEGEAN_CONFIG_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	config.vhd)
 TEST_SRC=$(patsubst %,$(AEGEAN_SRC_PATH)/%,\
-	packages/test.vhd)
+	packages/test.vhd sim/pll.vhd)
 MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
-	conversions.vhd gen_utils.vhd sim_ssram_512x36.vhd)
+	conversions.vhd gen_utils.vhd sim_ssram_512x36.vhd \
+	CY7C10612DV33/package_timing.vhd \
+	CY7C10612DV33/package_utility.vhd \
+	CY7C10612DV33/cy7c10612dv33.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
-	aegean_testbench.vhd)
+	top.vhd aegean_testbench.vhd)
 
 # Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
@@ -71,6 +74,9 @@ all: sim
 # Generation of source code for the platform described in AEGEAN_PLATFORM
 # Call make platform
 #########################################################################
+projectname:
+	@echo "Current project name:"
+	@echo $(AEGEAN_PLATFORM)
 
 platform: $(BUILD_PATH)/init.h
 

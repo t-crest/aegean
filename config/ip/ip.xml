@@ -109,5 +109,33 @@
 
         </patmos>
     </IPCore>
+    <IPCore IPType="patmos_de2_115">
+        <patmos>
+            <description>Single issue slot patmos</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
+            <bootrom app="bootable-hello_cmp"/>
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <ISPM size="8k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
+            </IOs>
+
+            <!-- currently unused -->
+            <SCache size="0" />
+
+        </patmos>
+    </IPCore>
 </IPCores>
 

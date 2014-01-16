@@ -33,6 +33,7 @@
 #
 ###############################################################################
 
+import os
 from copy import deepcopy
 
 class Signal(object):
@@ -81,8 +82,8 @@ class Port(object):
 
     def __str__(self):
         widthStr = ''
-        if self.width > 1:
-            widthStr = '('+str(self.width-1)+' downto 0)'
+        if int(self.width) > 1:
+            widthStr = '('+str(int(self.width)-1)+' downto 0)'
         return self.name + '\t: ' + self.direction + ' ' + self.portType + widthStr
 
 
@@ -105,18 +106,18 @@ class Entity(object):
         direction = "".join(direction.split())
         portType = portType.strip()
         if (direction != 'in') and (direction != 'out') and (direction != 'inout'):
-            raise SystemExit(' Error: invalid port direction in component: ' + self.typeName + ', for signal: ' + name)
+            raise SystemExit(__file__ +': Error: invalid port direction in component: ' + self.typeName + ', for signal: ' + name)
         self.ports.append((name,Port(name, direction, portType, width)))
 
     def bindPort(self,portName,signalName):
-        portName = "".join(portName.split())
-        signalName = "".join(signalName.split())
+        portName = "".join(portName.split()) # Removes all whitespace
+        signalName = "".join(signalName.split()) # Removes all whitespace
         for name, port in self.ports:
             if portName == name:
                 self.portmap[portName] = signalName
                 return
 
-        raise SystemExit(' Error: invalid port for binding component: ' + self.typeName + ', for port: ' + portName + ', for signal: ' + signalName)
+        raise SystemExit(__file__ +': Error: invalid port for binding component: ' + self.typeName + ', for port: ' + portName + ', for signal: ' + signalName + '\n' + str(self.ports))
 
     def printPortDecl(self):
         s = ''

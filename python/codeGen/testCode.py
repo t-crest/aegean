@@ -43,63 +43,78 @@ def getTest():
     test.addPackage('modelsim_lib','util')
     test.addPackage('work','test')
     test.addPackage('work','ocp')
-    declareSignals(test)
+
     return test
 
-def declareSignals(test):
+def declareSignals(test,sramName):
     test.arch.declSignal('clk','std_logic')
-    test.arch.declSignal('int_res','std_logic')
-    test.arch.declSignal('led','std_logic_vector',9)
 
-    test.arch.declConstant('PERIOD','time',1,'10 ns')
+    test.arch.declConstant('PERIOD','time',1,'12.5 ns')
     test.arch.declConstant('RESET_TIME','time',1,'40 ns')
 
-    test.arch.declSignal('sram_burst_m','ocp_burst_m')
-    test.arch.declSignal('sram_burst_s','ocp_burst_s')
+    if sramName == 'Ssram32':
+        test.arch.declSignal('oSRAM_A','std_logic_vector',19)
+        test.arch.declSignal('oSRAM_ADSC_N','std_logic')
+        test.arch.declSignal('oSRAM_OE_N','std_logic')
+        test.arch.declSignal('oSRAM_WE_N','std_logic')
+        test.arch.declSignal('oSRAM_BE_N','std_logic_vector',4)
+        test.arch.declSignal('oSRAM_GW_N','std_logic')
+        test.arch.declSignal('oSRAM_CE1_N','std_logic')
+        test.arch.declSignal('oSRAM_CE2','std_logic')
+        test.arch.declSignal('oSRAM_CE3_N','std_logic')
+        test.arch.declSignal('oSRAM_ADSP_N','std_logic')
+        test.arch.declSignal('oSRAM_ADV_N','std_logic')
+        test.arch.declSignal('SRAM_DQ','std_logic_vector',32)
+        test.arch.declSignal('oSRAM_CLK','std_logic')
+    elif sramName == 'Ssram16':
+        test.arch.declSignal('oSRAM_A','std_logic_vector',20)
+        test.arch.declSignal('oSRAM_OE_N','std_logic')
+        test.arch.declSignal('oSRAM_WE_N','std_logic')
+        test.arch.declSignal('oSRAM_CE_N','std_logic')
+        test.arch.declSignal('oSRAM_LB_N','std_logic')
+        test.arch.declSignal('oSRAM_UB_N','std_logic')
+        test.arch.declSignal('SRAM_DQ','std_logic_vector',16)
 
-    test.arch.declSignal('oSRAM_A','std_logic_vector',19)
-    test.arch.declSignal('sram_out_dout_ena','std_logic')
-    test.arch.declSignal('oSRAM_ADSC_N','std_logic')
-    test.arch.declSignal('oSRAM_OE_N','std_logic')
-    test.arch.declSignal('oSRAM_WE_N','std_logic')
-    test.arch.declSignal('oSRAM_BE_N','std_logic_vector',4)
-    test.arch.declSignal('oSRAM_GW_N','std_logic')
-    test.arch.declSignal('oSRAM_CE1_N','std_logic')
-    test.arch.declSignal('oSRAM_CE2','std_logic')
-    test.arch.declSignal('oSRAM_CE3_N','std_logic')
-    test.arch.declSignal('oSRAM_ADSP_N','std_logic')
-    test.arch.declSignal('oSRAM_ADV_N','std_logic')
-    test.arch.declSignal('sram_out_dout','std_logic_vector',32)
-    test.arch.declSignal('sram_in_din','std_logic_vector',32)
-    test.arch.declSignal('io_sramPins_ram_inout_d','std_logic_vector',32)
-    test.arch.declSignal('io_sramPins_ram_in_din_reg','std_logic_vector',32)
     test.arch.declSignal('pull_down','std_logic')
+    test.arch.decl('''
+    file OUTPUT: TEXT open WRITE_MODE is "STD_OUTPUT";
+''')
 
+    test.arch.addToBody('''
+
+    clock_gen(clk,PERIOD);
+''')
 
 
 def writeSignalSpySignals(test,label):
     test.arch.declSignal(label+'_uart_tx_reg','std_logic_vector',8)
     test.arch.declSignal(label+'_uart_tx_status_reg','std_logic_vector(0 downto 0)')
 
+def bindTop(top,sramName):
+    top.entity.bindPort('clk','clk')
+    if sramName == 'Ssram32':
+        top.entity.bindPort('oSRAM_A','oSRAM_A')
+        top.entity.bindPort('oSRAM_ADSC_N','oSRAM_ADSC_N')
+        top.entity.bindPort('oSRAM_OE_N','oSRAM_OE_N')
+        top.entity.bindPort('oSRAM_WE_N','oSRAM_WE_N')
+        top.entity.bindPort('oSRAM_BE_N','oSRAM_BE_N')
+        top.entity.bindPort('oSRAM_GW_N','oSRAM_GW_N')
+        top.entity.bindPort('oSRAM_CE1_N','oSRAM_CE1_N')
+        top.entity.bindPort('oSRAM_CE2','oSRAM_CE2')
+        top.entity.bindPort('oSRAM_CE3_N','oSRAM_CE3_N')
+        top.entity.bindPort('oSRAM_ADSP_N','oSRAM_ADSP_N')
+        top.entity.bindPort('oSRAM_ADV_N','oSRAM_ADV_N')
+        top.entity.bindPort('SRAM_DQ','SRAM_DQ')
+        top.entity.bindPort('oSRAM_CLK','oSRAM_CLK')
+    elif sramName == 'Ssram16':
+        top.entity.bindPort('oSRAM_A','oSRAM_A')
+        top.entity.bindPort('oSRAM_OE_N','oSRAM_OE_N')
+        top.entity.bindPort('oSRAM_WE_N','oSRAM_WE_N')
+        top.entity.bindPort('oSRAM_CE_N','oSRAM_CE_N')
+        top.entity.bindPort('oSRAM_LB_N','oSRAM_LB_N')
+        top.entity.bindPort('oSRAM_UB_N','oSRAM_UB_N')
+        top.entity.bindPort('SRAM_DQ','SRAM_DQ')
 
-def writeAegeanInst(test):
-    test.arch.decl('''
-    file OUTPUT: TEXT open WRITE_MODE is "STD_OUTPUT";
-''')
-    test.arch.addToBody('''
-
-    clock_gen(clk,PERIOD);
-    reset_gen(int_res,RESET_TIME);
-''')
-
-def bindAegean(aegean):
-    aegean.entity.bindPort('clk','clk')
-    aegean.entity.bindPort('reset','int_res')
-    aegean.entity.bindPort('led','led')
-    aegean.entity.bindPort('txd','open')
-    aegean.entity.bindPort('rxd',"'0'")
-    aegean.entity.bindPort('sram_burst_m','sram_burst_m')
-    aegean.entity.bindPort('sram_burst_s','sram_burst_s')
 
 def writeUartSpy(test,label,hwprefix):
     test.arch.addToBody('''
@@ -108,8 +123,8 @@ def writeUartSpy(test,label,hwprefix):
         constant CORE_ID : STRING ('''+str(len(label)+6)+''' downto 1):="'''+label.upper()+''': at: ";
         variable i : integer := 0;
     begin
-        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/top/cmp/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/top/cmp/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
         write(buf,CORE_ID);
         loop
             wait until falling_edge('''+label+'''_uart_tx_status_reg(0));
@@ -143,7 +158,7 @@ def writeWait():
 
 def writeUartForce(label,value,hwprefix):
     return '''
-            signal_force("/aegean_testbench/aegean/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);'''
+            signal_force("/aegean_testbench/top/cmp/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_baud_tick", "'''+str(value)+'''", 0 ns, freeze, open, 0);'''
 
 
 def writeBaudIncEnd():
@@ -153,38 +168,22 @@ def writeBaudIncEnd():
     end process ; -- baud_inc
 '''
 
-def writeSimMem(test,MAIN_MEM):
-    test.arch.addToBody('''
+def writeSimMem(test,sramName,MAIN_MEM):
+    if sramName == 'Ssram16':
+        test.arch.addToBody('''
+    main_mem : entity work.cy7c10612dv33 port map(
+        CE_b  => oSRAM_CE_N,
+        WE_b  => oSRAM_WE_N,
+        OE_b  => oSRAM_OE_N,
+        BHE_b => oSRAM_UB_N,
+        BLE_b => oSRAM_LB_N,
+        A     => oSRAM_A,
+        DQ    => SRAM_DQ);
+''')
+    elif sramName == 'Ssram32':
+        test.arch.addToBody('''
 
-    -- capture input from ssram on falling clk edge
-    process(clk, int_res)
-    begin
-        if int_res='1' then
-            io_sramPins_ram_in_din_reg <= (others => '0');
-        elsif falling_edge(clk) then
-            io_sramPins_ram_in_din_reg <= io_sramPins_ram_inout_d;
-        end if;
-    end process;
-
-    -- tristate output to ssram
-    process(sram_out_dout_ena, sram_out_dout)
-    begin
-        if sram_out_dout_ena='1' then
-            io_sramPins_ram_inout_d <= sram_out_dout;
-        else
-            io_sramPins_ram_inout_d <= (others => 'Z');
-        end if;
-    end process;
-
-    -- input of tristate on positive clk edge
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            sram_in_din <= io_sramPins_ram_in_din_reg;
-        end if;
-    end process;
-
-    pull_down <= io_sramPins_ram_inout_d(0);
+    pull_down <= SRAM_DQ(0);
 
     main_mem: entity work.memory
         generic map (
@@ -305,41 +304,41 @@ def writeSimMem(test,MAIN_MEM):
             A17 => oSRAM_A(17),
             A18 => oSRAM_A(18),
 
-            DQA0 => io_sramPins_ram_inout_d(0),
-            DQA1 => io_sramPins_ram_inout_d(1),
-            DQA2 => io_sramPins_ram_inout_d(2),
-            DQA3 => io_sramPins_ram_inout_d(3),
-            DQA4 => io_sramPins_ram_inout_d(4),
-            DQA5 => io_sramPins_ram_inout_d(5),
-            DQA6 => io_sramPins_ram_inout_d(6),
-            DQA7 => io_sramPins_ram_inout_d(7),
+            DQA0 => SRAM_DQ(0),
+            DQA1 => SRAM_DQ(1),
+            DQA2 => SRAM_DQ(2),
+            DQA3 => SRAM_DQ(3),
+            DQA4 => SRAM_DQ(4),
+            DQA5 => SRAM_DQ(5),
+            DQA6 => SRAM_DQ(6),
+            DQA7 => SRAM_DQ(7),
             DPA => pull_down,
-            DQB0 => io_sramPins_ram_inout_d(8),
-            DQB1 => io_sramPins_ram_inout_d(9),
-            DQB2 => io_sramPins_ram_inout_d(10),
-            DQB3 => io_sramPins_ram_inout_d(11),
-            DQB4 => io_sramPins_ram_inout_d(12),
-            DQB5 => io_sramPins_ram_inout_d(13),
-            DQB6 => io_sramPins_ram_inout_d(14),
-            DQB7 => io_sramPins_ram_inout_d(15),
+            DQB0 => SRAM_DQ(8),
+            DQB1 => SRAM_DQ(9),
+            DQB2 => SRAM_DQ(10),
+            DQB3 => SRAM_DQ(11),
+            DQB4 => SRAM_DQ(12),
+            DQB5 => SRAM_DQ(13),
+            DQB6 => SRAM_DQ(14),
+            DQB7 => SRAM_DQ(15),
             DPB => pull_down,
-            DQC0 => io_sramPins_ram_inout_d(16),
-            DQC1 => io_sramPins_ram_inout_d(17),
-            DQC2 => io_sramPins_ram_inout_d(18),
-            DQC3 => io_sramPins_ram_inout_d(19),
-            DQC4 => io_sramPins_ram_inout_d(20),
-            DQC5 => io_sramPins_ram_inout_d(21),
-            DQC6 => io_sramPins_ram_inout_d(22),
-            DQC7 => io_sramPins_ram_inout_d(23),
+            DQC0 => SRAM_DQ(16),
+            DQC1 => SRAM_DQ(17),
+            DQC2 => SRAM_DQ(18),
+            DQC3 => SRAM_DQ(19),
+            DQC4 => SRAM_DQ(20),
+            DQC5 => SRAM_DQ(21),
+            DQC6 => SRAM_DQ(22),
+            DQC7 => SRAM_DQ(23),
             DPC => pull_down,
-            DQD0 => io_sramPins_ram_inout_d(24),
-            DQD1 => io_sramPins_ram_inout_d(25),
-            DQD2 => io_sramPins_ram_inout_d(26),
-            DQD3 => io_sramPins_ram_inout_d(27),
-            DQD4 => io_sramPins_ram_inout_d(28),
-            DQD5 => io_sramPins_ram_inout_d(29),
-            DQD6 => io_sramPins_ram_inout_d(30),
-            DQD7 => io_sramPins_ram_inout_d(31),
+            DQD0 => SRAM_DQ(24),
+            DQD1 => SRAM_DQ(25),
+            DQD2 => SRAM_DQ(26),
+            DQD3 => SRAM_DQ(27),
+            DQD4 => SRAM_DQ(28),
+            DQD5 => SRAM_DQ(29),
+            DQD6 => SRAM_DQ(30),
+            DQD7 => SRAM_DQ(31),
             DPD => pull_down,
 
             BWANeg => oSRAM_BE_N(0),
@@ -348,7 +347,7 @@ def writeSimMem(test,MAIN_MEM):
             BWDNeg => oSRAM_BE_N(3),
             GWNeg => oSRAM_GW_N,
             BWENeg => oSRAM_WE_N,
-            CLK => clk,
+            CLK => oSRAM_CLK,
             CE1Neg => oSRAM_CE1_N,
             CE2 => oSRAM_CE2,
             CE3Neg =>  oSRAM_CE3_N,

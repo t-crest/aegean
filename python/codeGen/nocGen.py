@@ -169,10 +169,10 @@ class NoCGen(object):
                 same_row = (i1 == i2)
                 #if not (same_row != same_col):
                 if not ((same_row or same_col) and (same_row != same_col)):
-                    raise SystemExit(' Error: Link in specification is illegal. ' + str(etree.tostring(links[k])))
+                    raise SystemExit(__file__ +': Error: Link in specification is illegal. ' + str(etree.tostring(links[k])))
 
                 if (abs(int(j1)-int(j2)) > 1) or (abs(int(i1)-int(i2)) > 1):
-                    raise SystemExit(' Error: Link is trying to connect cores too far appart. ' + str(etree.tostring(links[k])))
+                    raise SystemExit(__file__ +': Error: Link is trying to connect cores too far appart. ' + str(etree.tostring(links[k])))
 
 
                 if same_row:
@@ -181,7 +181,7 @@ class NoCGen(object):
                     elif int(j1) < int(j2):
                         nocCode.writeWest(noc,i1,i2,j1,j2)
                     else:
-                        raise SystemExit(" Error: Something is wrong!!!")
+                        raise SystemExit(__file__ +': Error: Something is wrong!!!')
 
                 if same_col:
                     if int(i1) > int(i2):
@@ -189,14 +189,14 @@ class NoCGen(object):
                     elif int(i1) < int(i2):
                         nocCode.writeNorth(noc,i1,i2,j1,j2)
                     else:
-                        raise SystemExit(" Error: Something is wrong!!!")
+                        raise SystemExit(__file__ +': Error: Something is wrong!!!')
 
         elif self.getTopType() == 'bitorus':
             nocCode.writeBitorus(noc)
         elif self.getTopType() == 'mesh':
             nocCode.writeMesh(noc)
         else:
-            SystemExit(' Error: xml validation error found in ' + __file__)
+            SystemExit(__file__ +': Error: xml validation error')
 
         noc.writeComp(self.p.NOCFile)
 
@@ -217,7 +217,7 @@ class NoCGen(object):
             argo_src.write(self.p.ARGO_PATH+'/noc/src/hpu.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/noc/src/router.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/noc/src/noc_node.vhd ')
-            #raise SystemExit(' Error: routerType: ' + routerType + ' is not yet implemented.')
+            #raise SystemExit(__file__ +': Error: routerType: ' + routerType + ' is not yet implemented.')
         elif routerType == 'async':
             argo_src.write(self.p.ARGO_PATH+'/async_noc/src/sr_latch.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/async_noc/src/c_gate_generic.vhd ')

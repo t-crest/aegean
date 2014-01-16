@@ -60,8 +60,9 @@ class HWConfig(object):
         noc = nocComp.generate()
         aegeanGen = AegeanGen(self.p,self.platform)
         aegean = aegeanGen.generate(noc)
+        top = aegeanGen.generateTopLevel(aegean)
         testGen = TestGen(self.p,self.platform)
-        test = testGen.generate(aegean)
+        test = testGen.generate(top)
 
 #        VCOM = ['vcom','-quiet',self.p.NOCFile]
 #        VCOM+= [self.p.AegeanFile]

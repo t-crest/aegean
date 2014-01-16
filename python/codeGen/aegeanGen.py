@@ -39,6 +39,7 @@ import subprocess
 import util
 from codeGen import aegeanCode
 from codeGen import topCode
+from codeGen import ocp
 from codeGen.Component import Component
 import re
 
@@ -52,11 +53,12 @@ class AegeanGen(object):
         self.nodes = util.findTag(self.platform,'nodes')
         self.memory = util.findTag(self.platform,'memory')
         self.board = util.findTag(self.platform,'board')
-        self.IOPorts = []
+        self.IOSignals = []
         self.IPCores = dict({})
         self.Devs = dict({})
         self.genIPCores = dict({})
         self.genComps = dict({})
+        self.genFiles = []
         self.SPMSizes = []
 
     def parseDevs(self):
@@ -76,6 +78,27 @@ class AegeanGen(object):
                 self.IPCores[name] = IPCore
             else: # The IPCore is a patmos processor
                 self.IPCores[name] = r
+
+    def parseIOPorts(self):
+        clock = util.findTag(self.board,'clock')
+        self.IOSignals.append(['clock',clock.get('name'),'in',1,[clock.get('pin')]])
+        for port in util.findTag(self.board,'IOPorts'): # For each port
+            portName = port.get('name')
+            for signal in port: # For each signal
+                # Find direction of signal
+                if signal.tag == 'out':
+                    prefix='o'
+                elif signal.tag == 'in':
+                    prefix='i'
+                elif signal.tag == 'inout':
+                    prefix=''
+
+                sigName = signal.get('name')
+                pins = signal.get('pin').split(',')
+                pins.reverse()
+                signalName = prefix+portName+'_'+sigName
+                IOSignal = [portName,signalName,signal.tag,len(pins),pins]
+                self.IOSignals.append(IOSignal)
 
     def parseSize(self,s):
         m = re.split('(\d+)([KMG]?)',s.upper())
@@ -102,7 +125,7 @@ class AegeanGen(object):
                 b = util.findTag(IPCore,'bootrom')
                 if str(b) == 'None':
                     if IPCore.tag == 'patmos':
-                        raise SystemExit(' Error: Patmos specified with no bootapp: ' + IPTypeRef)
+                        raise SystemExit(__file__ +': Error: Patmos specified with no bootapp: ' + IPTypeRef)
                     else:
                         continue
                 bootapp = b.get('app')
@@ -147,84 +170,85 @@ class AegeanGen(object):
         boardName = self.board.get('name')
         family = self.board.get('family')
         device = self.board.get('device')
-        SedString = 's|' + 'set_global_assignment -name FAMILY$' + '|'
-        SedString+= 'set_global_assignment -name FAMILY "'+ family + '"|'
+        sedString = 's|' + 'set_global_assignment -name FAMILY$' + '|'
+        sedString+= 'set_global_assignment -name FAMILY "'+ family + '"|'
         Sed = ['sed','-i']
-        Sed+= [SedString]
+        Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
         subprocess.call(Sed)
 
-        SedString = 's|' + 'set_global_assignment -name DEVICE$' + '|'
-        SedString+= 'set_global_assignment -name DEVICE '+ device + '|'
+        sedString = 's|' + 'set_global_assignment -name DEVICE$' + '|'
+        sedString+= 'set_global_assignment -name DEVICE '+ device + '|'
         Sed = ['sed','-i']
-        Sed+= [SedString]
+        Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
+        subprocess.call(Sed)
+
+    def addDeviceToCDF(self):
+        device = self.board.get('device')
+        sedString = 's|' + '        Device PartName(DEVICE) Path("build/PROJECTNAME/quartus/output_files/") File("PROJECTNAME_top.sof")$' + '|'
+        sedString+= '        Device PartName('+ device + ') Path("build/'+ self.p.projectname + '/quartus/output_files/") File("'+ self.p.projectname + '_top.sof")$|'
+        Sed = ['sed','-i']
+        Sed+= [sedString]
+        Sed+= [self.p.QUARTUS_FILE_CDF]
         subprocess.call(Sed)
 
     def addGeneratedFilesToQSF(self):
-        SedString = 's|' + 'set_global_assignment -name VERILOG_FILE ../PatmosCore.v' + '|'
-        for IPType in self.genIPCores.keys():
-            SedString+= 'set_global_assignment -name VERILOG_FILE ../'+IPType+'PatmosCore.v'
-            SedString+='\\\n'
+        sedString = 's|' + 'set_global_assignment -name VERILOG_FILE GENERATED' + '|'
+        for genFile in self.genFiles:
+            sedString+= 'set_global_assignment -name VERILOG_FILE '+genFile
+            sedString+='\\\n'
 
         f = open(self.p.BUILD_PATH+'/.argo_src','r')
         paths = f.readline().split(' ')
         for path in paths:
             if path != '':
-                SedString+= 'set_global_assignment -name VHDL_FILE '+path
-                SedString+='\\\n'
+                sedString+= 'set_global_assignment -name VHDL_FILE '+path
+                sedString+='\\\n'
 
-        SedString+= '|'
+        sedString+= '|'
         Sed = ['sed','-i']
-        Sed+= [SedString]
+        Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
         subprocess.call(Sed)
 
     def addPinsToQSF(self):
-        SedString = 's|' + 'set_location_assignment PIN_XXX -to XXX' + '|'
-        ports = list(util.findTag(self.board,'IOPorts'))
-        for i in range(0,len(ports)): # For each port
-            topSig = ports[i].get('name')
-            signals = list(ports[i])
-            for j in range(0,len(signals)): # For each signal
-                signal = signals[j]
-                # Find direction of port
-                if signal.tag == 'out':
-                    prefix='o'
-                elif signal.tag == 'in':
-                    prefix='i'
-                elif signal.tag == 'inout':
-                    prefix=''
+        sedString = 's|' + 'set_location_assignment PIN_XXX -to XXX' + '|'
+        for IOSignal in self.IOSignals: # For each signal
+            pins = IOSignal[4]
+            for k in reversed(range(0,len(pins))):
+                PinName = 'PIN_'+pins[k]
+                signalName = IOSignal[1]
+                if IOSignal[3] > 1:
+                    signalName += '['+str(k)+']'
+                sedString+='set_location_assignment '+ PinName + ' -to ' + signalName + '\\\n'
 
-                #node = signals[j].get('node')
-                sig = signals[j].get('name')
-                pins = signals[j].get('pin').split(',')
-                pins.reverse()
-                IOPort = [topSig,prefix+topSig+'_'+sig,signal.tag,len(pins)]
-                self.IOPorts.append(IOPort)
-                for k in reversed(range(0,len(pins))):
-                    PinName = 'PIN_'+pins[k]
-                    SignalName = prefix+topSig+'_'+sig
-                    if len(pins) > 1:
-                        SignalName += '['+str(k)+']'
-                    SedString+='set_location_assignment '+ PinName + ' -to ' + SignalName + '\\\n'
-
-        SedString+= '|'
+        sedString+= '|'
         Sed = ['sed','-i']
-        Sed+= [SedString]
+        Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
         subprocess.call(Sed)
 
     def generateTopLevel(self,aegean):
+        vendor = self.board.get('vendor')
+        if vendor == 'Altera':
+            self.addPinsToQSF()
+            self.addDeviceToQSF()
+            self.addDeviceToCDF()
+            self.addGeneratedFilesToQSF()
+        elif vendor == 'Xilinx':
+            raise SystemExit(__file__ +': Error: Unsupported vendor: ' + vendor)
+        else:
+            raise SystemExit(__file__ +': Error: Unsupported vendor: ' + vendor)
+
         top = topCode.getTop()
 
-         # One Port for each signal in for loop
-        for i in range(0,len(self.IOPorts)):
-            IOPort = self.IOPorts[i]
+        # One Port for each signal in for loop
+        for IOSignal in self.IOSignals:
             portType = 'std_logic'
-            if IOPort[3] > 1:
+            if IOSignal[3] > 1:
                 portType = 'std_logic_vector'
-            top.entity.addPort(IOPort[1],IOPort[2],portType,IOPort[3])
+            top.entity.addPort(IOSignal[1],IOSignal[2],portType,IOSignal[3]) # (name,direction,portType,len(pins))
 
 
         top.arch.declConstant('pll_mult','natural',1,'8')
@@ -240,44 +264,66 @@ class AegeanGen(object):
 
         # Declaration of the Tri state signals
         # One tri state for the sram possibly in a for loop for more tri states
-        for IOPort in self.IOPorts:
-            if IOPort[2] == 'inout':
-                topCode.writeTriStateSig(top,IOPort[0],IOPort[3])
+        for IOSignal in self.IOSignals:
+            if IOSignal[2] == 'inout':
+                topCode.writeTriStateSig(top,IOSignal[0],IOSignal[3])
 
         topCode.attr(top)
-        topCode.pll_reset(top)
+        topCode.reset(top)
 
          # The tristate logic and registers
-        for IOPort in self.IOPorts:
-            if IOPort[2] == 'inout':
-                topCode.writeTriState(top,IOPort[0],IOPort[1])
+        for IOSignal in self.IOSignals:
+            if IOSignal[2] == 'inout':
+                topCode.writeTriState(top,IOSignal[0],IOSignal[1])
 
-        sram = topCode.getSram()
+
+        sramType = self.memory.get('DevTypeRef')
+        sramDev = self.Devs[sramType]
+        sramPorts = list(util.findTag(sramDev,'ports'))
+        sramParams = list(util.findTag(sramDev,'params'))
+        sramEntity = sramDev.get('entity')
+        sramIFace = sramDev.get('iface')
+        sram = Component(sramEntity)
+        sram.entity.addPort('clk')
+        sram.entity.addPort('reset')
+        for param in sramParams:
+            if param.get('addr_width') != 'None':
+                addrWidth = param.get('value')
+        ocp.addSlavePort(sram,sramIFace,addrWidth)
+        for port in sramPorts:
+            width = port.get('width')
+            if port.tag == 'outport':
+                if width != None:
+                    sram.entity.addPort(port.get('name'),'out','std_logic_vector',int(width))
+                else:
+                    sram.entity.addPort(port.get('name'),'out')
+            elif port.tag == 'inport':
+                if width != None:
+                    sram.entity.addPort(port.get('name'),'in','std_logic_vector',int(width))
+                else:
+                    sram.entity.addPort(port.get('name'),'in')
+
+        clkPin = 'open'
+        if sramEntity == 'SsramBurstRW':
+            clkPin = 'oSRAM_CLK'
+        topCode.pll(top,clkPin)
         top.arch.declComp(sram)
 
         topCode.bindAegean(aegean)
         top.arch.instComp(aegean,'cmp',True)
-        topCode.bindSram(sram)
+        topCode.bindSram(sram,sramEntity,'sram_burst_m','sram_burst_s')
         top.arch.instComp(sram,'ssram')
         top.writeComp(self.p.TopFile)
+
+        return top
 
 
     def generate(self,noc):
         self.parseDevs()
         self.parseIPCores()
+        self.parseIOPorts()
         self.generateNodes()
         self.generateMemory()
-        vendor = self.board.get('vendor')
-        if vendor == 'Altera':
-            self.addPinsToQSF()
-            self.addDeviceToQSF()
-            self.addGeneratedFilesToQSF()
-        elif vendor == 'Xilinx':
-            raise SystemExit(' Error: Unsupported vendor: ' + vendor)
-        else:
-            raise SystemExit(' Error: Unsupported vendor: ' + vendor)
-
-
 
         aegean = aegeanCode.getAegean()
         # add IO pins
@@ -342,7 +388,6 @@ class AegeanGen(object):
 
         aegean.writeComp(self.p.AegeanFile)
 
-        self.generateTopLevel(aegean)
         return aegean
 
     def patmosGen(self,IPType,bootapp,configfile):
@@ -355,12 +400,16 @@ class AegeanGen(object):
         Patmos+= [self.p.BUILD_PATH+'/'+IPType+'PatmosCore.v']
         subprocess.call(Patmos)
 
+        self.genFiles.append('../'+IPType+'PatmosCore.v')
+
     def ssramGen(self,entity,addr):
         Ssram = ['make','-C',self.p.PATMOSHW_PATH]
         Ssram+= ['HWBUILDDIR='+self.p.BUILD_PATH]
         Ssram+= ['MEMCTRL_ADDR_WIDTH='+str(addr)]
         Ssram+= [self.p.BUILD_PATH+'/'+entity+'.v']
         subprocess.call(Ssram)
+
+        self.genFiles.append('../'+entity+'.v')
 
     def arbiterGen(self,cnt,addr,data,burstLength):
         Arbiter = ['make','-C',self.p.PATMOSHW_PATH]
@@ -371,3 +420,5 @@ class AegeanGen(object):
         Arbiter+= ['ARBITER_BURST_LENGTH='+str(burstLength)]
         Arbiter+= [self.p.BUILD_PATH+'/Arbiter.v']
         subprocess.call(Arbiter)
+
+        self.genFiles.append('../Arbiter.v')

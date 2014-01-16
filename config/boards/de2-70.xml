@@ -1,4 +1,5 @@
 <board name="de2-70" vendor="Altera" family="Cyclone II" device="EP2C70F896C7" >
+    <clock name="clk" frequency="50000000" pin="AD15" />
     <!-- The pins are listed (width-1 DOWNTO 0) -->
     <IOPorts>
         <IOPort name="SRAM">

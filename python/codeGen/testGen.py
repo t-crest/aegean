@@ -46,10 +46,11 @@ class TestGen(object):
         self.platform = platform
         self.IPCores = util.findTag(self.platform,"IPCores")
         self.nodes = util.findTag(self.platform,"nodes")
+        self.memory = util.findTag(self.platform,"memory")
         self.spys = dict({})
 
 
-    def generate(self,aegean):
+    def generate(self,top):
         test = testCode.getTest()
 
         for p in range(0,len(self.nodes)):
@@ -69,12 +70,10 @@ class TestGen(object):
                         self.spys[label] = False
                     break
 
-        sram = topCode.getSram()
-        topCode.bindSram(sram)
-        testCode.bindAegean(aegean)
-        test.arch.instComp(aegean,'aegean',True)
-        test.arch.instComp(sram,'sram',True)
-        testCode.writeAegeanInst(test)
+        sramName = self.memory.get('DevTypeRef')
+        testCode.declareSignals(test,self.memory.get('DevTypeRef'))
+        testCode.bindTop(top,sramName)
+        test.arch.instComp(top,'top',True)
 
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
@@ -104,6 +103,6 @@ class TestGen(object):
         s+= testCode.writeBaudIncEnd()
         test.arch.addToBody(s)
 
-        testCode.writeSimMem(test,self.p.MAIN_MEM)
+        testCode.writeSimMem(test,sramName,self.p.MAIN_MEM)
 
         test.writeComp(self.p.TestFile)
