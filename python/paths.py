@@ -65,7 +65,7 @@ class Paths(object):
 
         ###################################################
         # Final config files
-        self.CSCHED = self.BUILD_PATH + '/init.h'
+        self.CSCHED = self.BUILD_PATH + '/nocinit.c'
         self.NOCFile = self.BUILD_PATH + '/noc.vhd'
         self.AegeanFile = self.BUILD_PATH + '/aegean.vhd'
         self.TopFile = self.BUILD_PATH + '/top.vhd'
