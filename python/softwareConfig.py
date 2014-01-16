@@ -84,7 +84,7 @@ class SWConfig(object):
         print('Copying schedule')
         Cp = ['cp']              # Copy
         Cp+= [self.p.CSCHED]     # Source
-        Cp+= [self.p.PATMOS_PATH + '/c/init.h'] # Destination
+        Cp+= [self.p.PATMOS_PATH + '/c/nocinit.c'] # Destination
         subprocess.call(Cp)
 
     def createScript(self):

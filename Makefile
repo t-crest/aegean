@@ -78,9 +78,9 @@ projectname:
 	@echo "Current project name:"
 	@echo $(AEGEAN_PLATFORM)
 
-platform: $(BUILD_PATH)/init.h
+platform: $(BUILD_PATH)/nocinit.c
 
-$(BUILD_PATH)/init.h: $(PGEN)
+$(BUILD_PATH)/nocinit.c: $(PGEN)
 
 #platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
 #	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
@@ -125,7 +125,7 @@ $(BUILD_PATH)/work:
 compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(ARGO_SRC)) $(ARGO_SRC)
 	$(WINE) $(VCOM) $(shell cat $(ARGO_SRC))
 
-#$(PATMOS_SOURCE): $(PATMOS_PATH)/c/init.h .FORCE
+#$(PATMOS_SOURCE): $(PATMOS_PATH)/c/nocinit.c .FORCE
 #	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
 
 compile-patmos: $(BUILD_PATH)/work $(PATMOS_SOURCE)
