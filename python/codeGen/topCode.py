@@ -91,7 +91,7 @@ def writeTriStateSig(top,name,dataWidth):
     top.arch.declSignal(name+'_out_dout_ena','std_logic')
     top.arch.declSignal(name+'_out_dout','std_logic_vector'+strDataWidth)
     top.arch.declSignal(name+'_in_din','std_logic_vector'+strDataWidth)
-#    top.arch.declSignal(name+'_in_din_reg','std_logic_vector'+strDataWidth)
+    top.arch.declSignal(name+'_in_din_reg','std_logic_vector'+strDataWidth)
 
 
 def attr(top):
@@ -132,15 +132,16 @@ def reset(top):
     end process;
 ''')
 
-def writeTriState(top,name,dataSig):
-    top.arch.addToBody('''
+def writeTriState(top,name,sram,dataSig):
+    if sram == 'SsramBurstRW':
+        top.arch.addToBody('''
     -- capture input from '''+name+''' on falling clk edge
     process(clk_int, int_res)
     begin
         if int_res='1' then
-            '''+name+'''_in_din <= (others => '0'); -- _reg
+            '''+name+'''_in_din_reg <= (others => '0');
         elsif falling_edge(clk_int) then
-            '''+name+'''_in_din <= '''+dataSig+'''; -- _reg
+            '''+name+'''_in_din_reg <= '''+dataSig+''';
         end if;
     end process;
 
@@ -154,14 +155,29 @@ def writeTriState(top,name,dataSig):
         end if;
     end process;
 
---    -- input of tristate on positive clk edge
---    process(clk_int)
---    begin
---        if rising_edge(clk_int) then
---            '''+name+'''_in_din <= '''+name+'''_in_din_reg;
---        end if;
---    end process;
+    -- input of tristate on positive clk edge
+    process(clk_int)
+    begin
+        if rising_edge(clk_int) then
+            '''+name+'''_in_din <= '''+name+'''_in_din_reg;
+        end if;
+    end process;
 ''')
+    elif sram == 'SRamCtrl':
+        top.arch.addToBody('''
+    '''+name+'''_in_din <= '''+dataSig+''';
+
+    -- tristate output to '''+name+'''
+    process('''+name+'''_out_dout_ena, '''+name+'''_out_dout)
+    begin
+        if '''+name+'''_out_dout_ena='1' then
+            '''+dataSig+''' <= '''+name+'''_out_dout;
+        else
+            '''+dataSig+''' <= (others => 'Z');
+        end if;
+    end process;
+''')
+
 
 def bindAegean(aegean):
     aegean.entity.bindPort('clk','clk_int')

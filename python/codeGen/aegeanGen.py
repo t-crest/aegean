@@ -186,8 +186,8 @@ class AegeanGen(object):
 
     def addDeviceToCDF(self):
         device = self.board.get('device')
-        sedString = 's|' + '        Device PartName(DEVICE) Path("build/PROJECTNAME/quartus/output_files/") File("PROJECTNAME_top.sof")$' + '|'
-        sedString+= '        Device PartName('+ device + ') Path("build/'+ self.p.projectname + '/quartus/output_files/") File("'+ self.p.projectname + '_top.sof")$|'
+        sedString = 's|' + 'Device PartName(DEVICE) Path("build/PROJECTNAME/quartus/output_files/") File("PROJECTNAME_top.sof")$' + '|'
+        sedString+= 'Device PartName('+ device + ') Path("build/'+ self.p.projectname + '/quartus/output_files/") File("'+ self.p.projectname + '_top.sof")|'
         Sed = ['sed','-i']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_CDF]
@@ -271,18 +271,18 @@ class AegeanGen(object):
         topCode.attr(top)
         topCode.reset(top)
 
-         # The tristate logic and registers
-        for IOSignal in self.IOSignals:
-            if IOSignal[2] == 'inout':
-                topCode.writeTriState(top,IOSignal[0],IOSignal[1])
-
-
         sramType = self.memory.get('DevTypeRef')
         sramDev = self.Devs[sramType]
         sramPorts = list(util.findTag(sramDev,'ports'))
         sramParams = list(util.findTag(sramDev,'params'))
         sramEntity = sramDev.get('entity')
         sramIFace = sramDev.get('iface')
+
+        # The tristate logic and registers
+        for IOSignal in self.IOSignals:
+            if IOSignal[2] == 'inout':
+                topCode.writeTriState(top,IOSignal[0],sramEntity,IOSignal[1])
+
         sram = Component(sramEntity)
         sram.entity.addPort('clk')
         sram.entity.addPort('reset')
