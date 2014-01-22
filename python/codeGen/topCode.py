@@ -68,7 +68,7 @@ def bindSram(sram,name,ocpMSignal,ocpSSignal):
         sram.entity.bindPort('io_ssramBurstRWPins_ramIn_din','sram_in_din')
     elif name == 'SRamCtrl':
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_addr','oSRAM_A')
-        sram.entity.bindPort('io_sRamCtrlPins_ramOut_dout_ena','sram_out_dout_ena')
+        sram.entity.bindPort('io_sRamCtrlPins_ramOut_doutEna','sram_out_dout_ena')
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_noe','oSRAM_OE_N')
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_nwe','oSRAM_WE_N')
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_nce','oSRAM_CE_N')

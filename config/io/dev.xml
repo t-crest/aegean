@@ -48,7 +48,7 @@
             <outport name="io_sRamCtrlPins_ramOut_addr" width="20" />
             <outport name="io_sRamCtrlPins_ramOut_dout" width="16" />
             <inport  name="io_sRamCtrlPins_ramIn_din" width="16" />
-            <outport name="io_sRamCtrlPins_ramOut_dout_ena" />
+            <outport name="io_sRamCtrlPins_ramOut_doutEna" />
             <outport name="io_sRamCtrlPins_ramOut_nce" />
             <outport name="io_sRamCtrlPins_ramOut_noe" />
             <outport name="io_sRamCtrlPins_ramOut_nwe" />
