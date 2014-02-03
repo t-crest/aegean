@@ -237,7 +237,8 @@ class AegeanGen(object):
             self.addDeviceToCDF()
             self.addGeneratedFilesToQSF()
         elif vendor == 'Xilinx':
-            raise SystemExit(__file__ +': Error: Unsupported vendor: ' + vendor)
+            #raise SystemExit(__file__ +': Error: Unsupported vendor: ' + vendor)
+            print("Project files not generated!!")
         else:
             raise SystemExit(__file__ +': Error: Unsupported vendor: ' + vendor)
 

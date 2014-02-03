@@ -85,13 +85,13 @@
         <patmos>
             <description>syncphase</description>
 
-            <frequency Hz="10000000" />
+            <frequency Hz="66000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-mandelbrot_par"/>
-            <MCache size="16" blocks="16" repl="" />
-            <DCache size="32" assoc="1" repl="" />
-            <ISPM size="2k" />
+            <bootrom app="bootable-cmp_hello"/>
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <ISPM size="8k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
 
@@ -116,7 +116,35 @@
             <frequency Hz="80000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-hello_cmp"/>
+            <bootrom app="bootable-cmp_hello"/>
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <ISPM size="8k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
+            </IOs>
+
+            <!-- currently unused -->
+            <SCache size="0" />
+
+        </patmos>
+    </IPCore>
+    <IPCore IPType="ml605">
+        <patmos>
+            <description>Single issue slot patmos</description>
+
+            <frequency Hz="100000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
+            <bootrom app="bootable-cmp_hello"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
             <ISPM size="8k" />
