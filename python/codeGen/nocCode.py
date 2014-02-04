@@ -78,40 +78,30 @@ def writeBitorus(noc):
     noc.arch.addToBody('''
     links_m : for i in 0 to M-1 generate
         links_n : for j in 0 to N-1 generate
-            top : if (i = 0) generate
-                north_in_f(i)(j) <= south_out_f(M-1)(j);
-                south_out_b(M-1)(j) <= north_in_b(i)(j);
-                south_in_f(M-1)(j) <= north_out_f(i)(j);
-                north_out_b(i)(j) <= south_in_b(M-1)(j);
-            end generate top;
-            left : if (j = 0) generate
-                west_in_f(i)(j) <= east_out_f(i)(N-1);
-                east_out_b(i)(N-1) <= west_in_b(i)(j);
-                east_in_f(i)(N-1) <= west_out_f(i)(j);
-                west_out_b(i)(j) <= east_in_b(i)(N-1);
-            end generate left;
-            bottom : if (i = (M-1) and j < (N-1)) generate
-                east_in_f(i)(j) <= west_out_f(i)(j+1);
-                west_out_b(i)(j+1) <= east_in_b(i)(j);
-                west_in_f(i)(j+1) <= east_out_f(i)(j);
-                east_out_b(i)(j) <= west_in_b(i)(j+1);
-            end generate bottom;
-            right : if (i < (M-1) and j = (N-1)) generate
-                south_in_f(i)(j) <= north_out_f(i+1)(j);
-                north_out_b(i+1)(j) <= south_in_b(i)(j);
-                north_in_f(i+1)(j) <= south_out_f(i)(j);
-                south_out_b(i)(j) <= north_in_b(i+1)(j);
-            end generate right;
-            center : if (i < (M-1) and j < (N-1)) generate
-                north_in_f(i+1)(j) <= south_out_f(i)(j);
-                south_out_b(i)(j) <= north_in_b(i+1)(j);
-                south_in_f(i)(j) <= north_out_f(i+1)(j);
-                north_out_b(i+1)(j) <= south_in_b(i)(j);
-                west_in_f(i)(j+1) <= east_out_f(i)(j);
-                east_out_b(i)(j) <= west_in_b(i)(j+1);
-                east_in_f(i)(j) <= west_out_f(i)(j+1);
-                west_out_b(i)(j+1) <= east_in_b(i)(j);
-            end generate center;
+            wrap_ns : if i = 0 generate
+                south_in_f(0)(j) <= north_out_f(M-1)(j);
+                north_out_b(M-1)(j) <= south_in_b(0)(j);
+                north_in_f(M-1)(j) <= south_out_f(0)(j);
+                south_out_b(0)(j) <= north_in_b(M-1)(j);
+            end generate wrap_ns;
+            wrap_ew : if j = 0 generate
+                east_in_f(i)(0) <= west_out_f(i)(N-1);
+                west_out_b(i)(N-1) <= east_in_b(i)(0);
+                west_in_f(i)(N-1) <= east_out_f(i)(0);
+                east_out_b(i)(0) <= west_in_b(i)(N-1);
+            end generate wrap_ew;
+            ns : if i > 0 generate
+                south_in_f(i)(j) <= north_out_f(i-1)(j);
+                north_out_b(i-1)(j) <= south_in_b(i)(j);
+                north_in_f(i-1)(j) <= south_out_f(i)(j);
+                south_out_b(i)(j) <= north_in_b(i-1)(j);
+            end generate ns;
+            ew : if j > 0 generate
+                east_in_f(i)(j) <= west_out_f(i)(j-1);
+                west_out_b(i)(j-1) <= east_in_b(i)(j);
+                west_in_f(i)(j-1) <= east_out_f(i)(j);
+                east_out_b(i)(j) <= west_in_b(i)(j-1);
+            end generate ew;
         end generate links_n;
     end generate links_m;
 
