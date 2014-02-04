@@ -145,13 +145,14 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmp_hello"/>
+            <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
             <ISPM size="8k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
 
-            <ExtMem size="2M" />
+            <ExtMem size="4G" />
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>

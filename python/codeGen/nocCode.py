@@ -41,6 +41,7 @@ package config is
     constant N : integer := '''+N+''';
     constant M : integer := '''+M+''';
     constant NODES : integer := '''+str(NODES)+''';
+    constant PRD_LENGTH : integer := '''+str(NODES*2)+''';
 
 end package ; -- aegean_def
 

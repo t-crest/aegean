@@ -15,7 +15,7 @@
 			<node id="pat3" loc="(1,1)" IPTypeRef="ml605" SPMSize="4K" />
 		</nodes>
 
-		<memory id="ram0" DevTypeRef="Ssram16" size="2M" />
+		<memory id="ram0" DevTypeRef="Ssram16" size="4G" />
 
 		<!-- The standard IP cores are included -->
 		<xi:include href="./ip/ip.xml" />
