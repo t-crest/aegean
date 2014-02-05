@@ -19,25 +19,25 @@
             <outport name="led" width="9" />
         </ports>
     </Dev>
-    <Dev DevType="Ssram32" entity="SsramBurstRW" iface="OcpBurst">
+    <Dev DevType="Ssram32" entity="SSRam32Ctrl" iface="OcpBurst">
         <params>
             <param name="addr_width" value="21" />
         </params>
         <ports>
-            <outport name="io_ssramBurstRWPins_ramOut_addr" width="19" />
-            <outport name="io_ssramBurstRWPins_ramOut_dout" width="32" />
-            <inport  name="io_ssramBurstRWPins_ramIn_din" width="32" />
-            <outport name="io_ssramBurstRWPins_ramOut_doutEna" />
-            <outport name="io_ssramBurstRWPins_ramOut_nadsc" />
-            <outport name="io_ssramBurstRWPins_ramOut_noe" />
-            <outport name="io_ssramBurstRWPins_ramOut_nbwe" />
-            <outport name="io_ssramBurstRWPins_ramOut_nbw" width="4" />
-            <outport name="io_ssramBurstRWPins_ramOut_ngw" />
-            <outport name="io_ssramBurstRWPins_ramOut_nce1" />
-            <outport name="io_ssramBurstRWPins_ramOut_ce2" />
-            <outport name="io_ssramBurstRWPins_ramOut_nce3" />
-            <outport name="io_ssramBurstRWPins_ramOut_nadsp" />
-            <outport name="io_ssramBurstRWPins_ramOut_nadv" />
+            <outport name="io_sSRam32CtrlPins_ramOut_addr" width="19" />
+            <outport name="io_sSRam32CtrlPins_ramOut_dout" width="32" />
+            <inport  name="io_sSRam32CtrlPins_ramIn_din" width="32" />
+            <outport name="io_sSRam32CtrlPins_ramOut_doutEna" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nadsc" />
+            <outport name="io_sSRam32CtrlPins_ramOut_noe" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nbwe" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nbw" width="4" />
+            <outport name="io_sSRam32CtrlPins_ramOut_ngw" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nce1" />
+            <outport name="io_sSRam32CtrlPins_ramOut_ce2" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nce3" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nadsp" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nadv" />
         </ports>
     </Dev>
     <Dev DevType="Ssram16" entity="SRamCtrl" iface="OcpBurst">
