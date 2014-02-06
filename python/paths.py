@@ -46,8 +46,8 @@ class Paths(object):
 
         self.ARGO_PATH = self.AEGEAN_PATH + '/../argo'
         self.POSEIDON_PATH = self.AEGEAN_PATH + '/../local/bin'
-        self.POSEIDON_CONV = self.POSEIDON_PATH + '/poseidon_converter.sh'
-        self.POSEIDON = self.POSEIDON_PATH + '/Poseidon'
+        self.POSEIDON_CONV = self.POSEIDON_PATH + '/poseidon-conv'
+        self.POSEIDON = self.POSEIDON_PATH + '/poseidon'
 
         self.PATMOS_PATH = self.AEGEAN_PATH + '/../patmos'
         self.PATMOSHW_PATH = self.PATMOS_PATH + '/hardware'
