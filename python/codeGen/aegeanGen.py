@@ -305,7 +305,7 @@ class AegeanGen(object):
                     sram.entity.addPort(port.get('name'),'in')
 
         clkPin = 'open'
-        if sramEntity == 'SsramBurstRW':
+        if sramEntity == 'SSRam32Ctrl':
             clkPin = 'oSRAM_CLK'
         topCode.pll(top,clkPin)
         top.arch.declComp(sram)

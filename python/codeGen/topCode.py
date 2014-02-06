@@ -51,21 +51,21 @@ def bindSram(sram,name,ocpMSignal,ocpSSignal):
     sram.entity.bindPort('reset','int_res')
     ocp.bindPort(sram,'OcpBurst',ocpMSignal,ocpSSignal)
 
-    if name == 'SsramBurstRW':
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_addr','oSRAM_A')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_doutEna','sram_out_dout_ena')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_nadsc','oSRAM_ADSC_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_noe','oSRAM_OE_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_nbwe','oSRAM_WE_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_nbw','oSRAM_BE_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_ngw','oSRAM_GW_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_nce1','oSRAM_CE1_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_ce2','oSRAM_CE2')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_nce3','oSRAM_CE3_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_nadsp','oSRAM_ADSP_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_nadv','oSRAM_ADV_N')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramOut_dout','sram_out_dout')
-        sram.entity.bindPort('io_ssramBurstRWPins_ramIn_din','sram_in_din')
+    if name == 'SSRam32Ctrl':
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_addr','oSRAM_A')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_doutEna','sram_out_dout_ena')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_nadsc','oSRAM_ADSC_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_noe','oSRAM_OE_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_nbwe','oSRAM_WE_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_nbw','oSRAM_BE_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_ngw','oSRAM_GW_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_nce1','oSRAM_CE1_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_ce2','oSRAM_CE2')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_nce3','oSRAM_CE3_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_nadsp','oSRAM_ADSP_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_nadv','oSRAM_ADV_N')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramOut_dout','sram_out_dout')
+        sram.entity.bindPort('io_sSRam32CtrlPins_ramIn_din','sram_in_din')
     elif name == 'SRamCtrl':
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_addr','oSRAM_A')
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_doutEna','sram_out_dout_ena')
@@ -133,7 +133,7 @@ def reset(top):
 ''')
 
 def writeTriState(top,name,sram,dataSig):
-    if sram == 'SsramBurstRW':
+    if sram == 'SSRam32Ctrl':
         top.arch.addToBody('''
     -- capture input from '''+name+''' on falling clk edge
     process(clk_int, int_res)
