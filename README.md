@@ -13,9 +13,21 @@ An additional prerequisite is python3
 
 Generating a platform
 =====================
-The default platform is generated with a simple
+The default platform is generated with a simple:
 
     make platform
+
+To compile the generated platform:
+
+    make compile
+    
+If you have a version of ModelSim supporting mixed language simulations you can simulate the generated platform by:
+
+    make sim
+
+Other available make targets are printed by:
+
+    make help
 
 
 ![alt tag](https://github.com/t-crest/aegean/raw/master/figures/aegean.png )
