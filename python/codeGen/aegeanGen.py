@@ -161,10 +161,12 @@ class AegeanGen(object):
         params = util.findTag(memory,'params')
         for i in range(0,len(list(params))):
             if params[i].get('name') == 'addr_width':
-                addrWidth = params[i].get('value')
+                self.ocpBurstAddrWidth = params[i].get('value')
                 break
-        self.ssramGen(entity,addrWidth)
-        self.arbiterGen(len(self.nodes),addrWidth,32,4)
+        self.ssramGen(entity,self.ocpBurstAddrWidth)
+        self.arbiterGen(len(self.nodes),self.ocpBurstAddrWidth,32,4)
+
+        aegeanCode.writeConfig(self.p.OcpConfFile,self.ocpBurstAddrWidth)
 
     def addDeviceToQSF(self):
         boardName = self.board.get('name')
@@ -274,8 +276,12 @@ class AegeanGen(object):
 
         sramType = self.memory.get('DevTypeRef')
         sramDev = self.Devs[sramType]
-        sramPorts = list(util.findTag(sramDev,'ports'))
+        sramPorts = util.findTag(sramDev,'ports')
+        if sramPorts != None:
+            sramPorts = list(sramPorts)
         sramParams = list(util.findTag(sramDev,'params'))
+        if sramParams != None:
+            sramParams = list(sramParams)
         sramEntity = sramDev.get('entity')
         sramIFace = sramDev.get('iface')
 
@@ -291,18 +297,19 @@ class AegeanGen(object):
             if param.get('addr_width') != 'None':
                 addrWidth = param.get('value')
         ocp.addSlavePort(sram,sramIFace,addrWidth)
-        for port in sramPorts:
-            width = port.get('width')
-            if port.tag == 'outport':
-                if width != None:
-                    sram.entity.addPort(port.get('name'),'out','std_logic_vector',int(width))
-                else:
-                    sram.entity.addPort(port.get('name'),'out')
-            elif port.tag == 'inport':
-                if width != None:
-                    sram.entity.addPort(port.get('name'),'in','std_logic_vector',int(width))
-                else:
-                    sram.entity.addPort(port.get('name'),'in')
+        if sramPorts != None:
+            for port in sramPorts:
+                width = port.get('width')
+                if port.tag == 'outport':
+                    if width != None:
+                        sram.entity.addPort(port.get('name'),'out','std_logic_vector',int(width))
+                    else:
+                        sram.entity.addPort(port.get('name'),'out')
+                elif port.tag == 'inport':
+                    if width != None:
+                        sram.entity.addPort(port.get('name'),'in','std_logic_vector',int(width))
+                    else:
+                        sram.entity.addPort(port.get('name'),'in')
 
         clkPin = 'open'
         if sramEntity == 'SSRam32Ctrl':
@@ -332,7 +339,7 @@ class AegeanGen(object):
         aegean.entity.addPort('txd','out')
         aegean.entity.addPort('rxd','in')
 
-        arbiter = aegeanCode.getArbiter(len(self.nodes))
+        arbiter = aegeanCode.getArbiter(len(self.nodes),self.ocpBurstAddrWidth)
         aegean.arch.declComp(arbiter)
 
 
@@ -347,7 +354,7 @@ class AegeanGen(object):
                     ledPort = True
                 elif DevTypeRef == 'Uart':
                     uartPort = True
-            patmos = aegeanCode.getPatmos(IPType,ledPort,uartPort)
+            patmos = aegeanCode.getPatmos(IPType,ledPort,uartPort,self.ocpBurstAddrWidth)
             aegean.arch.declComp(patmos)
             self.genComps[IPType] = patmos
 
