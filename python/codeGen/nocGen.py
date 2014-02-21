@@ -202,6 +202,7 @@ class NoCGen(object):
 
         routerType = self.getRouterType()
         argo_src = open(self.p.BUILD_PATH+'/.argo_src','w')
+        argo_src.write(self.p.BUILD_PATH + '/ocp_config.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/common/ocp.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/common/math_util.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/common/noc_defs.vhd ')

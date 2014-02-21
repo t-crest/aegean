@@ -76,6 +76,8 @@ def bindSram(sram,name,ocpMSignal,ocpSSignal):
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_nub','oSRAM_UB_N')
         sram.entity.bindPort('io_sRamCtrlPins_ramOut_dout','sram_out_dout')
         sram.entity.bindPort('io_sRamCtrlPins_ramIn_din','sram_in_din')
+    elif name == 'OCRamCtrl':
+        pass
     else:
         raise SystemError(__file__ +': Error: SramEntity "'+name+'" not supported.')
 

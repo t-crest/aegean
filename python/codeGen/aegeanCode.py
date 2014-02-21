@@ -36,6 +36,20 @@
 from codeGen.Component import Component
 import math
 
+def writeConfig(fileName,burstAddrWidth):
+    f = open(fileName, 'w')
+    f.write('''library ieee;
+use ieee.std_logic_1164.all;
+
+package ocp_config is
+
+    constant BURST_ADDR_WIDTH : integer := '''+str(burstAddrWidth)+'''; 
+
+end package ; -- ocp_config
+''')
+    f.close()
+
+
 def getAegean():
     aegean = Component('aegean')
     aegean.addPackage('ieee','std_logic_1164')
@@ -52,12 +66,12 @@ def getAegean():
     return aegean
 
 
-def getArbiter(numPorts):
+def getArbiter(numPorts,ocpBurstAddrWidth):
     arbiter = Component('Arbiter')
     arbiter.entity.addPort('clk')
     arbiter.entity.addPort('reset')
     arbiter.entity.addPort('io_slave_M_Cmd','out','std_logic_vector',3)
-    arbiter.entity.addPort('io_slave_M_Addr','out','std_logic_vector',21)
+    arbiter.entity.addPort('io_slave_M_Addr','out','std_logic_vector',ocpBurstAddrWidth)
     arbiter.entity.addPort('io_slave_M_Data','out','std_logic_vector',32)
     arbiter.entity.addPort('io_slave_M_DataValid','out','std_logic')
     arbiter.entity.addPort('io_slave_M_DataByteEn','out','std_logic_vector',4)
@@ -67,7 +81,7 @@ def getArbiter(numPorts):
     arbiter.entity.addPort('io_slave_S_DataAccept','in','std_logic')
     for i in range(0,numPorts):
         arbiter.entity.addPort('io_master_'+str(i)+'_M_Cmd','in','std_logic_vector',3)
-        arbiter.entity.addPort('io_master_'+str(i)+'_M_Addr','in','std_logic_vector',21)
+        arbiter.entity.addPort('io_master_'+str(i)+'_M_Addr','in','std_logic_vector',ocpBurstAddrWidth)
         arbiter.entity.addPort('io_master_'+str(i)+'_M_Data','in','std_logic_vector',32)
         arbiter.entity.addPort('io_master_'+str(i)+'_M_DataValid','in','std_logic')
         arbiter.entity.addPort('io_master_'+str(i)+'_M_DataByteEn','in','std_logic_vector',4)
@@ -78,7 +92,7 @@ def getArbiter(numPorts):
     return arbiter
 
 
-def getPatmos(IPType,ledPort=None,uartPort=None):
+def getPatmos(IPType,ledPort=None,uartPort=None,ocpBurstAddrWidth=21):
     patmos = Component(IPType+'PatmosCore')
     patmos.entity.addPort('clk')
     patmos.entity.addPort('reset')
@@ -99,7 +113,7 @@ def getPatmos(IPType,ledPort=None,uartPort=None):
     patmos.entity.addPort('io_comSpm_S_Data','in', 'std_logic_vector',32)
     patmos.entity.addPort('io_cpuInfoPins_id','in', 'std_logic_vector',32)
     patmos.entity.addPort('io_memPort_M_Cmd','out', 'std_logic_vector',3)
-    patmos.entity.addPort('io_memPort_M_Addr','out', 'std_logic_vector',21)
+    patmos.entity.addPort('io_memPort_M_Addr','out', 'std_logic_vector',ocpBurstAddrWidth)
     patmos.entity.addPort('io_memPort_M_Data','out', 'std_logic_vector',32)
     patmos.entity.addPort('io_memPort_M_DataValid','out', 'std_logic')
     patmos.entity.addPort('io_memPort_M_DataByteEn','out', 'std_logic_vector',4)
