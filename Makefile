@@ -13,7 +13,7 @@
 -include config.mk
 # The project being build when calling
 # "make platform|compile|sim|synth|config"
-AEGEAN_PLATFORM?=mandelbrot_demo
+AEGEAN_PLATFORM?=default-altde2-115
 # Aegean path names
 AEGEAN_PATH?=$(CURDIR)
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml

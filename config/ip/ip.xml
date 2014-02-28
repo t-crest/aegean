@@ -9,6 +9,7 @@
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
             <ISPM size="8k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
@@ -19,9 +20,6 @@
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2"/>
             </IOs>
-
-            <!-- currently unused -->
-            <SCache size="0" />
         </patmos>
     </IPCore>
     <IPCore IPType="patmosS">
@@ -34,6 +32,7 @@
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
             <ISPM size="8k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
@@ -46,10 +45,6 @@
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
-
-            <!-- currently unused -->
-            <SCache size="0" />
-
         </patmos>
     </IPCore>
     <IPCore IPType="patmos">
@@ -62,6 +57,7 @@
             <bootrom app="bootable-mandelbrot_par"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
             <ISPM size="8k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
@@ -74,10 +70,6 @@
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
-
-            <!-- currently unused -->
-            <SCache size="0" />
-
         </patmos>
     </IPCore>
     <IPCore IPType="ACC" entity="accelerator" srcFile="../vhdl/accelerator.vhd" />
@@ -91,6 +83,7 @@
             <bootrom app="bootable-cmp_hello"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
             <ISPM size="8k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
@@ -103,10 +96,6 @@
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
-
-            <!-- currently unused -->
-            <SCache size="0" />
-
         </patmos>
     </IPCore>
     <IPCore IPType="patmos_de2_115">
@@ -119,6 +108,7 @@
             <bootrom app="bootable-cmp_hello"/>
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
             <ISPM size="8k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
@@ -131,10 +121,6 @@
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
-
-            <!-- currently unused -->
-            <SCache size="0" />
-
         </patmos>
     </IPCore>
     <IPCore IPType="ml605m">
@@ -148,6 +134,7 @@
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
             <ISPM size="2k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
@@ -160,10 +147,6 @@
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
-
-            <!-- currently unused -->
-            <SCache size="0" />
-
         </patmos>
     </IPCore>
     <IPCore IPType="ml605s">
@@ -177,7 +160,8 @@
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
-            <ISPM size="2k" />
+            <SCache size="2k" />
+            <ISPM size="1k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
 
@@ -207,6 +191,7 @@
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
+			<SCache size="2k" />
             <ISPM size="2k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
@@ -219,10 +204,54 @@
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
+        </patmos>
+    </IPCore>
+	<IPCore IPType="patmosMaster">
+        <patmos>
+            <description>Single issue patmos master</description>
 
-            <!-- currently unused -->
-            <SCache size="0" />
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
+            <bootrom app="bootable-cmpmaster"/>
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
+            <ISPM size="1k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
 
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
+            </IOs>
+        </patmos>
+    </IPCore>
+    <IPCore IPType="patmosSlave">
+        <patmos>
+            <description>Single issue patmos slave</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
+            <bootrom app="bootable-cmpslave"/>
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
+            <ISPM size="1k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+            </IOs>
         </patmos>
     </IPCore>
 </IPCores>

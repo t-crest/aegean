@@ -1,6 +1,6 @@
 About Aegean
 ============
-Configuration framework for the T-Crest platform (Aegean)
+Configuration framework for the T-CREST platform (Aegean)
 
 Aegean is a collection of Python scripts that generates an instance of the time-predictable multicore platform. The configuration of a given platform is described in XML files. Some example XML files containing platform configurations are placed in the config/ directory.
 
@@ -24,6 +24,10 @@ To compile the generated platform:
 If you have a version of ModelSim supporting mixed language simulations you can simulate the generated platform by:
 
     make sim
+
+Synthesize the platform for an FPGA:
+
+    make synth
 
 Other available make targets are printed by:
 
