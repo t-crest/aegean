@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <aegean version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude" >
-	<description>Demonstration of a system with the phase enabled NI on the de2-115 board</description>
+	<description>Demonstration of a system with 16 cores on the ML605 board</description>
 
 	<platform width="2" height="2" >
 
@@ -27,18 +27,6 @@
 	</platform>
 
 	<application>
-
-		<entries>
-			<entry node="pat0" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat1" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat2" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat3" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-		</entries>
-
-		<memMap>
-			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
-		</memMap>
-
 		<!-- <communication comtype="all2all"/"custom" phits="s"> -->
 		<communication comType="all2all" phits="3">
 

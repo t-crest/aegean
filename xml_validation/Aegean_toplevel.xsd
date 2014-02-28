@@ -294,12 +294,15 @@
 	<xs:element name="application">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="entries"/>
-				<xs:element ref="memMap"/>
 				<xs:element ref="communication"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+
+	<!--
+				<xs:element ref="entries"/>
+				<xs:element ref="memMap"/>
+	-->
 
 	<!-- The top-level tag describing the full configuration-->
 	<xs:element name="aegean">

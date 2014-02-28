@@ -45,17 +45,6 @@
 
 	<application>
 
-		<entries>
-			<entry node="pat0" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat1" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat2" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat3" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-		</entries>
-
-		<memMap>
-			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
-		</memMap>
-
 		<!-- <communication type="all2all"/"custom" phits="s"> -->
 		<communication comType="all2all" phits="1">
 			<channel from="(0,0)" to="(0,1)" bandwidth="1" phits="1"/>

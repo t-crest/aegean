@@ -15,7 +15,7 @@
 			<node id="pat3" loc="(1,1)" IPTypeRef="patmos_de2_115" SPMSize="4K" />
 		</nodes>
 
-		<memory id="ram0" DevTypeRef="Ssram16" size="2M" />
+		<memory id="ram0" DevTypeRef="OCRam" size="2M" />
 
 		<!-- The standard IP cores are included -->
 		<xi:include href="./ip/ip.xml" />
@@ -27,18 +27,6 @@
 	</platform>
 
 	<application>
-
-		<entries>
-			<entry node="pat0" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat1" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat2" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-			<entry node="pat3" entity="main" parameters="0 1" srcFile="file:///test2.c"/>
-		</entries>
-
-		<memMap>
-			<mem start="0xfff000" end="0xffff00" cached="false" >Description of the given memory area.</mem>
-		</memMap>
-
 		<!-- <communication comtype="all2all"/"custom" phits="s"> -->
 		<communication comType="all2all" phits="3">
 

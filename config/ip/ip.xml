@@ -137,22 +137,81 @@
 
         </patmos>
     </IPCore>
-    <IPCore IPType="ml605">
+    <IPCore IPType="ml605m">
         <patmos>
             <description>Single issue slot patmos</description>
 
-            <frequency Hz="100000000" />
+            <frequency Hz="50000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-cmp_hello"/>
+            <bootrom app="bootable-cmpmaster"/>
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
-            <ISPM size="8k" />
+            <ISPM size="2k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
 
             <ExtMem size="4G" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
+            </IOs>
+
+            <!-- currently unused -->
+            <SCache size="0" />
+
+        </patmos>
+    </IPCore>
+    <IPCore IPType="ml605s">
+        <patmos>
+            <description>Single issue slot patmos</description>
+
+            <frequency Hz="50000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
+            <bootrom app="bootable-cmpslave"/>
+            <!--<bootrom app="york_test"/>-->
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <ISPM size="2k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="4G" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
+            </IOs>
+
+            <!-- currently unused -->
+            <SCache size="0" />
+
+        </patmos>
+    </IPCore>
+    <IPCore IPType="ml605ocm">
+        <patmos>
+            <description>Single issue slot patmos</description>
+
+            <frequency Hz="50000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
+            <bootrom app="bootable-cmp_hello"/>
+            <!--<bootrom app="bootable-mandelbrot_par"/>-->
+            <!--<bootrom app="york_test"/>-->
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <ISPM size="2k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="64K" />
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
