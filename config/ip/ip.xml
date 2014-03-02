@@ -174,9 +174,6 @@
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
 
-            <!-- currently unused -->
-            <SCache size="0" />
-
         </patmos>
     </IPCore>
     <IPCore IPType="ml605ocm">
