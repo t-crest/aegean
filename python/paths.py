@@ -42,8 +42,6 @@ class Paths(object):
 
         self.AEGEAN_PATH = os.getcwd()
 
-        self.XMLSCHEME = self.AEGEAN_PATH + '/xmlNotes/Aegean.xsd'
-
         self.ARGO_PATH = self.AEGEAN_PATH + '/../argo'
         self.POSEIDON_PATH = self.AEGEAN_PATH + '/../local/bin'
         self.POSEIDON_CONV = self.POSEIDON_PATH + '/poseidon-conv'
