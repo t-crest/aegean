@@ -21,11 +21,11 @@
     </Dev>
     <Dev DevType="ExtIODevice" entity="ExtIODevice" iface="OcpCore">
         <params>
-            <param name="extAddrWidth" value="32" />
+            <param name="extAddrWidth" value="8" />
             <param name="dataWidth" value="32" />
         </params>
         <ports>
-            <outport name="io_ExtIODevice_M_Addr" width="2" />
+            <outport name="io_ExtIODevice_M_Addr" width="8" />
             <outport name="io_ExtIODevice_M_Data" width="32" />
             <outport name="io_ExtIODevice_M_RespAccept" width="1" />
             <inport name="io_ExtIODevice_S_Data" width="32" />
