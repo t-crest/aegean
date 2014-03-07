@@ -35,3 +35,14 @@ Other available make targets are printed by:
 
 
 ![alt tag](https://github.com/t-crest/aegean/raw/master/figures/aegean.png )
+
+
+Pending changes in the Cleanup branch
+=====================================
+
+- Move bootapp option from xmlpath:/aegean/platform/IPCores/IPCore/patmos/bootrom;app to xmlpath:/aegean/platform/nodes/node;bootapp
+- Remove xmlpath:/aegean/platform/topology;routerDepth
+- Structure the generation of files into following categories:
+	- Board specific files
+	- Platform specific files
+	- Software config files (nocinit.c, linker script)
