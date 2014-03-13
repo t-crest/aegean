@@ -27,8 +27,8 @@
 			<node id="pat15" loc="(3,3)" IPTypeRef="ml605s" SPMSize="4K" />
 		</nodes>
 
-		<!-- This mem is not to be used, it is only there to pass xml validation
-		  -- An external memory should be connected. 
+		<!-- This mem is not to be used, it is only there to pass xml validation.
+		   An external memory should be connected. 
 		  -->
 		<memory id="ram0" DevTypeRef="OCRam" size="4G" />
 
