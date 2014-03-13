@@ -185,24 +185,52 @@
             <frequency Hz="50000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-cmp_hello"/>
-            <!--<bootrom app="bootable-mandelbrot_par"/>-->
+            <bootrom app="bootable-cmpmaster"/>
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="2k" assoc="1" repl="" />
-			<SCache size="2k" />
+            <SCache size="2k" />
             <ISPM size="2k" />
             <DSPM size="2k" />
             <BootSPM size="2k" />
 
-            <ExtMem size="64K" />
+            <ExtMem size="1M" />
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="ExtIODevice" offset="3"/>
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
+        </patmos>
+    </IPCore>
+    <IPCore IPType="ml605ocs">
+        <patmos>
+            <description>Single issue slot patmos</description>
+
+            <frequency Hz="50000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" />
+            <bootrom app="bootable-cmpslave"/>
+            <!--<bootrom app="york_test"/>-->
+            <MCache size="4k" blocks="16" repl="" />
+            <DCache size="2k" assoc="1" repl="" />
+            <SCache size="2k" />
+            <ISPM size="1k" />
+            <DSPM size="2k" />
+            <BootSPM size="2k" />
+
+            <ExtMem size="1M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="ExtIODevice" offset="3"/>
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Leds" offset="9" />
+            </IOs>
+
         </patmos>
     </IPCore>
 	<IPCore IPType="patmosMaster">
