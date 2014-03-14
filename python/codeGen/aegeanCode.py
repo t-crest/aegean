@@ -67,7 +67,7 @@ def getAegean():
 
 
 def getArbiter(numPorts,ocpBurstAddrWidth):
-    arbiter = Component('Arbiter')
+    arbiter = Component('TdmArbiterWrapper')
     arbiter.entity.addPort('clk')
     arbiter.entity.addPort('reset')
     arbiter.entity.addPort('io_slave_M_Cmd','out','std_logic_vector',3)
