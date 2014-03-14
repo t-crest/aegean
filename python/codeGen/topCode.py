@@ -102,8 +102,9 @@ def attr(top):
     attribute altera_attribute of res_cnt : signal is "POWER_UP_LEVEL=LOW";
 ''')
 
-def pll(top,clkPin):
-    top.arch.addToBody('''
+def pll(top,vendor,clkPin):
+    if vendor == 'Altera':
+        top.arch.addToBody('''
     pll_inst : entity work.pll generic map(
             multiply_by => pll_mult,
             divide_by   => pll_div
@@ -114,6 +115,13 @@ def pll(top,clkPin):
             c1     => '''+clkPin+'''
         );
 ''')
+    elif vendor == 'Xilinx':
+        top.arch.addToBody('''
+    clk_int <= clk;
+    '''+clkPin+''' <= clk;
+''')
+    else:
+        raise SystemExit(__file__ +': Error: Unsupported vendor: ' + vendor)
 
 def reset(top):
     top.arch.addToBody('''

@@ -1,16 +1,7 @@
 <board name="ml605" vendor="Xilinx" family="Virtex-6" device="XC6VLX240T" >
-    <clock name="clk" frequency="200000000" pin="Y2" />
+    <clock name="clk" frequency="66000000" pin="Y2" />
 <!-- The pins are listed (width-1 DOWNTO 0) -->
     <IOPorts>
-        <IOPort name="SRAM">
-            <out node="ram0" name="A" width="20" pin="T8,AB8,AB9,AC11,AB11,AA4,AC3,AB4,AD3,AF2,T7,AF5,AC5,AB5,AE6,AB6,AC7,AE7,AD7,AB7" />
-            <out node="ram0" name="OE_N" pin="AD5" />
-            <out node="ram0" name="WE_N" pin="AE8" />
-            <out node="ram0" name="CE_N" pin="AF8" />
-            <out node="ram0" name="LB_N" pin="AD4" />
-            <out node="ram0" name="UB_N" pin="AC4" />
-            <inout node="ram0" name="DQ" outname="dout" inname="din" width="32" enaname="dout_ena" pin="AG3,AF3,AE4,AE3,AE1,AE2,AD2,AD1,AF7,AH6,AG6,AF6,AH4,AG4,AF4,AH3" />
-        </IOPort>
         <IOPort name="UartPins">
             <in node="pat0" name="rxd" pin="G12" />
             <out node="pat0" name="txd" pin="G9" />

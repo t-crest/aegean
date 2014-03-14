@@ -314,7 +314,7 @@ class AegeanGen(object):
         clkPin = 'open'
         if sramEntity == 'SSRam32Ctrl':
             clkPin = 'oSRAM_CLK'
-        topCode.pll(top,clkPin)
+        topCode.pll(top,vendor,clkPin)
         top.arch.declComp(sram)
 
         topCode.bindAegean(aegean)
