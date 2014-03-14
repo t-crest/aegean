@@ -182,7 +182,7 @@
         <patmos>
             <description>Single issue slot patmos</description>
 
-            <frequency Hz="50000000" />
+            <frequency Hz="66000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpmaster"/>
@@ -199,7 +199,6 @@
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2"/>
-                <IO DevTypeRef="ExtIODevice" offset="3"/>
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -209,7 +208,7 @@
         <patmos>
             <description>Single issue slot patmos</description>
 
-            <frequency Hz="50000000" />
+            <frequency Hz="66000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpslave"/>
@@ -226,7 +225,6 @@
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2"/>
-                <IO DevTypeRef="ExtIODevice" offset="3"/>
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>

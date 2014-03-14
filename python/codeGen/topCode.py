@@ -118,7 +118,6 @@ def pll(top,vendor,clkPin):
     elif vendor == 'Xilinx':
         top.arch.addToBody('''
     clk_int <= clk;
-    '''+clkPin+''' <= clk;
 ''')
     else:
         raise SystemExit(__file__ +': Error: Unsupported vendor: ' + vendor)

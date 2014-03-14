@@ -1,0 +1,9 @@
+#
+# pin constraints
+#
+NET "iUartPins_rxd" LOC = J24;
+#NET "serial_rx" IOSTANDARD = LVCMOS25;
+NET "oUartPins_txd" LOC = J25;
+#NET "serial_tx" IOSTANDARD = LVCMOS25;
+NET "clk"                    LOC = "U23";    ## 5   on X5
+NET "clk" IOSTANDARD = LVCMOS25;

@@ -73,7 +73,7 @@
     </Dev>
     <Dev DevType="OCRam" entity="OCRamCtrl" iface="OcpBurst">
         <params>
-            <param name="addr_width" value="16" />
+            <param name="addr_width" value="20" />
         </params>
     </Dev>
 </Devs>
