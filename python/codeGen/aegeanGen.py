@@ -426,7 +426,7 @@ class AegeanGen(object):
         Arbiter+= ['ARBITER_ADDR_WIDTH='+str(addr)]
         Arbiter+= ['ARBITER_DATA_WIDTH='+str(data)]
         Arbiter+= ['ARBITER_BURST_LENGTH='+str(burstLength)]
-        Arbiter+= [self.p.BUILD_PATH+'/TdmArbiter.v']
+        Arbiter+= [self.p.BUILD_PATH+'/Arbiter.v']
         subprocess.call(Arbiter)
 
-        self.genFiles.append('../TdmArbiter.v')
+        self.genFiles.append('../Arbiter.v')
