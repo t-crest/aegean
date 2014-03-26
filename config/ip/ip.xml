@@ -188,10 +188,10 @@
             <bootrom app="bootable-cmpmaster"/>
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
-            <DCache size="2k" assoc="1" repl="" />
+            <DCache size="256" assoc="1" repl="" />
             <SCache size="2k" />
-            <ISPM size="2k" />
-            <DSPM size="2k" />
+            <ISPM size="8" />
+            <DSPM size="8" />
             <BootSPM size="2k" />
 
             <ExtMem size="1M" />
@@ -214,10 +214,10 @@
             <bootrom app="bootable-cmpslave"/>
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
-            <DCache size="2k" assoc="1" repl="" />
+            <DCache size="256" assoc="1" repl="" />
             <SCache size="2k" />
-            <ISPM size="1k" />
-            <DSPM size="2k" />
+            <ISPM size="8" />
+            <DSPM size="8" />
             <BootSPM size="2k" />
 
             <ExtMem size="1M" />

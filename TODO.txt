@@ -16,4 +16,5 @@ A list of tasks to be done for the Aegean workflow:
 - Poseidon
 	\/- Generation of the C initialization file
 	- Enable scheduler to shorten schedules
-- 
+- Aegean
+	- Make configuration simpler with one core boot, the rest the other program (MS)
