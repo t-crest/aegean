@@ -9,10 +9,10 @@
                 <topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
 
                 <nodes>
-                        <node id="pat0" loc="(0,0)" IPTypeRef="ml605m" SPMSize="4K" />
-                        <node id="pat1" loc="(1,0)" IPTypeRef="ml605s" SPMSize="4K" />
-                        <node id="pat2" loc="(0,1)" IPTypeRef="ml605s" SPMSize="4K" />
-                        <node id="pat3" loc="(1,1)" IPTypeRef="ml605s" SPMSize="4K" />
+                        <node id="pat0" loc="(0,0)" IPTypeRef="ml605ocm" SPMSize="4K" />
+                        <node id="pat1" loc="(1,0)" IPTypeRef="ml605ocs" SPMSize="4K" />
+                        <node id="pat2" loc="(0,1)" IPTypeRef="ml605ocs" SPMSize="4K" />
+                        <node id="pat3" loc="(1,1)" IPTypeRef="ml605ocs" SPMSize="4K" />
                 </nodes>
 
 		<memory id="ram0" DevTypeRef="OCRam" size="1M" />
