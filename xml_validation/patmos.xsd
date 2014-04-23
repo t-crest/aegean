@@ -74,6 +74,7 @@
                                 <xs:complexType>
                                     <xs:attribute ref="DevTypeRef" use="required" />
                                     <xs:attribute name="offset" type="xs:nonNegativeInteger" use="required" />
+                                    <xs:attribute name="intrs" type="nonNegIntegerList" />
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>

@@ -45,6 +45,12 @@
 	</xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="nonNegIntegerList">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="[0-9]+(,[0-9]+)*"/>
+	</xs:restriction>
+</xs:simpleType>
+
 <!-- Definition of attributes -->
 <xs:attribute name="version" type="xs:string"/>
 <xs:attribute name="projectname" type="xs:string"/>

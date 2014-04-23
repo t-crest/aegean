@@ -18,7 +18,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
             </IOs>
         </patmos>
     </IPCore>
@@ -41,7 +41,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -66,7 +66,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -92,7 +92,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -117,7 +117,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -143,7 +143,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="ExtIODevice" offset="3"/>
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
@@ -170,7 +170,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1"/>
                 <IO DevTypeRef="ExtIODevice" offset="3"/>
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
@@ -198,7 +198,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -224,7 +224,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -250,7 +250,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Leds" offset="9" />
             </IOs>
@@ -275,7 +275,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
-                <IO DevTypeRef="Timer" offset="2"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
             </IOs>
         </patmos>
     </IPCore>
