@@ -36,12 +36,22 @@
 def writeConfig(f,N,M,NODES):
 
     f.write('''\
+library ieee;
+use ieee.std_logic_1164.all;
+use work.config_types.all;
+
 package config is
 
     constant N : integer := '''+N+''';
     constant M : integer := '''+M+''';
     constant NODES : integer := '''+str(NODES)+''';
     constant PRD_LENGTH : integer := '''+str(NODES*2)+''';
+
+    constant PDELAY	: time := 500 ps;
+    constant NA_HPERIOD	: time := 5 ns;
+    constant P_HPERIOD	: time := 5 ns;
+    constant SKEW       : time := 0 ns;
+    constant delay      : time := 0.3 ns;
 
 end package ; -- aegean_def
 
