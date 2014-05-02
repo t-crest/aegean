@@ -23,11 +23,16 @@ BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 # Source file variables
 PATMOS_PATH?=$(CURDIR)/../patmos
 PATMOS_SOURCE?=$(BUILD_PATH)/*.v
+
+ARGO_PATH?=$(CURDIR)/../argo
+
 AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/vhdl
 AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	noc.vhd aegean.vhd)
-AEGEAN_CONFIG_SRC=$(patsubst %,$(BUILD_PATH)/%,\
+
+AEGEAN_CONFIG_SRC=$(ARGO_PATH)/src/config_types.vhd $(patsubst %,$(BUILD_PATH)/%,\
 	config.vhd)
+
 TEST_SRC=$(patsubst %,$(AEGEAN_SRC_PATH)/%,\
 	packages/test.vhd sim/pll.vhd)
 MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
