@@ -120,31 +120,31 @@ $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_
 # Call make compile
 ##########################################################################
 compile: $(BUILD_PATH)/work compile-config compile-argo compile-patmos  $(AEGEAN_SRC)
-	$(WINE) $(VCOM) $(AEGEAN_SRC)
+	$(PREFIX) $(VCOM) $(AEGEAN_SRC)
 
 $(BUILD_PATH)/work:
 	mkdir -p $(BUILD_PATH)
-	cd $(BUILD_PATH) && $(WINE) $(VLIB)
+	cd $(BUILD_PATH) && $(PREFIX) $(VLIB)
 
 compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(ARGO_SRC)) $(ARGO_SRC)
-	$(WINE) $(VCOM) $(shell cat $(ARGO_SRC))
+	$(PREFIX) $(VCOM) $(shell cat $(ARGO_SRC))
 
 #$(PATMOS_SOURCE): $(PATMOS_PATH)/c/nocinit.c .FORCE
 #	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
 
 compile-patmos: $(BUILD_PATH)/work $(PATMOS_SOURCE)
-	$(WINE) $(VLOG) $(PATMOS_SOURCE)
+	$(PREFIX) $(VLOG) $(PATMOS_SOURCE)
 
 compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC)
-	$(WINE) $(VCOM) $(AEGEAN_CONFIG_SRC)
+	$(PREFIX) $(VCOM) $(AEGEAN_CONFIG_SRC)
 
 #########################################################################
 # Simulation of source code for the platform described in AEGEAN_PLATFORM
 # Call make sim
 #########################################################################
 sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
-	$(WINE) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
-	$(WINE) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
+	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
+	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
 synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(ARGO_SRC)
 	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
