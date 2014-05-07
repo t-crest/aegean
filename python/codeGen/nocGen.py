@@ -62,7 +62,8 @@ class NoCGen(object):
         M = self.platform.get('height')
         NODES = len(self.getNodes())
         f = open(self.p.ConfFile, 'w')
-        nocCode.writeConfig(f,N,M,NODES)
+        RT = self.getRouterType()
+        nocCode.writeConfig(f,N,M,NODES,RT.upper())
 
     def getNocNode(self):
         nocNode = Component('noc_node')

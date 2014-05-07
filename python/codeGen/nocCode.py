@@ -33,7 +33,7 @@
 #
 ###############################################################################
 
-def writeConfig(f,N,M,NODES):
+def writeConfig(f,N,M,NODES,RT):
 
     f.write('''\
 library ieee;
@@ -41,6 +41,9 @@ use ieee.std_logic_1164.all;
 use work.config_types.all;
 
 package config is
+
+    constant TARGET_ARCHITECTURE : ARCHITECTURES := FPGA;
+    constant TARGET_IMPLEMENTATION : IMPLEMENTATIONS := '''+ RT +''';
 
     constant N : integer := '''+N+''';
     constant M : integer := '''+M+''';
