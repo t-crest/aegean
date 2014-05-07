@@ -204,6 +204,7 @@ class NoCGen(object):
 
         routerType = self.getRouterType()
         argo_src = open(self.p.BUILD_PATH+'/.argo_src','w')
+        argo_src.write(self.p.ARGO_PATH+'/src/config_types.vhd ')
         argo_src.write(self.p.BUILD_PATH + '/ocp_config.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ocp/ocp.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/util/math_util.vhd ')
@@ -214,10 +215,10 @@ class NoCGen(object):
         argo_src.write(self.p.ARGO_PATH+'/src/ni/counter.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/dma.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/mem/com_spm.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/nAdapter.vhd ')
 
         if routerType == 'sync':
             argo_src.write(self.p.ARGO_PATH+'/src/routers/synchronous/xbar.vhd ')
-            argo_src.write(self.p.ARGO_PATH+'/src/ni/asynchronous/nAdapter.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/synchronous/hpu.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/synchronous/router.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/noc/synchronous/noc_node.vhd ')
@@ -230,7 +231,6 @@ class NoCGen(object):
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/channel_latch.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/hpu_latch.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/hpu_comb.vhd ')
-            argo_src.write(self.p.ARGO_PATH+'/src/ni/asynchronous/nAdapter.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/crossbar_stage.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/hpu.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/router.vhd ')
