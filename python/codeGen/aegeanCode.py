@@ -54,6 +54,7 @@ def getAegean():
     aegean = Component('aegean')
     aegean.addPackage('ieee','std_logic_1164')
     aegean.addPackage('ieee','numeric_std')
+    aegean.addPackage('work','config_types')
     aegean.addPackage('work','config')
     aegean.addPackage('work','ocp')
     aegean.addPackage('work','noc_interface')
