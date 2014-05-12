@@ -4,7 +4,8 @@
     <Dev DevType="Uart" entity="Uart" iface="OcpCore">
         <!-- Maybe the Dev should also have a srcfile attribute -->
         <params>
-            <param name="baud_rate" value="115200" />
+            <param name="baudRate" value="115200" />
+            <param name="fifoDepth" value="16" />
         </params>
         <ports>
             <inport name="rxd" />
