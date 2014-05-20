@@ -29,7 +29,7 @@
 
 <xs:simpleType name="routerTypeString">
 	<xs:restriction base="xs:string">
-		<xs:pattern value="sync|async"/>
+		<xs:pattern value="sync|async|async-fpga"/>
 	</xs:restriction>
 </xs:simpleType>
 
