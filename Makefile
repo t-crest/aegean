@@ -42,10 +42,15 @@ MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
 	CY7C10612DV33/cy7c10612dv33.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	top.vhd aegean_testbench.vhd)
-
+POST_PNR_SRC=$(patsubst %,$(BUILD_PATH)/%,\
+	ise/netgen/par/aegean_top_timesim.v)
+TESTBENCH_POST_SRC=$(patsubst %,$(BUILD_PATH)/%,\
+	aegean_testbench.vhd)
+	
 # Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
 SYNTH_PATH=$(BUILD_PATH)/quartus
+SYNTH_PATH_XILINX=$(BUILD_PATH)/xilinx
 VLIB=vlib -quiet work
 VCOM?=vcom -quiet -93 -work $(BUILD_PATH)/work
 VLOG?=vlog -quiet -work $(BUILD_PATH)/work
@@ -89,7 +94,7 @@ $(BUILD_PATH)/nocinit.c: $(PGEN)
 #platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
 #	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 
-$(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
+$(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files ise_files
 	@python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 	@echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
 
@@ -112,6 +117,25 @@ $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf: $(AEGEAN_PATH)/quartus/aegean_
 	-mkdir -p $(dir $@)
 	-cp $< $@
 $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_top.sdc
+	-mkdir -p $(dir $@)
+	-cp $< $@
+
+ise_files: \
+	$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_sync.xise \
+	$(BUILD_PATH)/ise/ml605_sync.ucf \
+	$(BUILD_PATH)/ise/ml605_async.ucf \
+	$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_async.xise
+
+$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_sync.xise: $(AEGEAN_PATH)/ise/ml605oc_sync.xise
+	-mkdir -p $(dir $@)
+	-cp $< $@
+$(BUILD_PATH)/ise/ml605_sync.ucf: $(AEGEAN_PATH)/ise/ml605_sync.ucf
+	-mkdir -p $(dir $@)
+	-cp $< $@
+$(BUILD_PATH)/ise/ml605_async.ucf: $(AEGEAN_PATH)/ise/ml605_async.ucf
+	-mkdir -p $(dir $@)
+	-cp $< $@
+$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_async.xise: $(AEGEAN_PATH)/ise/ml605oc_async.xise
 	-mkdir -p $(dir $@)
 	-cp $< $@
 
@@ -139,12 +163,29 @@ compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC)
 	$(PREFIX) $(VCOM) $(AEGEAN_CONFIG_SRC)
 
 #########################################################################
+# Map Xilinx libraries
+#########################################################################
+map-xilinx-libs:
+	vmap secureip $(SECUREIPPATH)/secureip
+	vmap unisim $(UNISIMPATH)/unisim
+	vmap simprim $(SIMPRIMPATH)/simprim
+
+#########################################################################
 # Simulation of source code for the platform described in AEGEAN_PLATFORM
 # Call make sim
 #########################################################################
 sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
+	
+sim-fpga: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
+	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
+	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
+
+sim-fpga-post: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_POST_SRC)
+	$(PREFIX) $(VLOG) $(POST_PNR_SRC)
+	$(PREFIX) $(VCOM) $(TEST_SRC) $(TESTBENCH_POST_SRC)
+	$(PREFIX) $(VSIM) -sdftyp /aegean_testbench/top=$(BUILD_PATH)/ise/netgen/par/aegean_top_timesim.sdf -do $(SIM_PATH)/aegean.do aegean_testbench
 
 synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(ARGO_SRC)
 	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
