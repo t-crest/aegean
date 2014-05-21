@@ -94,8 +94,8 @@ class TestGen(object):
 
         s+= testCode.writeWait()
         for p in range(0,len(self.nodes)):
-            IPTypeRef = node.get('IPTypeRef')
             node = self.nodes[p]
+            IPTypeRef = node.get('IPTypeRef')
             label = node.get('id')
             if self.spys[label]:
                 s+= testCode.writeUartForce(label,0,IPTypeRef)
