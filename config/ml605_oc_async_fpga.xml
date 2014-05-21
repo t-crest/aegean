@@ -6,7 +6,7 @@
         <platform width="2" height="2" >
 
                 <!-- <topology topotype="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
-                <topology topoType="bitorus" routerDepth="2" linkDepth="0" routerType="async-fpga" />
+                <topology topoType="bitorus" routerDepth="2" linkDepth="0" routerType="async_fpga" />
 
                 <nodes>
                         <node id="pat0" loc="(0,0)" IPTypeRef="ml605ocm" SPMSize="4K" />
