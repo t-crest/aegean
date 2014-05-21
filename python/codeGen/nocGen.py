@@ -238,7 +238,7 @@ class NoCGen(object):
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/router.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/fifo.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/noc/asynchronous/noc_node.vhd ')
-        elif routerType == 'async-fpga':
+        elif routerType == 'async_fpga':
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/delays.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/fpga/matched_delay.vhd ')
             argo_src.write(self.p.ARGO_PATH+'/src/routers/asynchronous/fpga/AS_C2.vhd ')

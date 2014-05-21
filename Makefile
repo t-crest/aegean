@@ -42,10 +42,6 @@ MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
 	CY7C10612DV33/cy7c10612dv33.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	top.vhd aegean_testbench.vhd)
-POST_PNR_SRC=$(patsubst %,$(BUILD_PATH)/%,\
-	ise/netgen/par/aegean_top_timesim.v)
-TESTBENCH_POST_SRC=$(patsubst %,$(BUILD_PATH)/%,\
-	aegean_testbench.vhd)
 	
 # Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
@@ -168,7 +164,6 @@ compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC)
 map-xilinx-libs:
 	vmap secureip $(SECUREIPPATH)/secureip
 	vmap unisim $(UNISIMPATH)/unisim
-	vmap simprim $(SIMPRIMPATH)/simprim
 
 #########################################################################
 # Simulation of source code for the platform described in AEGEAN_PLATFORM
@@ -181,11 +176,6 @@ sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
 sim-fpga: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
-
-sim-fpga-postpnr: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_POST_SRC)
-	$(PREFIX) $(VLOG) $(POST_PNR_SRC)
-	$(PREFIX) $(VCOM) $(TEST_SRC) $(TESTBENCH_POST_SRC)
-	$(PREFIX) $(VSIM) -sdftyp /aegean_testbench/top=$(BUILD_PATH)/ise/netgen/par/aegean_top_timesim.sdf -do $(SIM_PATH)/aegean.do aegean_testbench
 
 synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(ARGO_SRC)
 	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
