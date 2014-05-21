@@ -50,7 +50,7 @@ TESTBENCH_POST_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 # Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
 SYNTH_PATH=$(BUILD_PATH)/quartus
-SYNTH_PATH_XILINX=$(BUILD_PATH)/xilinx
+SYNTH_PATH_XILINX=$(BUILD_PATH)/ise
 VLIB=vlib -quiet work
 VCOM?=vcom -quiet -93 -work $(BUILD_PATH)/work
 VLOG?=vlog -quiet -work $(BUILD_PATH)/work
@@ -121,21 +121,21 @@ $(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_
 	-cp $< $@
 
 ise_files: \
-	$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_sync.xise \
-	$(BUILD_PATH)/ise/ml605_sync.ucf \
-	$(BUILD_PATH)/ise/ml605_async.ucf \
-	$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_async.xise
+	$(SYNTH_PATH_XILINX)/$(AEGEAN_PLATFORM)_sync.xise \
+	$(SYNTH_PATH_XILINX)/ml605_sync.ucf \
+	$(SYNTH_PATH_XILINX)/ml605_async.ucf \
+	$(SYNTH_PATH_XILINX)/$(AEGEAN_PLATFORM)_async.xise
 
-$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_sync.xise: $(AEGEAN_PATH)/ise/ml605oc_sync.xise
+$(SYNTH_PATH_XILINX)/$(AEGEAN_PLATFORM)_sync.xise: $(AEGEAN_PATH)/ise/ml605oc_sync.xise
 	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/ise/ml605_sync.ucf: $(AEGEAN_PATH)/ise/ml605_sync.ucf
+$(SYNTH_PATH_XILINX)/ml605_sync.ucf: $(AEGEAN_PATH)/ise/ml605_sync.ucf
 	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/ise/ml605_async.ucf: $(AEGEAN_PATH)/ise/ml605_async.ucf
+$(SYNTH_PATH_XILINX)/ml605_async.ucf: $(AEGEAN_PATH)/ise/ml605_async.ucf
 	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/ise/$(AEGEAN_PLATFORM)_async.xise: $(AEGEAN_PATH)/ise/ml605oc_async.xise
+$(SYNTH_PATH_XILINX)/$(AEGEAN_PLATFORM)_async.xise: $(AEGEAN_PATH)/ise/ml605oc_async.xise
 	-mkdir -p $(dir $@)
 	-cp $< $@
 
@@ -182,7 +182,7 @@ sim-fpga: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTB
 	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
-sim-fpga-post: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_POST_SRC)
+sim-fpga-postpnr: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_POST_SRC)
 	$(PREFIX) $(VLOG) $(POST_PNR_SRC)
 	$(PREFIX) $(VCOM) $(TEST_SRC) $(TESTBENCH_POST_SRC)
 	$(PREFIX) $(VSIM) -sdftyp /aegean_testbench/top=$(BUILD_PATH)/ise/netgen/par/aegean_top_timesim.sdf -do $(SIM_PATH)/aegean.do aegean_testbench
