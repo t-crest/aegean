@@ -88,7 +88,7 @@ def declareSignals(test,sramName):
 
 def writeSignalSpySignals(test,label):
     test.arch.declSignal(label+'_uart_tx_reg','std_logic_vector',8)
-    test.arch.declSignal(label+'_uart_tx_status_reg','std_logic_vector(0 downto 0)')
+    test.arch.declSignal(label+'_uart_tx_status_reg','std_logic')
 
 def bindTop(top,sramName):
     top.entity.bindPort('clk','clk')
@@ -123,11 +123,11 @@ def writeUartSpy(test,label,hwprefix):
         constant CORE_ID : STRING ('''+str(len(label)+6)+''' downto 1):="'''+label.upper()+''': at: ";
         variable i : integer := 0;
     begin
-        init_signal_spy("/aegean_testbench/top/cmp/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_empty","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
-        init_signal_spy("/aegean_testbench/top/cmp/'''+label+'''/iocomp/'''+hwprefix+'''Uart/tx_data","/aegean_testbench/'''+label+'''_uart_tx_reg");
+        init_signal_spy("/aegean_testbench/top/cmp/'''+label+'''/iocomp/'''+hwprefix+'''Uart/txQueue/io_enq_valid","/aegean_testbench/'''+label+'''_uart_tx_status_reg");
+        init_signal_spy("/aegean_testbench/top/cmp/'''+label+'''/iocomp/'''+hwprefix+'''Uart/txQueue/io_enq_bits","/aegean_testbench/'''+label+'''_uart_tx_reg");
         write(buf,CORE_ID);
         loop
-            wait until falling_edge('''+label+'''_uart_tx_status_reg(0));
+            wait until rising_edge('''+label+'''_uart_tx_status_reg);
             if i = 0 then
                 write(buf,time'image(NOW) & " : ");
                 --write(buf,real'image(real(NOW/time'val(1000000))/1000.0) & " us : ");
