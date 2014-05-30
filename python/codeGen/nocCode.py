@@ -44,6 +44,7 @@ package config is
 
     constant TARGET_ARCHITECTURE : ARCHITECTURES := FPGA;
     constant TARGET_IMPLEMENTATION : IMPLEMENTATIONS := '''+ RT +''';
+    constant GATING_ENABLED : integer := 1;
 
     constant N : integer := '''+N+''';
     constant M : integer := '''+M+''';
