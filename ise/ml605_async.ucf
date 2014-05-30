@@ -7,9 +7,9 @@ NET "oUartPins_txd" LOC = J25;
 #NET "serial_tx" IOSTANDARD = LVCMOS25;
 NET "clk"                    LOC = "U23";    ## 5   on X5
 NET "clk" IOSTANDARD = LVCMOS25;
-ENABLE= lat_d_q ;
-ENABLE= lat_ce_q ;
-ENABLE= reg_sr_o ;
-INST "cmp/noc/pat*/r" AREA_GROUP = async_noc ;
-AREA_GROUP "async_noc" GROUP = CLOSED;
+#ENABLE= lat_d_q ;
+#ENABLE= lat_ce_q ;
+#ENABLE= reg_sr_o ;
+#INST "cmp/noc/pat*/r" AREA_GROUP = async_noc ;
+#AREA_GROUP "async_noc" GROUP = CLOSED;
 
