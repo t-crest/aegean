@@ -185,7 +185,7 @@
             <frequency Hz="66000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-hello_sum_reduced"/>
+            <bootrom app="bootable-cmpmaster"/>
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="256" assoc="1" repl="" />
@@ -211,7 +211,7 @@
             <frequency Hz="66000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-hello_sum_reduced"/>
+            <bootrom app="bootable-cmpslave"/>
             <!--<bootrom app="york_test"/>-->
             <MCache size="4k" blocks="16" repl="" />
             <DCache size="256" assoc="1" repl="" />
