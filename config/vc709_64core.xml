@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<aegean version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude" >
+	<description>Demonstration of a system with 64 cores on the VC709 board and external memory</description>
+
+	<platform width="8" height="8" >
+
+		<!-- <topology topotype="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
+		<topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
+
+		<nodes>
+			<node id="p00" loc="(0,0)" IPTypeRef="ml605m" SPMSize="4K" />
+			<node id="p10" loc="(1,0)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p20" loc="(2,0)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p30" loc="(3,0)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p40" loc="(4,0)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p50" loc="(5,0)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p60" loc="(6,0)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p70" loc="(7,0)" IPTypeRef="ml605s" SPMSize="4K" />
+
+			<node id="p01" loc="(0,1)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p11" loc="(1,1)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p21" loc="(2,1)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p31" loc="(3,1)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p41" loc="(4,1)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p51" loc="(5,1)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p61" loc="(6,1)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p71" loc="(7,1)" IPTypeRef="ml605s" SPMSize="4K" />
+
+			<node id="p02" loc="(0,2)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p12" loc="(1,2)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p22" loc="(2,2)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p32" loc="(3,2)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p42" loc="(4,2)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p52" loc="(5,2)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p62" loc="(6,2)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p72" loc="(7,2)" IPTypeRef="ml605s" SPMSize="4K" />
+
+			<node id="p03" loc="(0,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p13" loc="(1,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p23" loc="(2,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p33" loc="(3,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p43" loc="(4,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p53" loc="(5,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p63" loc="(6,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p73" loc="(7,3)" IPTypeRef="ml605s" SPMSize="4K" />
+
+			<node id="p04" loc="(0,4)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p14" loc="(1,4)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p24" loc="(2,4)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p34" loc="(3,4)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p44" loc="(4,4)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p54" loc="(5,4)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p64" loc="(6,4)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p74" loc="(7,4)" IPTypeRef="ml605s" SPMSize="4K" />
+
+			<node id="p05" loc="(0,5)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p15" loc="(1,5)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p25" loc="(2,5)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p35" loc="(3,5)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p45" loc="(4,5)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p55" loc="(5,5)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p65" loc="(6,5)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p75" loc="(7,5)" IPTypeRef="ml605s" SPMSize="4K" />
+
+			<node id="p06" loc="(0,6)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p16" loc="(1,6)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p26" loc="(2,6)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p36" loc="(3,6)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p46" loc="(4,6)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p56" loc="(5,6)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p66" loc="(6,6)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p76" loc="(7,6)" IPTypeRef="ml605s" SPMSize="4K" />
+
+			<node id="p07" loc="(0,7)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p17" loc="(1,7)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p27" loc="(2,7)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p37" loc="(3,7)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p47" loc="(4,7)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p57" loc="(5,7)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p67" loc="(6,7)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="p77" loc="(7,7)" IPTypeRef="ml605s" SPMSize="4K" />
+
+		</nodes>
+
+		<!-- This mem is not to be used, it is only there to pass xml validation.
+		   An external memory should be connected. 
+		  -->
+		<memory id="ram0" DevTypeRef="OCRam" size="4G" />
+
+		<!-- The standard IP cores are included -->
+		<xi:include href="./ip/ip.xml" />
+		<!-- The standard Devices are included -->
+		<xi:include href="./io/dev.xml" />
+		<!-- The IO ports for the VC709 board are included-->
+		<xi:include href="./boards/vc709.xml" />
+
+	</platform>
+
+	<application>
+		<!-- <communication comtype="all2all"/"custom" phits="s"> -->
+		<communication comType="all2all" phits="3">
+
+		</communication>
+	</application>
+
+</aegean>
