@@ -1,0 +1,14 @@
+<board name="vc709" vendor="Xilinx" family="Virtex-7" device="XC7VX690T" >
+    <!-- This is a differential clock. How should this be represented? -->
+    <clock name="clk" frequency="233333333" pin="AY18" />
+<!-- The pins are listed (width-1 DOWNTO 0) -->
+    <IOPorts>
+        <IOPort name="UartPins">
+            <in node="pat0" name="rxd" pin="AU33" />
+            <out node="pat0" name="txd" pin="AU36" />
+        </IOPort>
+        <IOPort name="LedPins">
+            <out node="pat0" name="led" pin="AU39,AP42,AP41,AR35,AT37,AR37,AN39,AM39" />
+        </IOPort>
+    </IOPorts>
+</board>
