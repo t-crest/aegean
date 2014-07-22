@@ -9,22 +9,22 @@
 		<topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
 
 		<nodes>
-			<node id="pat0" loc="(0,0)" IPTypeRef="ml605m" SPMSize="4K" />
-			<node id="pat1" loc="(1,0)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat2" loc="(2,0)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat3" loc="(3,0)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat4" loc="(0,1)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat5" loc="(1,1)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat6" loc="(2,1)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat7" loc="(3,1)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat8" loc="(0,2)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat9" loc="(1,2)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat10" loc="(2,2)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat11" loc="(3,2)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat12" loc="(0,3)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat13" loc="(1,3)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat14" loc="(2,3)" IPTypeRef="ml605s" SPMSize="4K" />
-			<node id="pat15" loc="(3,3)" IPTypeRef="ml605s" SPMSize="4K" />
+			<node id="pat0" loc="(0,0)" IPTypeRef="ml605m" SPMSize="32K" />
+			<node id="pat1" loc="(1,0)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat2" loc="(2,0)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat3" loc="(3,0)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat4" loc="(0,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat5" loc="(1,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat6" loc="(2,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat7" loc="(3,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat8" loc="(0,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat9" loc="(1,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat10" loc="(2,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat11" loc="(3,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat12" loc="(0,3)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat13" loc="(1,3)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat14" loc="(2,3)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat15" loc="(3,3)" IPTypeRef="ml605s" SPMSize="32K" />
 		</nodes>
 
 		<!-- This mem is not to be used, it is only there to pass xml validation.
