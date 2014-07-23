@@ -31,6 +31,7 @@
 			<xs:attribute ref="loc" use="required"/>
 			<xs:attribute ref="IPTypeRef" use="required"/>
 			<xs:attribute ref="SPMSize" use="required"/>
+			<xs:attribute name="BootApp" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 

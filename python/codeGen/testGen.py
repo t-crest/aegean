@@ -78,6 +78,9 @@ class TestGen(object):
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
             IPTypeRef = node.get('IPTypeRef')
+            BootApp = node.get('BootApp')
+            if str(BootApp) != 'None':
+                IPTypeRef = (IPTypeRef +'_'+BootApp).replace('-','_')
             label = node.get('id')
             if self.spys[label]:
                 testCode.writeUartSpy(test,label,IPTypeRef)
@@ -88,6 +91,9 @@ class TestGen(object):
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
             IPTypeRef = node.get('IPTypeRef')
+            BootApp = node.get('BootApp')
+            if str(BootApp) != 'None':
+                IPTypeRef = (IPTypeRef +'_'+BootApp).replace('-','_')
             label = node.get('id')
             if self.spys[label]:
                 s+= testCode.writeUartForce(label,1,IPTypeRef)
@@ -96,6 +102,9 @@ class TestGen(object):
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
             IPTypeRef = node.get('IPTypeRef')
+            BootApp = node.get('BootApp')
+            if str(BootApp) != 'None':
+                IPTypeRef = (IPTypeRef +'_'+BootApp).replace('-','_')
             label = node.get('id')
             if self.spys[label]:
                 s+= testCode.writeUartForce(label,0,IPTypeRef)

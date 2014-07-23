@@ -120,18 +120,23 @@ class AegeanGen(object):
             IPTypeRef = node.get('IPTypeRef')
             SPMSize = node.get('SPMSize')
             self.SPMSizes.append(self.parseSize(SPMSize))
-            if IPTypeRef not in self.genIPCores:
-                IPCore = self.IPCores[IPTypeRef]
+
+            BootApp = node.get('BootApp')
+            IPTypeID = IPTypeRef
+            if str(BootApp) != 'None':
+                IPTypeID = (IPTypeRef + '-' + BootApp).replace('-','_')
+            if IPTypeID not in self.genIPCores: # IPTypeRef -> IPTypeID
+                IPCore = self.IPCores[IPTypeRef] 
                 b = util.findTag(IPCore,'bootrom')
-                if str(b) == 'None':
+                if str(b) == 'None' and str(BootApp) == 'None':
                     if IPCore.tag == 'patmos':
                         raise SystemExit(__file__ +': Error: Patmos specified with no bootapp: ' + IPTypeRef)
                     else:
                         continue
-                bootapp = b.get('app')
-
-                # Remove the bootapp tag from the patmos config
-                IPCore.remove(b)
+                if str(BootApp) == 'None':
+                    BootApp = b.get('app')
+                    # Remove the bootapp tag from the patmos config
+                    IPCore.remove(b)
 
                 # Add the Devs to the patmos configuration file
                 IOsT = util.findTag(IPCore,'IOs')
@@ -145,11 +150,11 @@ class AegeanGen(object):
 
                 # Write the patmos configration file
                 et = etree.ElementTree(IPCore)
-                et.write(self.p.TMP_BUILD_PATH + '/' + IPTypeRef + '.xml')
+                et.write(self.p.TMP_BUILD_PATH + '/' + IPTypeID.replace('-','_') + '.xml') # IPTypeRef ->IPTypeRef + IPTypeID
 
                 # Generate the patmos file
-                self.patmosGen(IPTypeRef,bootapp,self.p.TMP_BUILD_PATH + '/' + IPTypeRef + '.xml')
-                self.genIPCores[IPTypeRef] = IPCore
+                self.patmosGen(IPTypeID.replace('-','_'),BootApp,self.p.TMP_BUILD_PATH + '/' + IPTypeID.replace('-','_') + '.xml') # IPTypeRef -> IPTypeID
+                self.genIPCores[IPTypeID.replace('-','_')] = IPCore # IPTypeRef -> IPTypeID
 
     def generateMemory(self):
         if str(self.memory) == 'None':
@@ -343,7 +348,7 @@ class AegeanGen(object):
         aegean.arch.declComp(arbiter)
 
 
-        for IPType in self.genIPCores.keys():
+        for IPType in self.genIPCores.keys(): 
             ledPort = None
             uartPort = None
             IPCore = self.genIPCores[IPType]
@@ -365,6 +370,9 @@ class AegeanGen(object):
             patmos = self.nodes[p]
             label = patmos.get('id')
             IPType = patmos.get('IPTypeRef')
+            BootApp = patmos.get('BootApp')
+            if str(BootApp) != 'None':
+                IPType = (IPType + '-' + BootApp).replace('-','_')
 
             ledPort = None
             txdPort = None
