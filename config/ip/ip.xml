@@ -76,7 +76,7 @@
         <patmos>
             <description>Single issue slot patmos</description>
 
-            <frequency Hz="50000000" />
+            <frequency Hz="75000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpmaster"/>
@@ -102,7 +102,7 @@
         <patmos>
             <description>Single issue slot patmos</description>
 
-            <frequency Hz="50000000" />
+            <frequency Hz="75000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpslave"/>
