@@ -41,7 +41,8 @@ use ieee.std_logic_1164.all;
 use work.config_types.all;
 
 package config is
-
+    
+    constant SPM_ADDR_WIDTH        : integer         := 16;
     constant TARGET_ARCHITECTURE : ARCHITECTURES := FPGA;
     constant TARGET_IMPLEMENTATION : IMPLEMENTATIONS := '''+ RT +''';
     constant GATING_ENABLED : integer := 1;
