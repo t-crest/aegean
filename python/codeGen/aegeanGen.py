@@ -182,14 +182,18 @@ class AegeanGen(object):
         Sed = ['sed','-i']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
-        subprocess.call(Sed)
+        ret = subprocess.call(Sed)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: sed: return value: ' + ret)
 
         sedString = 's|' + 'set_global_assignment -name DEVICE$' + '|'
         sedString+= 'set_global_assignment -name DEVICE '+ device + '|'
         Sed = ['sed','-i']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
-        subprocess.call(Sed)
+        ret = subprocess.call(Sed)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: sed: return value: ' + ret)
 
     def addDeviceToCDF(self):
         device = self.board.get('device')
@@ -198,7 +202,9 @@ class AegeanGen(object):
         Sed = ['sed','-i']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_CDF]
-        subprocess.call(Sed)
+        ret = subprocess.call(Sed)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: sed: return value: ' + ret)
 
     def addGeneratedFilesToQSF(self):
         sedString = 's|' + 'set_global_assignment -name VERILOG_FILE GENERATED' + '|'
@@ -217,7 +223,9 @@ class AegeanGen(object):
         Sed = ['sed','-i']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
-        subprocess.call(Sed)
+        ret = subprocess.call(Sed)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: sed: return value: ' + ret)
 
     def addPinsToQSF(self):
         sedString = 's|' + 'set_location_assignment PIN_XXX -to XXX' + '|'
@@ -234,7 +242,9 @@ class AegeanGen(object):
         Sed = ['sed','-i']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
-        subprocess.call(Sed)
+        ret = subprocess.call(Sed)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: sed: return value: ' + ret)
 
     def generateTopLevel(self,aegean):
         vendor = self.board.get('vendor')
@@ -414,7 +424,9 @@ class AegeanGen(object):
         Patmos+= ['HWMODULEPREFIX='+IPType]
         Patmos+= ['CONFIGFILE='+configfile]
         Patmos+= [self.p.BUILD_PATH+'/'+IPType+'PatmosCore.v']
-        subprocess.call(Patmos)
+        ret = subprocess.call(Patmos)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: Generation of Patmos: return value: ' + ret)
 
         self.genFiles.append('../'+IPType+'PatmosCore.v')
 
@@ -423,7 +435,9 @@ class AegeanGen(object):
         Ssram+= ['HWBUILDDIR='+self.p.BUILD_PATH]
         Ssram+= ['MEMCTRL_ADDR_WIDTH='+str(addr)]
         Ssram+= [self.p.BUILD_PATH+'/'+entity+'.v']
-        subprocess.call(Ssram)
+        ret = subprocess.call(Ssram)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: Generation of Sram controller: return value: ' + ret)
 
         self.genFiles.append('../'+entity+'.v')
 
@@ -435,6 +449,8 @@ class AegeanGen(object):
         Arbiter+= ['ARBITER_DATA_WIDTH='+str(data)]
         Arbiter+= ['ARBITER_BURST_LENGTH='+str(burstLength)]
         Arbiter+= [self.p.BUILD_PATH+'/Arbiter.v']
-        subprocess.call(Arbiter)
+        ret = subprocess.call(Arbiter)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: Generation of memory arbiter: return value: ' + ret)
 
         self.genFiles.append('../Arbiter.v')

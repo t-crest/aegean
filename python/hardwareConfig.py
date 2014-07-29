@@ -64,11 +64,3 @@ class HWConfig(object):
         testGen = TestGen(self.p,self.platform)
         test = testGen.generate(top)
 
-#        VCOM = ['vcom','-quiet',self.p.NOCFile]
-#        VCOM+= [self.p.AegeanFile]
-#        VCOM+= [self.p.TopFile]
-#        VCOM+= [self.p.TestFile]
-#        VCOM+= [self.p.ConfFile]
-#        VCOM+= ['-work',self.p.BUILD_PATH+'/work']
-#        subprocess.call(VCOM)
-
