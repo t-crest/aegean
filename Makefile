@@ -73,7 +73,7 @@ ARGO_SRC=$(BUILD_PATH)/.argo_src
 .PHONY: sim synth config platform compile
 .FORCE:
 
-all: sim
+all: platform
 
 #########################################################################
 # Generation of source code for the platform described in AEGEAN_PLATFORM
