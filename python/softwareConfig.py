@@ -78,20 +78,20 @@ class SWConfig(object):
         Poseidon+= ['-d']                  # Draw the topology
         ret = subprocess.call(Poseidon)
         if ret != 0:
-            raise SystemExit(__file__ +': Error: poseidon: ' + ret)
+            raise SystemExit(__file__ +': Error: poseidon: ' + str(ret))
         print('Converting schedule')
         Converter = [self.p.POSEIDON_CONV]
         Converter+= [self.p.GEN_SCHED,self.p.CSCHED,'Aegean-phase-c',routerDepth]
         ret = subprocess.call(Converter)
         if ret != 0:
-            raise SystemExit(__file__ +': Error: poseidon-conv: ' + ret)
+            raise SystemExit(__file__ +': Error: poseidon-conv: ' + str(ret))
         print('Copying schedule')
         Cp = ['cp']              # Copy
         Cp+= [self.p.CSCHED]     # Source
         Cp+= [self.p.PATMOS_PATH + '/c/nocinit.c'] # Destination
         ret = subprocess.call(Cp)
         if ret != 0:
-            raise SystemExit(__file__ +': Error: cp: ' + ret)
+            raise SystemExit(__file__ +': Error: cp: ' + str(ret))
 
     def createScript(self):
         print('Creation of compiler scripts is NOT YET IMPLEMENTED')
