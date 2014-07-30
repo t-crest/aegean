@@ -187,10 +187,10 @@ config:
 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf
 
 clean:
-	-rm -r $(BUILD_PATH)
+	-rm -rf $(BUILD_PATH)
 
 cleanall:
-	-rm -r $(AEGEAN_PATH)/build
+	-rm -rf $(AEGEAN_PATH)/build
 
 help:
 	@echo "================================================================================"

@@ -34,6 +34,7 @@
 ###############################################################################
 
 import os
+import shutil
 
 class Paths(object):
     """docstring for Paths"""
@@ -43,9 +44,19 @@ class Paths(object):
         self.AEGEAN_PATH = os.getcwd()
 
         self.ARGO_PATH = self.AEGEAN_PATH + '/../argo'
-        self.POSEIDON_PATH = self.AEGEAN_PATH + '/../local/bin'
-        self.POSEIDON_CONV = self.POSEIDON_PATH + '/poseidon-conv'
-        self.POSEIDON = self.POSEIDON_PATH + '/poseidon'
+
+        # try finding poseidon in PATH (shutil.which() is Python 3.3+)
+        try:
+            self.POSEIDON_CONV = shutil.which('poseidon-conv')
+            self.POSEIDON = shutil.which('poseidon')
+        except Exception:
+            pass
+
+        # default to poseidon in ../local/bin
+        if not self.POSEIDON_CONV or not self.POSEIDON:
+            self.POSEIDON_PATH = self.AEGEAN_PATH + '/../local/bin'
+            self.POSEIDON_CONV = self.POSEIDON_PATH + '/poseidon-conv'
+            self.POSEIDON = self.POSEIDON_PATH + '/poseidon'
 
         self.PATMOS_PATH = self.AEGEAN_PATH + '/../patmos'
         self.PATMOSHW_PATH = self.PATMOS_PATH + '/hardware'
