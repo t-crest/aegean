@@ -348,6 +348,12 @@ class AegeanGen(object):
         self.generateNodes()
         self.generateMemory()
 
+        vlog_src = open(self.p.BUILD_PATH+'/.vlog_src','w')
+        for f in self.genFiles:
+            if f.endswith('.v'):
+                vlog_src.write(self.p.BUILD_PATH + f[2:] + ' ')
+        
+
         aegean = aegeanCode.getAegean()
         # add IO pins
         aegean.entity.addPort('led','out','std_logic_vector',9)

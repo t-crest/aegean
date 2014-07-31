@@ -22,7 +22,7 @@ BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
 # Source file variables
 PATMOS_PATH?=$(CURDIR)/../patmos
-PATMOS_SOURCE?=$(BUILD_PATH)/*.v
+#PATMOS_SOURCE?=$(BUILD_PATH)/*.v
 
 ARGO_PATH?=$(CURDIR)/../argo
 
@@ -69,8 +69,9 @@ endif
 # Temporary file specifying the configuration of the latest platform build
 PGEN=$(BUILD_PATH)/.pgen
 ARGO_SRC=$(BUILD_PATH)/.argo_src
+VLOG_SRC=$(BUILD_PATH)/.vlog_src
 
-.PHONY: sim synth config platform compile
+.PHONY: sim synth config platform compile buildbot-test
 .FORCE:
 
 all: platform
@@ -139,7 +140,7 @@ $(SYNTH_PATH_XILINX)/$(AEGEAN_PLATFORM)_async.xise: $(AEGEAN_PATH)/ise/ml605oc_a
 # Compilation of source code for the platform described in AEGEAN_PLATFORM
 # Call make compile
 ##########################################################################
-compile: $(BUILD_PATH)/work compile-config compile-argo compile-patmos  $(AEGEAN_SRC)
+compile: $(BUILD_PATH)/work compile-config compile-argo compile-vlog  $(AEGEAN_SRC)
 	$(PREFIX) $(VCOM) $(AEGEAN_SRC)
 
 $(BUILD_PATH)/work:
@@ -152,8 +153,11 @@ compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(ARGO_SRC)) $(ARGO_
 #$(PATMOS_SOURCE): $(PATMOS_PATH)/c/nocinit.c .FORCE
 #	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
 
-compile-patmos: $(BUILD_PATH)/work $(PATMOS_SOURCE)
-	$(PREFIX) $(VLOG) $(PATMOS_SOURCE)
+#compile-patmos: $(BUILD_PATH)/work $(shell cat $(PATMOS_SOURCE)) $(PATMOS_SOURCE)
+#	$(PREFIX) $(VLOG) $(PATMOS_SOURCE)
+
+compile-vlog: $(BUILD_PATH)/work $(shell cat $(VLOG_SRC)) $(VLOG_SRC)
+	$(PREFIX) $(VLOG) $(shell cat $(VLOG_SRC))
 
 compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC)
 	$(PREFIX) $(VCOM) $(AEGEAN_CONFIG_SRC)
@@ -191,6 +195,8 @@ clean:
 
 cleanall:
 	-rm -rf $(AEGEAN_PATH)/build
+
+buildbot-test: clean platform compile synth
 
 help:
 	@echo "================================================================================"
