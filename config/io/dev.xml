@@ -20,6 +20,14 @@
             <outport name="led" width="9" />
         </ports>
     </Dev>
+    <Dev DevType="Led" entity="Leds" iface="OcpCore">
+        <params>
+            <param name="ledCount" value="1" />
+        </params>
+        <ports>
+            <outport name="led" width="1" />
+        </ports>
+    </Dev>
     <Dev DevType="ExtIODevice" entity="ExtIODevice" iface="OcpCore">
         <params>
             <param name="extAddrWidth" value="8" />

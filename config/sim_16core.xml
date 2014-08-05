@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<aegean version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude" >
+	<description>Demonstration of a system with 16 cores on the ML605 board and external memory</description>
+
+	<platform width="4" height="4" >
+
+		<!-- <topology topotype="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
+		<topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
+
+		<nodes>
+			<node id="pat0" loc="(0,0)" IPTypeRef="ml605m" SPMSize="32K" />
+			<node id="pat1" loc="(1,0)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat2" loc="(2,0)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat3" loc="(3,0)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat4" loc="(0,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat5" loc="(1,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat6" loc="(2,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat7" loc="(3,1)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat8" loc="(0,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat9" loc="(1,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat10" loc="(2,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat11" loc="(3,2)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat12" loc="(0,3)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat13" loc="(1,3)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat14" loc="(2,3)" IPTypeRef="ml605s" SPMSize="32K" />
+			<node id="pat15" loc="(3,3)" IPTypeRef="ml605s" SPMSize="32K" />
+		</nodes>
+
+		<!-- This mem is not to be used, it is only there to pass xml validation.
+		   An external memory should be connected. 
+		  -->
+		<memory id="ram0" DevTypeRef="Ssram32" size="4M" />
+
+		<!-- The standard IP cores are included -->
+		<xi:include href="./ip/sim_ip.xml" />
+		<!-- The standard Devices are included -->
+		<xi:include href="./io/dev.xml" />
+		<!-- The IO ports for the ml605 board are included-->
+		<xi:include href="./boards/de2-70.xml" />
+
+	</platform>
+
+	<application>
+		<!-- <communication comtype="all2all"/"custom" phits="s"> -->
+		<communication comType="all2all" phits="3">
+
+		</communication>
+	</application>
+
+</aegean>
