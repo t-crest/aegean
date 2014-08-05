@@ -14,6 +14,8 @@
 # The project being build when calling
 # "make platform|compile|sim|synth|config"
 AEGEAN_PLATFORM?=default-altde2-115
+# Tests to be run by buildbot
+BUILDBOT_TESTS=mp_test test_cmp
 # Aegean path names
 AEGEAN_PATH?=$(CURDIR)
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
@@ -22,8 +24,6 @@ BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
 # Source file variables
 PATMOS_PATH?=$(CURDIR)/../patmos
-#PATMOS_SOURCE?=$(BUILD_PATH)/*.v
-
 ARGO_PATH?=$(CURDIR)/../argo
 
 AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/vhdl
@@ -182,7 +182,7 @@ sim-fpga: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTB
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
 synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(ARGO_SRC)
-	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
+	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top --verilog_macro="SYNTHESIS"
 	quartus_fit $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
 	quartus_asm $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
 	quartus_sta $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
@@ -196,7 +196,12 @@ clean:
 cleanall:
 	-rm -rf $(AEGEAN_PATH)/build
 
-buildbot-test: clean platform compile synth
+buildbot-test: clean platform compile synth 
+	# for test in $(BUILDBOT_TESTS) ; di \
+	# 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf; \
+	# 	make -C ../patmos APP=$$test download \
+	# done
+
 
 help:
 	@echo "================================================================================"
