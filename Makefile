@@ -196,7 +196,8 @@ clean:
 cleanall:
 	-rm -rf $(AEGEAN_PATH)/build
 
-buildbot-test: clean platform compile synth 
+#buildbot-test: clean platform compile synth 
+buildbot-test: clean platform compile
 	# for test in $(BUILDBOT_TESTS) ; di \
 	# 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf; \
 	# 	make -C ../patmos APP=$$test download \
