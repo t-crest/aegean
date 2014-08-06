@@ -88,7 +88,7 @@ class SWConfig(object):
         print('Copying schedule')
         Cp = ['cp']              # Copy
         Cp+= [self.p.CSCHED]     # Source
-        Cp+= [self.p.PATMOS_PATH + '/c/nocinit.c'] # Destination
+        Cp+= [self.p.PATMOS_PATH + '/c/cmp/nocinit.c'] # Destination
         ret = subprocess.call(Cp)
         if ret != 0:
             raise SystemExit(__file__ +': Error: cp: ' + str(ret))
