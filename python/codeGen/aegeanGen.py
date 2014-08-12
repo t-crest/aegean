@@ -454,9 +454,9 @@ class AegeanGen(object):
         Arbiter+= ['ARBITER_ADDR_WIDTH='+str(addr)]
         Arbiter+= ['ARBITER_DATA_WIDTH='+str(data)]
         Arbiter+= ['ARBITER_BURST_LENGTH='+str(burstLength)]
-        Arbiter+= [self.p.BUILD_PATH+'/Arbiter.v']
+        Arbiter+= [self.p.BUILD_PATH+'/TdmArbiterWrapper.v']
         ret = subprocess.call(Arbiter)
         if ret != 0:
             raise SystemExit(__file__ +': Error: Generation of memory arbiter: return value: ' + str(ret))
 
-        self.genFiles.append('../Arbiter.v')
+        self.genFiles.append('../TdmArbiterWrapper.v')
