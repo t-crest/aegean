@@ -95,6 +95,7 @@
                 <IO DevTypeRef="ExtIODevice" offset="3"/>
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Led" offset="9" />
+				<IO DevTypeRef="EMAC" offset="10" />
             </IOs>
         </patmos>
     </IPCore>

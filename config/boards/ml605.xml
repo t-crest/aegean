@@ -9,5 +9,20 @@
         <IOPort name="LedPins">
             <out node="pat0" name="led" pin="F17,G21,G22,G20,H21,E24,E25,E22,E21" />
         </IOPort>
+		<IOPort name="EMACPins">
+            <in node="pat0" name="glbl_rst" pin="H10" />
+            <out node="pat0" name="phy_resetn" pin="AH13" />
+			<in node="pat0" name="gmii_rxd" pin="AC13,AC12,AD11,AM12,AN12,AE14,AF14,AN13" />
+			<out node="pat0" name="gmii_txd" pin="AF11 ,AE11,AM10,AL10,AG11,AG10,AL11,AM11" />
+			<in node="pat0" name="gmii_col" pin="AK13" />
+			<in node="pat0" name="gmii_crs" pin="AL13" />
+			<in node="pat0" name="mii_tx_clk" pin="AD12" />
+			<out node="pat0" name="gmii_tx_en" pin="AJ10" />
+			<out node="pat0" name="gmii_tx_er" pin="AH10" />
+			<out node="pat0" name="gmii_tx_clk" pin="AH12" />
+			<in node="pat0" name="gmii_rx_dv" pin="AM13" />
+			<in node="pat0" name="gmii_rx_er" pin="AG12" />
+			<in node="pat0" name="gmii_rx_clk" pin="AP11" />
+        </IOPort>
     </IOPorts>
 </board>

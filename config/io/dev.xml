@@ -85,4 +85,25 @@
             <param name="addr_width" value="20" />
         </params>
     </Dev>
+	<Dev DevType="EMAC" entity="EMAC" iface="OcpCore">
+        <ports>
+            <inport name="io_eMACPins_glbl_rst" />
+			<inport name="io_eMACPins_gtx_clk_bufg" />
+			<inport name="io_eMACPins_cpu_clk" />
+			<inport name="io_eMACPins_refclk_bufg" />
+			<inport name="io_eMACPins_dcm_lck" />
+			<outport name="io_eMACPins_phy_resetn" />
+			<outport name="io_eMACPins_gmii_txd" width="8" />
+			<outport name="io_eMACPins_gmii_tx_en" />
+			<outport name="io_eMACPins_gmii_tx_er" />
+			<outport name="io_eMACPins_gmii_tx_clk" />
+			<inport name="io_eMACPins_gmii_rxd" width="8" />
+			<inport name="io_eMACPins_gmii_rx_dv" />
+			<inport name="io_eMACPins_gmii_rx_er" />
+			<inport name="io_eMACPins_gmii_rx_clk" />
+			<inport name="io_eMACPins_gmii_col" />
+			<inport name="io_eMACPins_gmii_crs" />
+			<inport name="io_eMACPins_mii_tx_clk" />
+        </ports>
+    </Dev>
 </Devs>
