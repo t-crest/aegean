@@ -196,11 +196,15 @@ clean:
 cleanall:
 	-rm -rf $(AEGEAN_PATH)/build
 
-buildbot-test: clean platform compile synth 
-	# for test in $(BUILDBOT_TESTS) ; di \
-	# 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf; \
-	# 	make -C ../patmos APP=$$test download \
-	# done
+test:
+	for test in $(BUILDBOT_TESTS); \
+	do \
+	 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf ; \
+	 	make -C ../patmos COM_PORT=/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A700aiK5-if00-port0 APP=$$test download ; \
+	done
+
+buildbot-test: clean platform compile synth test
+	
 
 
 help:
