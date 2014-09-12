@@ -200,7 +200,8 @@ test:
 	for test in $(BUILDBOT_TESTS); \
 	do \
 	 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf ; \
-	 	make -C ../patmos COM_PORT=/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A700aiK5-if00-port0 APP=$$test download ; \
+	 	make -C ../patmos APP=$$test comp ; \
+	 	patserdow -v /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A700aiK5-if00-port0 ../patmos/tmp/$$test.elf ; \
 	done
 
 buildbot-test: clean platform compile synth test
