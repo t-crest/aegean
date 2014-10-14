@@ -49,9 +49,10 @@ class Paths(object):
         try:
             self.POSEIDON_CONV = shutil.which('poseidon-conv')
             self.POSEIDON = shutil.which('poseidon')
-        except Exception:
-            pass
-
+        except AttributeError: # Fallback to less robust Python < 3.3 method
+            self.POSEIDON_CONV = self.which_fallback("poseidon-conv")
+            self.POSEIDON = self.which_fallback("posiedon")
+            
         # default to poseidon in ../local/bin
         if not self.POSEIDON_CONV or not self.POSEIDON:
             self.POSEIDON_PATH = self.AEGEAN_PATH + '/../local/bin'
@@ -83,3 +84,11 @@ class Paths(object):
         self.OcpConfFile = self.BUILD_PATH + '/ocp_config.vhd'
         self.QUARTUS_FILE_QSF = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.qsf'
         self.QUARTUS_FILE_CDF = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.cdf'
+
+    # From http://stackoverflow.com/questions/9877462/is-there-a-python-equivalent-to-the-which-command
+    def which_fallback(self, pgm):
+        path=os.getenv('PATH')
+        for p in path.split(os.path.pathsep):
+            p=os.path.join(p,pgm)
+            if os.path.exists(p) and os.access(p,os.X_OK):
+                return p
