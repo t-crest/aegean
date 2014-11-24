@@ -409,7 +409,7 @@ class AegeanGen(object):
                     txdPort = 'open'
                     rxdPort = "'1'"
             comp = self.genComps[IPType]
-            aegeanCode.bindPatmos(comp,p,ledPort,txdPort,rxdPort)
+            aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort)
             aegean.arch.instComp(comp,label)
 
         aegean.arch.addToBody(aegeanCode.addSPM())

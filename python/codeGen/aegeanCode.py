@@ -113,6 +113,7 @@ def getPatmos(IPType,ledPort=None,uartPort=None,ocpBurstAddrWidth=21):
     patmos.entity.addPort('io_comSpm_S_Resp','in', 'std_logic_vector',2)
     patmos.entity.addPort('io_comSpm_S_Data','in', 'std_logic_vector',32)
     patmos.entity.addPort('io_cpuInfoPins_id','in', 'std_logic_vector',32)
+    patmos.entity.addPort('io_cpuInfoPins_cnt','in', 'std_logic_vector',32)
     patmos.entity.addPort('io_memPort_M_Cmd','out', 'std_logic_vector',3)
     patmos.entity.addPort('io_memPort_M_Addr','out', 'std_logic_vector',ocpBurstAddrWidth)
     patmos.entity.addPort('io_memPort_M_Data','out', 'std_logic_vector',32)
@@ -151,7 +152,7 @@ def setSPMSize(aegean,sizes):
     aegean.arch.declConstant('SPM_WIDTH', 'size_array', 1, '('+ s +')')
 
 
-def bindPatmos(patmos,p,ledPort=None,txdPort=None,rxdPort=None):
+def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None):
 
     patmos.entity.bindPort('clk','clk')
     patmos.entity.bindPort('reset','reset')
@@ -170,6 +171,7 @@ def bindPatmos(patmos,p,ledPort=None,txdPort=None,rxdPort=None):
     patmos.entity.bindPort('io_comSpm_S_Resp','ocp_core_ss('+str(p)+').SResp')
     patmos.entity.bindPort('io_comSpm_S_Data','ocp_core_ss('+str(p)+').SData')
     patmos.entity.bindPort('io_cpuInfoPins_id','std_logic_vector(to_unsigned('+str(p)+',32))')
+    patmos.entity.bindPort('io_cpuInfoPins_cnt','std_logic_vector(to_unsigned('+str(cnt)+',32))')
     patmos.entity.bindPort('io_memPort_M_Cmd','ocp_burst_ms('+str(p)+').MCmd')
     patmos.entity.bindPort('io_memPort_M_Addr','ocp_burst_ms('+str(p)+').MAddr')
     patmos.entity.bindPort('io_memPort_M_Data','ocp_burst_ms('+str(p)+').MData')
