@@ -15,7 +15,7 @@
 # "make platform|compile|sim|synth|config"
 AEGEAN_PLATFORM?=default-altde2-115
 # Tests to be run by buildbot
-BUILDBOT_TESTS=mp_test test_cmp
+BUILDBOT_TESTS?=corethread_test test_cmp libctest
 # Aegean path names
 AEGEAN_PATH?=$(CURDIR)
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
@@ -199,8 +199,8 @@ cleanall:
 test:
 	for test in $(BUILDBOT_TESTS); \
 	do \
-	 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf ; \
 	 	make -C ../patmos APP=$$test comp ; \
+	 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf ; \
 	 	patserdow -v /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A700aiK5-if00-port0 ../patmos/tmp/$$test.elf ; \
 	done
 
