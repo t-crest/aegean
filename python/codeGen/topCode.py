@@ -188,11 +188,12 @@ def writeTriState(top,name,sram,dataSig):
 ''')
 
 
-def bindAegean(aegean):
+def bindAegean(aegean,nodes=0):
     aegean.entity.bindPort('clk','clk_int')
     aegean.entity.bindPort('reset','int_res')
-    aegean.entity.bindPort('led','oLedPins_led')
-    aegean.entity.bindPort('txd','oUartPins_txd')
-    aegean.entity.bindPort('rxd','iUartPins_rxd')
+    aegean.entity.bindPort('txd0','oUart0Pins_txd')
+    aegean.entity.bindPort('rxd0','iUart0Pins_rxd')
+    for p in range(0,nodes):
+        aegean.entity.bindPort('led' + str(p),'oLed' + str(p) + 'Pins_led')
     aegean.entity.bindPort('sram_burst_m','sram_burst_m')
     aegean.entity.bindPort('sram_burst_s','sram_burst_s')

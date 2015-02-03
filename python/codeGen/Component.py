@@ -34,6 +34,7 @@
 ###############################################################################
 
 import os
+import traceback
 from copy import deepcopy
 
 class Signal(object):
@@ -106,6 +107,7 @@ class Entity(object):
         direction = "".join(direction.split())
         portType = portType.strip()
         if (direction != 'in') and (direction != 'out') and (direction != 'inout'):
+            traceback.print_stack()
             raise SystemExit(__file__ +': Error: invalid port direction in component: ' + self.typeName + ', for signal: ' + name)
         self.ports.append((name,Port(name, direction, portType, width)))
 
@@ -117,6 +119,7 @@ class Entity(object):
                 self.portmap[portName] = signalName
                 return
 
+        traceback.print_stack()
         raise SystemExit(__file__ +': Error: invalid port for binding component: ' + self.typeName + ', for port: ' + portName + ', for signal: ' + signalName + '\n' + str(self.ports))
 
     def printPortDecl(self):

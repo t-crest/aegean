@@ -35,6 +35,7 @@
 
 from codeGen.Component import Component
 import math
+import traceback
 
 def writeConfig(fileName,burstAddrWidth):
     f = open(fileName, 'w')
@@ -93,7 +94,7 @@ def getArbiter(numPorts,ocpBurstAddrWidth):
     return arbiter
 
 
-def getPatmos(IPType,ledPort=None,uartPort=None,ocpBurstAddrWidth=21):
+def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,ocpBurstAddrWidth=21):
     patmos = Component(IPType+'PatmosCore')
     patmos.entity.addPort('clk')
     patmos.entity.addPort('reset')
@@ -125,7 +126,12 @@ def getPatmos(IPType,ledPort=None,uartPort=None,ocpBurstAddrWidth=21):
     patmos.entity.addPort('io_memPort_S_DataAccept','in', 'std_logic')
 
     if ledPort is not None:
-        patmos.entity.addPort('io_ledsPins_led','out','std_logic_vector',9)
+        if ledWidth is None:
+            raise SystemError(__file__ +': Error: ledWidth not specified.')
+        if ledWidth == 1:
+            patmos.entity.addPort('io_ledsPins_led','out','std_logic')
+        else:
+            patmos.entity.addPort('io_ledsPins_led','out','std_logic_vector',ledWidth)
     if uartPort is not None:
         patmos.entity.addPort('io_uartPins_tx','out','std_logic')
         patmos.entity.addPort('io_uartPins_rx','in','std_logic')
@@ -182,7 +188,7 @@ def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None):
     patmos.entity.bindPort('io_memPort_S_CmdAccept','ocp_burst_ss('+str(p)+').SCmdAccept')
     patmos.entity.bindPort('io_memPort_S_DataAccept','ocp_burst_ss('+str(p)+').SDataAccept')
 
-    if ledPort is not None:
+    if ledPort is not None:    
         patmos.entity.bindPort('io_ledsPins_led',ledPort)
     if txdPort is not None:
         patmos.entity.bindPort('io_uartPins_tx',txdPort)

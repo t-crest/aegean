@@ -332,7 +332,7 @@ class AegeanGen(object):
         topCode.pll(top,vendor,clkPin)
         top.arch.declComp(sram)
 
-        topCode.bindAegean(aegean)
+        topCode.bindAegean(aegean,len(self.nodes))
         top.arch.instComp(aegean,'cmp',True)
         topCode.bindSram(sram,sramEntity,'sram_burst_m','sram_burst_s')
         top.arch.instComp(sram,'ssram')
@@ -357,8 +357,8 @@ class AegeanGen(object):
         aegean = aegeanCode.getAegean()
         # add IO pins
         aegean.entity.addPort('led','out','std_logic_vector',9)
-        aegean.entity.addPort('txd','out')
-        aegean.entity.addPort('rxd','in')
+        #aegean.entity.addPort('txd','out')
+        #aegean.entity.addPort('rxd','in')
 
         arbiter = aegeanCode.getArbiter(len(self.nodes),self.ocpBurstAddrWidth)
         aegean.arch.declComp(arbiter)
@@ -373,9 +373,13 @@ class AegeanGen(object):
                 DevTypeRef = IO.get('DevTypeRef')
                 if DevTypeRef == 'Leds':
                     ledPort = True
+                    ledWidth = 9 # TODO: extract from XML
+                if DevTypeRef == 'Led':
+                    ledPort = True
+                    ledWidth = 1
                 elif DevTypeRef == 'Uart':
                     uartPort = True
-            patmos = aegeanCode.getPatmos(IPType,ledPort,uartPort,self.ocpBurstAddrWidth)
+            patmos = aegeanCode.getPatmos(IPType,ledPort,ledWidth,uartPort,self.ocpBurstAddrWidth)
             aegean.arch.declComp(patmos)
             self.genComps[IPType] = patmos
 
@@ -397,17 +401,20 @@ class AegeanGen(object):
             IOs = util.findTag(self.genIPCores[IPType],'IOs')
             for IO in list(IOs):
                 DevTypeRef = IO.get('DevTypeRef')
-                if p == 0:
-                    if DevTypeRef == 'Leds':
-                        ledPort = 'led'
-                    elif DevTypeRef == 'Uart':
-                        txdPort = 'txd'
-                        rxdPort = 'rxd'
-                elif DevTypeRef == 'Leds':
-                    ledPort = 'open'
+                
+                if DevTypeRef == 'Leds':
+                    ledPort = 'leds' + str(p) 
+                    ledWidth = 9
+                    aegean.entity.addPort('leds' + str(p),'out','std_logic_vector',9)
+                elif DevTypeRef == 'Led':
+                    ledPort = 'led' + str(p)
+                    aegean.entity.addPort('led' + str(p),'out','std_logic')
+                    ledWidth = 1
                 elif DevTypeRef == 'Uart':
-                    txdPort = 'open'
-                    rxdPort = "'1'"
+                    txdPort = 'txd' + str(p)
+                    rxdPort = 'rxd' + str(p)
+                    aegean.entity.addPort('txd' + str(p),'out')
+                    aegean.entity.addPort('rxd' + str(p),'in')
             comp = self.genComps[IPType]
             aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort)
             aegean.arch.instComp(comp,label)
