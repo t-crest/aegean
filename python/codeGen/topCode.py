@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 #
 # Copyright Technical University of Denmark. All rights reserved.
 # This file is part of the T-CREST project.
