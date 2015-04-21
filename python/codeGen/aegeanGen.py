@@ -179,7 +179,7 @@ class AegeanGen(object):
         device = self.board.get('device')
         sedString = 's|' + 'set_global_assignment -name FAMILY$' + '|'
         sedString+= 'set_global_assignment -name FAMILY "'+ family + '"|'
-        Sed = ['sed','-i']
+        Sed = ['sed','-i','']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
         ret = subprocess.call(Sed)
@@ -188,7 +188,7 @@ class AegeanGen(object):
 
         sedString = 's|' + 'set_global_assignment -name DEVICE$' + '|'
         sedString+= 'set_global_assignment -name DEVICE '+ device + '|'
-        Sed = ['sed','-i']
+        Sed = ['sed','-i','']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
         ret = subprocess.call(Sed)
@@ -199,7 +199,7 @@ class AegeanGen(object):
         device = self.board.get('device')
         sedString = 's|' + 'Device PartName(DEVICE) Path("build/PROJECTNAME/quartus/output_files/") File("PROJECTNAME_top.sof")$' + '|'
         sedString+= 'Device PartName('+ device + ') Path("build/'+ self.p.projectname + '/quartus/output_files/") File("'+ self.p.projectname + '_top.sof")|'
-        Sed = ['sed','-i']
+        Sed = ['sed','-i','']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_CDF]
         ret = subprocess.call(Sed)
@@ -220,7 +220,7 @@ class AegeanGen(object):
                 sedString+='\\\n'
 
         sedString+= '|'
-        Sed = ['sed','-i']
+        Sed = ['sed','-i','']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
         ret = subprocess.call(Sed)
@@ -239,7 +239,7 @@ class AegeanGen(object):
                 sedString+='set_location_assignment '+ PinName + ' -to ' + signalName + '\\\n'
 
         sedString+= '|'
-        Sed = ['sed','-i']
+        Sed = ['sed','-i','']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_QSF]
         ret = subprocess.call(Sed)
