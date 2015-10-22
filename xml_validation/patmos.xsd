@@ -27,10 +27,11 @@
                         <xs:attribute name="app" type="xs:string" use="required" />
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="MCache">
+                <xs:element name="ICache">
                     <xs:complexType>
+                        <xs:attribute name="type" type="icacheType" use="required" />
                         <xs:attribute name="size" type="memorySize" use="required" />
-                        <xs:attribute name="blocks" type="xs:nonNegativeInteger" use="required" />
+                        <xs:attribute name="assoc" type="xs:nonNegativeInteger" use="required" />
                         <xs:attribute name="repl" type="xs:string" use="required" />
                     </xs:complexType>
                 </xs:element>

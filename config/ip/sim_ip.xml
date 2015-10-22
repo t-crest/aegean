@@ -7,7 +7,7 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpmaster"/>
-            <MCache size="4k" blocks="16" repl="" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
             <ISPM size="1k" />
@@ -32,7 +32,7 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpslave"/>
-            <MCache size="4k" blocks="16" repl="" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
             <ISPM size="1k" />
@@ -55,7 +55,7 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmp_hello"/>
-            <MCache size="4k" blocks="16" repl="" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
             <ISPM size="8k" />
@@ -80,7 +80,7 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpmaster"/>
-            <MCache size="4k" blocks="16" repl="" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
             <ISPM size="2k" />
@@ -105,7 +105,7 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpslave"/>
-            <MCache size="4k" blocks="16" repl="" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
             <ISPM size="1k" />
@@ -131,7 +131,7 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpmaster"/>
-            <MCache size="4k" blocks="16" repl="" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
             <ISPM size="8" />
@@ -156,7 +156,7 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpslave"/>
-            <MCache size="4k" blocks="16" repl="" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
             <ISPM size="8" />
