@@ -68,13 +68,16 @@ class NoCGen(object):
 
     def getNocNode(self):
         nocNode = Component('noc_node')
+        nocNode.entity.addGeneric('MASTER','boolean','false')
         nocNode.entity.addPort('p_clk')
         nocNode.entity.addPort('n_clk')
         nocNode.entity.addPort('reset')
+        nocNode.entity.addPort('run')
+        nocNode.entity.addPort('master_run','out','std_logic')
         nocNode.entity.addPort('proc_m','in','ocp_io_m')
         nocNode.entity.addPort('proc_s','out','ocp_io_s')
-        nocNode.entity.addPort('spm_m','out','spm_master')
-        nocNode.entity.addPort('spm_s','in','spm_slave')
+        nocNode.entity.addPort('spm_m','out','mem_if_master')
+        nocNode.entity.addPort('spm_s','in','mem_if_slave')
 
         nocNode.entity.addPort('north_in_f','in','channel_forward')
         nocNode.entity.addPort('north_in_b','out','channel_backward')
@@ -95,10 +98,14 @@ class NoCGen(object):
 
         return nocNode
 
-    def bindNocNode(self,nocNode,k,i,j):
+    def bindNocNode(self,nocNode,k,i,j,nocMaster):
         nocNode.entity.bindPort('p_clk','clk')
         nocNode.entity.bindPort('n_clk','clk')
         nocNode.entity.bindPort('reset','reset')
+        nocNode.entity.bindPort('run','master_run')
+        if nocMaster:
+            nocNode.entity.bindPort('master_run','master_run')
+            nocNode.entity.bindGeneric('MASTER','true')
         nocNode.entity.bindPort('proc_m','ocp_io_ms('+str(k)+')')
         nocNode.entity.bindPort('proc_s','ocp_io_ss('+str(k)+')')
         nocNode.entity.bindPort('spm_m','spm_ports_m('+str(k)+')')
@@ -138,16 +145,17 @@ class NoCGen(object):
         noc.addPackage('work','config_types')
         noc.addPackage('work','config')
         noc.addPackage('work','ocp')
-        noc.addPackage('work','noc_defs')
+        noc.addPackage('work','argo_types')
         noc.addPackage('work','noc_interface')
 
         noc.entity.addPort('clk','in','std_logic',1)
         noc.entity.addPort('reset','in','std_logic',1)
         noc.entity.addPort('ocp_io_ms','in','ocp_io_m_a',1)
         noc.entity.addPort('ocp_io_ss','out','ocp_io_s_a',1)
-        noc.entity.addPort('spm_ports_m','out','spm_masters',1)
-        noc.entity.addPort('spm_ports_s','in','spm_slaves',1)
+        noc.entity.addPort('spm_ports_m','out','mem_if_masters',1)
+        noc.entity.addPort('spm_ports_s','in','mem_if_slaves',1)
 
+        noc.arch.declSignal('master_run','std_logic')
 
         noc.arch.declSignal('north_in_f, east_in_f, south_in_f, west_in_f','link_m_f')
         noc.arch.declSignal('north_in_b, east_in_b, south_in_b, west_in_b','link_m_b')
@@ -158,7 +166,11 @@ class NoCGen(object):
             j, i = nodes[k].get('loc').strip('()').split(',')
             instancename = nodes[k].get('id') + '_' + nodes[k].get('IPTypeRef')
             nocNode = self.getNocNode()
-            self.bindNocNode(nocNode,k,i,j)
+            if k == 0:
+                nocMaster = True
+            else:
+                nocMaster = False
+            self.bindNocNode(nocNode,k,i,j,nocMaster)
             noc.arch.instComp(nocNode,instancename)
 
         noc.arch.declComp(nocNode)
@@ -205,18 +217,24 @@ class NoCGen(object):
 
         routerType = self.getRouterType()
         argo_src = open(self.p.BUILD_PATH+'/.argo_src','w')
-        argo_src.write(self.p.ARGO_PATH+'/src/config_types.vhd ')
+        #argo_src.write(self.p.ARGO_PATH+'/src/config_types.vhd ')
         argo_src.write(self.p.BUILD_PATH + '/ocp_config.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ocp/ocp.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/util/math_util.vhd ')
-        argo_src.write(self.p.ARGO_PATH+'/src/noc_defs.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/argo_types.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/noc_interface.vhd ')
-        argo_src.write(self.p.ARGO_PATH+'/src/mem/bram.vhd ')
-        argo_src.write(self.p.ARGO_PATH+'/src/mem/bram_tdp.vhd ')
-        argo_src.write(self.p.ARGO_PATH+'/src/ni/counter.vhd ')
-        argo_src.write(self.p.ARGO_PATH+'/src/ni/dma.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/mem/tdp_ram.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/config_unit.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/data_unit.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/irq_fifo.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/irq_unit.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/config_bus.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/spm_bus.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/schedule_table.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/TDM_controller.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/DMA_table.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/mem/com_spm.vhd ')
-        argo_src.write(self.p.ARGO_PATH+'/src/ni/nAdapter.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/network_interface.vhd ')
 
         if routerType == 'sync':
             argo_src.write(self.p.ARGO_PATH+'/src/routers/synchronous/xbar.vhd ')

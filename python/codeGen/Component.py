@@ -88,6 +88,19 @@ class Port(object):
             widthStr = '('+str(int(self.width)-1)+' downto 0)'
         return self.name + '\t: ' + self.direction + ' ' + self.portType + widthStr
 
+class Generic(object):
+    """docstring for Generic"""
+    def __init__(self, name, genericType, default):
+        super(Generic, self).__init__()
+        self.name = name
+        self.genericType = genericType
+        self.default = default
+
+    def __str__(self):
+        defaultStr = ''
+        if str(self.default) != '' :
+            defaultStr = ' := '+str(self.default)
+        return self.name + '\t: ' + self.genericType + defaultStr
 
 class Entity(object):
     """docstring for Entity"""
@@ -96,11 +109,38 @@ class Entity(object):
         self.typeName = typeName
         self.ports = []
         self.portmap = dict({})
+        self.generics = []
+        self.genericmap = dict({})
 
     def __str__(self):
         s = '\nentity ' + self.typeName + ' is\n'
+        s+= self.printGenericDecl()
         s+= self.printPortDecl()
         s+= '\nend entity;\n'
+        return s
+
+    def addGeneric(self,name,genericType,default):
+        name = "".join(name.split())
+        genericType = genericType.strip()
+        self.generics.append((name,Generic(name, genericType, default)))
+
+    def bindGeneric(self,genericName,signalName):
+        genericName = "".join(genericName.split()) # Removes all whitespace
+        signalName = "".join(signalName.split()) # Removes all whitespace
+        for name, generic in self.generics:
+            if genericName == name:
+                self.genericmap[genericName] = signalName
+                return
+
+        traceback.print_stack()
+        raise SystemExit(__file__ +': Error: invalid generic for binding component: ' + self.typeName + ', for generic: ' + genericName + ', for signal: ' + signalName + '\n' + str(self.generics))
+
+    def printGenericDecl(self):
+        s = ''
+        if len(self.generics) > 0:
+            s = '\tgeneric(\n\t\t'
+            s+= ';\n\t\t'.join(str(generic) for name, generic in self.generics)
+            s+= '\n\t);\n'
         return s
 
     def addPort(self,name,direction='in',portType='std_logic',width=1):
@@ -136,7 +176,18 @@ class Entity(object):
         if fromWork:
             work = 'entity work.'
         connection = []
-        s = '\n\t' + label + ' : ' + work + self.typeName + ' port map(\n\t\t'
+        s = '\n\t' + label + ' : ' + work + self.typeName + '\n'
+
+        for name, generic in self.generics:
+            if generic.name in self.genericmap:
+                connection.append(generic.name + '\t=>\t' + self.genericmap[generic.name])
+        if len(connection) > 0:
+            s += '\tgeneric map(\n\t\t'
+            s+= ',\n\t\t'.join(connection)
+            s+= '\t)\n'
+
+        connection = []
+        s += '\tport map(\n\t\t'
         for name, port in self.ports:
             if port.name in self.portmap:
                 connection.append(port.name + '\t=>\t' + self.portmap[port.name])
@@ -154,6 +205,7 @@ class Entity(object):
 
     def printCompDecl(self):
         s = '\n\tcomponent ' + self.typeName + ' is\n'
+        s+= self.printGenericDecl()
         s+= self.printPortDecl()
         s+= '\n\tend component;\n'
         return s

@@ -59,6 +59,7 @@ def getAegean():
     aegean.addPackage('work','config_types')
     aegean.addPackage('work','config')
     aegean.addPackage('work','ocp')
+    aegean.addPackage('work','argo_types')
     aegean.addPackage('work','noc_interface')
 
     aegean.entity.addPort('clk')
@@ -147,8 +148,8 @@ def declareSignals(aegean):
     aegean.arch.declSignal('ocp_core_ss','ocp_core_s_a')
     aegean.arch.declSignal('ocp_burst_ms','ocp_burst_m_a')
     aegean.arch.declSignal('ocp_burst_ss','ocp_burst_s_a')
-    aegean.arch.declSignal('spm_ms','spm_masters')
-    aegean.arch.declSignal('spm_ss','spm_slaves')
+    aegean.arch.declSignal('spm_ms','mem_if_masters')
+    aegean.arch.declSignal('spm_ss','mem_if_slaves')
 
 def setSPMSize(aegean,sizes):
     aegean.arch.decl('''

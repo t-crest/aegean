@@ -13,7 +13,8 @@
 -include config.mk
 # The project being build when calling
 # "make platform|compile|sim|synth|config"
-AEGEAN_PLATFORM?=default-altde2-115
+#AEGEAN_PLATFORM?=default-altde2-115
+AEGEAN_PLATFORM?=argo2.0_test
 # Tests to be run by buildbot
 BUILDBOT_TESTS?=corethread_test test_cmp libctest
 # Aegean path names
@@ -49,6 +50,7 @@ SYNTH_PATH=$(BUILD_PATH)/quartus
 SYNTH_PATH_XILINX=$(BUILD_PATH)/ise
 VLIB=vlib -quiet work
 VCOM?=vcom -quiet -93 -work $(BUILD_PATH)/work
+VCOM08?=vcom -quiet -2008 -work $(BUILD_PATH)/work
 VLOG?=vlog -quiet -work $(BUILD_PATH)/work
 VSIM?=vsim -novopt -lib $(BUILD_PATH)/work
 
@@ -148,7 +150,7 @@ $(BUILD_PATH)/work:
 	cd $(BUILD_PATH) && $(PREFIX) $(VLIB)
 
 compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(ARGO_SRC)) $(ARGO_SRC)
-	$(PREFIX) $(VCOM) $(shell cat $(ARGO_SRC))
+	$(PREFIX) $(VCOM08) $(shell cat $(ARGO_SRC))
 
 #$(PATMOS_SOURCE): $(PATMOS_PATH)/c/nocinit.c .FORCE
 #	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
