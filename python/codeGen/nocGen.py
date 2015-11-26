@@ -230,9 +230,10 @@ class NoCGen(object):
         argo_src.write(self.p.ARGO_PATH+'/src/ni/irq_unit.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/config_bus.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/spm_bus.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/packet_manager.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/schedule_table.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/TDM_controller.vhd ')
-        argo_src.write(self.p.ARGO_PATH+'/src/ni/DMA_table.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/ni/MC_controller.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/mem/com_spm.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/network_interface.vhd ')
 
