@@ -13,8 +13,7 @@
 -include config.mk
 # The project being build when calling
 # "make platform|compile|sim|synth|config"
-#AEGEAN_PLATFORM?=default-altde2-115
-AEGEAN_PLATFORM?=argo2.0_test
+AEGEAN_PLATFORM?=default-altde2-115
 # Tests to be run by buildbot
 BUILDBOT_TESTS?=corethread_test test_cmp libctest
 # Aegean path names
