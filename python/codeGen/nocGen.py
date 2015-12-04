@@ -69,15 +69,16 @@ class NoCGen(object):
     def getNocNode(self):
         nocNode = Component('noc_node')
         nocNode.entity.addGeneric('MASTER','boolean','false')
-        nocNode.entity.addPort('p_clk')
-        nocNode.entity.addPort('n_clk')
+        nocNode.entity.addPort('clk')
         nocNode.entity.addPort('reset')
+        nocNode.entity.addPort('supervisor')
         nocNode.entity.addPort('run')
         nocNode.entity.addPort('master_run','out','std_logic')
         nocNode.entity.addPort('proc_m','in','ocp_io_m')
         nocNode.entity.addPort('proc_s','out','ocp_io_s')
         nocNode.entity.addPort('spm_m','out','mem_if_master')
         nocNode.entity.addPort('spm_s','in','mem_if_slave')
+        nocNode.entity.addPort('irq','out','std_logic_vector',2)
 
         nocNode.entity.addPort('north_in_f','in','channel_forward')
         nocNode.entity.addPort('north_in_b','out','channel_backward')
@@ -99,9 +100,9 @@ class NoCGen(object):
         return nocNode
 
     def bindNocNode(self,nocNode,k,i,j,nocMaster):
-        nocNode.entity.bindPort('p_clk','clk')
-        nocNode.entity.bindPort('n_clk','clk')
+        nocNode.entity.bindPort('clk','clk')
         nocNode.entity.bindPort('reset','reset')
+        nocNode.entity.bindPort('supervisor','supervisor('+str(k)+')')
         nocNode.entity.bindPort('run','master_run')
         if nocMaster:
             nocNode.entity.bindPort('master_run','master_run')
@@ -110,6 +111,7 @@ class NoCGen(object):
         nocNode.entity.bindPort('proc_s','ocp_io_ss('+str(k)+')')
         nocNode.entity.bindPort('spm_m','spm_ports_m('+str(k)+')')
         nocNode.entity.bindPort('spm_s','spm_ports_s('+str(k)+')')
+        nocNode.entity.bindPort('irq','irq('+str((k*2)+1)+' downto '+str(k*2)+')')
 
         nocNode.entity.bindPort('north_in_f','north_in_f('+str(i)+')('+str(j)+')')
         nocNode.entity.bindPort('north_in_b','north_in_b('+str(i)+')('+str(j)+')')
@@ -151,9 +153,11 @@ class NoCGen(object):
         noc.entity.addPort('clk','in','std_logic',1)
         noc.entity.addPort('reset','in','std_logic',1)
         noc.entity.addPort('ocp_io_ms','in','ocp_io_m_a',1)
+        noc.entity.addPort('supervisor','in','std_logic_vector',len(nodes))
         noc.entity.addPort('ocp_io_ss','out','ocp_io_s_a',1)
         noc.entity.addPort('spm_ports_m','out','mem_if_masters',1)
         noc.entity.addPort('spm_ports_s','in','mem_if_slaves',1)
+        noc.entity.addPort('irq','out','std_logic_vector',len(nodes)*2)
 
         noc.arch.declSignal('master_run','std_logic')
 
@@ -217,8 +221,9 @@ class NoCGen(object):
 
         routerType = self.getRouterType()
         argo_src = open(self.p.BUILD_PATH+'/.argo_src','w')
-        #argo_src.write(self.p.ARGO_PATH+'/src/config_types.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/config_types.vhd ')
         argo_src.write(self.p.BUILD_PATH + '/ocp_config.vhd ')
+        argo_src.write(self.p.BUILD_PATH + '/config.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ocp/ocp.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/util/math_util.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/argo_types.vhd ')

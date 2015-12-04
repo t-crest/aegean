@@ -154,7 +154,7 @@ class Entity(object):
 
     def bindPort(self,portName,signalName):
         portName = "".join(portName.split()) # Removes all whitespace
-        signalName = "".join(signalName.split()) # Removes all whitespace
+        #signalName = "".join(signalName.split()) # Removes all whitespace
         for name, port in self.ports:
             if portName == name:
                 self.portmap[portName] = signalName

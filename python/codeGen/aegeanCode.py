@@ -96,11 +96,12 @@ def getArbiter(numPorts,ocpBurstAddrWidth):
     return arbiter
 
 
-def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,ocpBurstAddrWidth=21):
+def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,ocpBurstAddrWidth=21,irqPort=None):
     patmos = Component(IPType+'PatmosCore')
     patmos.entity.addPort('clk')
     patmos.entity.addPort('reset')
 
+    patmos.entity.addPort('io_superMode','out', 'std_logic')
     patmos.entity.addPort('io_comConf_M_Cmd','out', 'std_logic_vector',3)
     patmos.entity.addPort('io_comConf_M_Addr','out', 'std_logic_vector',32)
     patmos.entity.addPort('io_comConf_M_Data','out', 'std_logic_vector',32)
@@ -127,6 +128,11 @@ def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,ocpBurstAddrWidth=
     patmos.entity.addPort('io_memPort_S_CmdAccept','in', 'std_logic')
     patmos.entity.addPort('io_memPort_S_DataAccept','in', 'std_logic')
 
+    if irqPort is not None:
+        patmos.entity.addPort('io_extIRQPins_irq','in','std_logic_vector',2)
+    if uartPort is not None:
+        patmos.entity.addPort('io_uartPins_tx','out','std_logic')
+        patmos.entity.addPort('io_uartPins_rx','in','std_logic')
     if ledPort is not None:
         if ledWidth is None:
             raise SystemError(__file__ +': Error: ledWidth not specified.')
@@ -134,14 +140,11 @@ def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,ocpBurstAddrWidth=
             patmos.entity.addPort('io_ledsPins_led','out','std_logic')
         else:
             patmos.entity.addPort('io_ledsPins_led','out','std_logic_vector',ledWidth)
-    if uartPort is not None:
-        patmos.entity.addPort('io_uartPins_tx','out','std_logic')
-        patmos.entity.addPort('io_uartPins_rx','in','std_logic')
 
     return patmos
 
 
-def declareSignals(aegean):
+def declareSignals(aegean,numNodes):
     aegean.arch.declSignal('ocp_io_ms','ocp_io_m_a')
     aegean.arch.declSignal('ocp_io_ss','ocp_io_s_a')
     aegean.arch.declSignal('ocp_core_ms','ocp_core_m_a')
@@ -150,6 +153,8 @@ def declareSignals(aegean):
     aegean.arch.declSignal('ocp_burst_ss','ocp_burst_s_a')
     aegean.arch.declSignal('spm_ms','mem_if_masters')
     aegean.arch.declSignal('spm_ss','mem_if_slaves')
+    aegean.arch.declSignal('supervisor','std_logic_vector',numNodes)
+    aegean.arch.declSignal('irq','std_logic_vector',numNodes*2)
 
 def setSPMSize(aegean,sizes):
     aegean.arch.decl('''
@@ -160,10 +165,11 @@ def setSPMSize(aegean,sizes):
     aegean.arch.declConstant('SPM_WIDTH', 'size_array', 1, '('+ s +')')
 
 
-def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None):
+def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None,irqPort=None):
 
     patmos.entity.bindPort('clk','clk')
     patmos.entity.bindPort('reset','reset')
+    patmos.entity.bindPort('io_superMode','supervisor('+str(p)+')')
     patmos.entity.bindPort('io_comConf_M_Cmd','ocp_io_ms('+str(p)+').MCmd')
     patmos.entity.bindPort('io_comConf_M_Addr','ocp_io_ms('+str(p)+').MAddr')
     patmos.entity.bindPort('io_comConf_M_Data','ocp_io_ms('+str(p)+').MData')
@@ -190,6 +196,8 @@ def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None):
     patmos.entity.bindPort('io_memPort_S_CmdAccept','ocp_burst_ss('+str(p)+').SCmdAccept')
     patmos.entity.bindPort('io_memPort_S_DataAccept','ocp_burst_ss('+str(p)+').SDataAccept')
 
+    if irqPort is not None:
+        patmos.entity.bindPort('io_extIRQPins_irq','irq(('+str(p)+'*2)+1 downto '+str(p)+'*2)')
     if ledPort is not None:    
         patmos.entity.bindPort('io_ledsPins_led',ledPort)
     if txdPort is not None:
@@ -201,10 +209,12 @@ def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None):
 def bindNoc(noc):
     noc.entity.bindPort('clk','clk')
     noc.entity.bindPort('reset','reset')
+    noc.entity.bindPort('supervisor','supervisor')
     noc.entity.bindPort('ocp_io_ms','ocp_io_ms')
     noc.entity.bindPort('ocp_io_ss','ocp_io_ss')
     noc.entity.bindPort('spm_ports_m','spm_ms')
     noc.entity.bindPort('spm_ports_s','spm_ss')
+    noc.entity.bindPort('irq','irq')
 
 def addSPM():
     return '''

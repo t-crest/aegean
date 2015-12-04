@@ -1,5 +1,13 @@
 <Devs>
     <Dev DevType="CpuInfo" entity="CpuInfo" iface="OcpCore" />
+    <Dev DevType="ExtIRQ" entity="ExtIRQ" iface="OcpCore">
+        <params>
+            <param name="IRQCount" value="2" />
+        </params>
+        <ports>
+            <inport name="irq" />
+        </ports>
+    </Dev>
     <Dev DevType="Timer" entity="Timer" iface="OcpCore" />
     <Dev DevType="Uart" entity="Uart" iface="OcpCore">
         <!-- Maybe the Dev should also have a srcfile attribute -->

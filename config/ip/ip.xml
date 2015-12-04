@@ -185,7 +185,7 @@
             <frequency Hz="80000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-argo2"/>
+            <bootrom app="bootable-argo2_libnoc"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="1k" />
@@ -197,6 +197,7 @@
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="ExtIRQ" offset="1" intrs="8,15" />
                 <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
                 <IO DevTypeRef="Led" offset="9" />

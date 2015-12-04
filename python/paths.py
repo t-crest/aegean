@@ -79,12 +79,12 @@ class Paths(object):
         self.CSCHED = self.BUILD_PATH + '/nocinit.c'
         self.NOCFile = self.BUILD_PATH + '/noc.vhd'
         self.AegeanFile = self.BUILD_PATH + '/aegean.vhd'
-        self.TopFile = self.BUILD_PATH + '/top.vhd'
+        self.TopFile = self.BUILD_PATH + '/aegean_top.vhd'
         self.TestFile = self.BUILD_PATH + '/aegean_testbench.vhd'
         self.ConfFile = self.BUILD_PATH + '/config.vhd'
         self.OcpConfFile = self.BUILD_PATH + '/ocp_config.vhd'
-        self.QUARTUS_FILE_QSF = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.qsf'
-        self.QUARTUS_FILE_CDF = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.cdf'
+        self.QUARTUS_FILE_QSF = self.BUILD_PATH + '/quartus/aegean_top.qsf'
+        self.QUARTUS_FILE_CDF = self.BUILD_PATH + '/quartus/aegean_top.cdf'
 
     # From http://stackoverflow.com/questions/9877462/is-there-a-python-equivalent-to-the-which-command
     def which_fallback(self, pgm):

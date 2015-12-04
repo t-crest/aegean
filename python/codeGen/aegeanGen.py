@@ -368,6 +368,7 @@ class AegeanGen(object):
         for IPType in self.genIPCores.keys(): 
             ledPort = None
             uartPort = None
+            irqPort = None
             IPCore = self.genIPCores[IPType]
             IOs = util.findTag(IPCore,'IOs')
             for IO in list(IOs):
@@ -380,11 +381,13 @@ class AegeanGen(object):
                     ledWidth = 1
                 elif DevTypeRef == 'Uart':
                     uartPort = True
-            patmos = aegeanCode.getPatmos(IPType,ledPort,ledWidth,uartPort,self.ocpBurstAddrWidth)
+                elif DevTypeRef == 'ExtIRQ':
+                    irqPort = True
+            patmos = aegeanCode.getPatmos(IPType,ledPort,ledWidth,uartPort,self.ocpBurstAddrWidth,irqPort)
             aegean.arch.declComp(patmos)
             self.genComps[IPType] = patmos
 
-        aegeanCode.declareSignals(aegean)
+        aegeanCode.declareSignals(aegean,len(self.nodes))
         aegeanCode.setSPMSize(aegean,self.SPMSizes)
 
         for p in range(0,len(self.nodes)):
@@ -398,6 +401,7 @@ class AegeanGen(object):
             ledPort = None
             txdPort = None
             rxdPort = None
+            irqPort = None
             # TODO: this assumes that core 0 handles all I/O
             IOs = util.findTag(self.genIPCores[IPType],'IOs')
             for IO in list(IOs):
@@ -416,8 +420,10 @@ class AegeanGen(object):
                     rxdPort = 'rxd' + str(p)
                     aegean.entity.addPort('txd' + str(p),'out')
                     aegean.entity.addPort('rxd' + str(p),'in')
+                elif DevTypeRef == 'ExtIRQ':
+                    irqPort = True
             comp = self.genComps[IPType]
-            aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort)
+            aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort,irqPort)
             aegean.arch.instComp(comp,label)
 
         aegean.arch.addToBody(aegeanCode.addSPM())
