@@ -12,7 +12,6 @@
             <SCache size="4k" />
             <ISPM size="1k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="2M" />
 
@@ -37,7 +36,6 @@
             <SCache size="4k" />
             <ISPM size="1k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="2M" />
 
@@ -61,7 +59,6 @@
             <SCache size="2k" />
             <ISPM size="8k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="2M" />
 
@@ -86,7 +83,6 @@
             <SCache size="2k" />
             <ISPM size="2k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="4G" />
 
@@ -113,7 +109,6 @@
             <SCache size="2k" />
             <ISPM size="1k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="4G" />
 
@@ -140,7 +135,6 @@
             <SCache size="2k" />
             <ISPM size="8" />
             <DSPM size="8" />
-            <BootSPM size="2k" />
 
             <ExtMem size="1M" />
 
@@ -165,7 +159,6 @@
             <SCache size="2k" />
             <ISPM size="8" />
             <DSPM size="8" />
-            <BootSPM size="2k" />
 
             <ExtMem size="1M" />
 

@@ -45,11 +45,6 @@
                         <xs:attribute name="size" type="memorySize" use="required" />
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="BootSPM">
-                    <xs:complexType>
-                        <xs:attribute name="size" type="memorySize" use="required" />
-                    </xs:complexType>
-                </xs:element>
                 <xs:element name="DCache">
                     <xs:complexType>
                         <xs:attribute name="size" type="memorySize" use="required" />
