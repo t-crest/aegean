@@ -7,12 +7,11 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpmaster"/>
-            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <ICache type="method" size="8k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
-            <SCache size="1k" />
-            <ISPM size="4k" />
-            <DSPM size="512" />
-            <BootSPM size="2k" />
+            <SCache size="4k" />
+            <ISPM size="1k" />
+            <DSPM size="2k" />
 
             <ExtMem size="2M" />
 
@@ -32,12 +31,11 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
             <bootrom app="bootable-cmpslave"/>
-            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <ICache type="method" size="8k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
-            <SCache size="1k" />
-            <ISPM size="4k" />
-            <DSPM size="512" />
-            <BootSPM size="2k" />
+            <SCache size="4k" />
+            <ISPM size="1k" />
+            <DSPM size="2k" />
 
             <ExtMem size="2M" />
 
@@ -61,7 +59,6 @@
             <SCache size="2k" />
             <ISPM size="8k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="2M" />
 
@@ -86,7 +83,6 @@
             <SCache size="2k" />
             <ISPM size="2k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="4G" />
 
@@ -113,7 +109,6 @@
             <SCache size="2k" />
             <ISPM size="1k" />
             <DSPM size="2k" />
-            <BootSPM size="2k" />
 
             <ExtMem size="4G" />
 
@@ -140,7 +135,6 @@
             <SCache size="2k" />
             <ISPM size="8" />
             <DSPM size="8" />
-            <BootSPM size="2k" />
 
             <ExtMem size="1M" />
 
@@ -165,7 +159,6 @@
             <SCache size="2k" />
             <ISPM size="8" />
             <DSPM size="8" />
-            <BootSPM size="2k" />
 
             <ExtMem size="1M" />
 
@@ -191,7 +184,6 @@
             <SCache size="1k" />
             <ISPM size="4k" />
             <DSPM size="512" />
-            <BootSPM size="2k" />
 
             <ExtMem size="2M" />
 
