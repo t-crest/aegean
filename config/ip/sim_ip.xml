@@ -129,8 +129,8 @@
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
-            <ISPM size="8" />
-            <DSPM size="8" />
+            <ISPM size="0" />
+            <DSPM size="2k" />
 
             <ExtMem size="1M" />
 
@@ -153,8 +153,8 @@
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
-            <ISPM size="8" />
-            <DSPM size="8" />
+            <ISPM size="0" />
+            <DSPM size="2k" />
 
             <ExtMem size="1M" />
 
