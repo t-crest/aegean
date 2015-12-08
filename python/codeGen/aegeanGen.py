@@ -199,7 +199,7 @@ class AegeanGen(object):
     def addDeviceToCDF(self):
         device = self.board.get('device')
         sedString = 's|' + 'Device PartName(DEVICE) Path("build/PROJECTNAME/quartus/output_files/") File("PROJECTNAME_top.sof")$' + '|'
-        sedString+= 'Device PartName('+ device + ') Path("build/'+ self.p.projectname + '/quartus/output_files/") File("'+ self.p.projectname + '_top.sof")|'
+        sedString+= 'Device PartName('+ device + ') Path("build/'+ self.p.projectname + '/quartus/output_files/") File("aegean_top.sof")|'
         Sed = ['sed','-i.bak']
         Sed+= [sedString]
         Sed+= [self.p.QUARTUS_FILE_CDF]
@@ -439,6 +439,7 @@ class AegeanGen(object):
     def patmosGen(self,IPType,bootapp,configfile):
         Patmos = ['make','-C',self.p.PATMOSHW_PATH]
         Patmos+= ['BOOTAPP='+bootapp]
+        Patmos+= ['BOOTSPM_BASE=0xE8000000']
         Patmos+= ['BOOTBUILDDIR='+self.p.BUILD_PATH]
         Patmos+= ['HWBUILDDIR='+self.p.BUILD_PATH]
         Patmos+= ['HWMODULEPREFIX='+IPType]

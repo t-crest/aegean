@@ -30,9 +30,6 @@ AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/vhdl
 AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	noc.vhd aegean.vhd)
 
-#AEGEAN_CONFIG_SRC=$(ARGO_PATH)/src/config_types.vhd $(patsubst %,$(BUILD_PATH)/%,\
-#	config.vhd)
-
 TEST_SRC=$(patsubst %,$(AEGEAN_SRC_PATH)/%,\
 	packages/test.vhd sim/pll.vhd)
 MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
@@ -88,9 +85,6 @@ projectname:
 platform: $(BUILD_PATH)/nocinit.c
 
 $(BUILD_PATH)/nocinit.c: $(PGEN)
-
-#platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
-#	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 
 $(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files ise_files
 	@python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
@@ -151,17 +145,8 @@ $(BUILD_PATH)/work:
 compile-argo: $(BUILD_PATH)/work $(shell cat $(ARGO_SRC)) $(ARGO_SRC)
 	$(PREFIX) $(VCOM08) $(shell cat $(ARGO_SRC))
 
-#$(PATMOS_SOURCE): $(PATMOS_PATH)/c/nocinit.c .FORCE
-#	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
-
-#compile-patmos: $(BUILD_PATH)/work $(shell cat $(PATMOS_SOURCE)) $(PATMOS_SOURCE)
-#	$(PREFIX) $(VLOG) $(PATMOS_SOURCE)
-
 compile-vlog: $(BUILD_PATH)/work $(shell cat $(VLOG_SRC)) $(VLOG_SRC)
 	$(PREFIX) $(VLOG) $(shell cat $(VLOG_SRC))
-
-#compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC)
-#	$(PREFIX) $(VCOM) $(AEGEAN_CONFIG_SRC)
 
 #########################################################################
 # Map Xilinx libraries
@@ -183,10 +168,10 @@ sim-fpga: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTB
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
 synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(ARGO_SRC)
-	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top --verilog_macro="SYNTHESIS"
-	quartus_fit $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
-	quartus_asm $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
-	quartus_sta $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
+	quartus_map $(SYNTH_PATH)/aegean_top --verilog_macro="SYNTHESIS"
+	quartus_fit $(SYNTH_PATH)/aegean_top
+	quartus_asm $(SYNTH_PATH)/aegean_top
+	quartus_sta $(SYNTH_PATH)/aegean_top
 
 config:
 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/aegean_top.cdf

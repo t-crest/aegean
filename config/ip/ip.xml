@@ -11,7 +11,7 @@
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
             <ISPM size="1k" />
-            <DSPM size="2k" />
+            <DSPM size="0" />
 
             <ExtMem size="2M" />
 
@@ -35,7 +35,7 @@
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
             <ISPM size="1k" />
-            <DSPM size="2k" />
+            <DSPM size="0" />
 
             <ExtMem size="2M" />
 
