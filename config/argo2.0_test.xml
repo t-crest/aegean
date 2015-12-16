@@ -33,7 +33,7 @@
 			<communication comType="all2all" phits="3" />
 
 			<!-- <communication type="all2all"/"custom" phits="s"> -->
-			<communication comType="all2all" phits="5" />
+			<communication comType="custom" phits="3" reconfig="(0,0)"/>
 		</configurations>
 
 	</application>
