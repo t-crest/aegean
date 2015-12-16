@@ -81,7 +81,7 @@ class SWConfig(object):
             raise SystemExit(__file__ +': Error: poseidon: ' + str(ret))
         print('Converting schedule')
         Converter = [self.p.POSEIDON_CONV]
-        Converter+= [self.p.GEN_SCHED,self.p.CSCHED,'Argo2-c']
+        Converter+= [self.p.GEN_SCHED,'-o',self.p.CSCHED]
         ret = subprocess.call(Converter)
         if ret != 0:
             raise SystemExit(__file__ +': Error: poseidon-conv: ' + str(ret))
