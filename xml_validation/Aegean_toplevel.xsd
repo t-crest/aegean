@@ -271,6 +271,15 @@
 		</xs:complexType>
 	</xs:element>
 
+	<!-- The communication patter of the application. -->
+	<xs:element name="configurations">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="communication" maxOccurs="unbounded" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<!-- A description of the hardware platform. -->
 	<xs:element name="platform">
 		<xs:complexType>
@@ -297,7 +306,7 @@
 			<xs:sequence>
 				<xs:element ref="entries" minOccurs="0"/>
 				<xs:element ref="memMap" minOccurs="0"/>
-				<xs:element ref="communication"/>
+				<xs:element ref="configurations"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

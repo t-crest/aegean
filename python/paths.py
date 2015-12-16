@@ -68,8 +68,8 @@ class Paths(object):
         ###################################################
         # Intermediate files
         self.GEN_PLAT = self.TMP_BUILD_PATH + '/plat.xml'
-        self.GEN_COM = self.TMP_BUILD_PATH + '/com.xml'
-        self.GEN_SCHED = self.TMP_BUILD_PATH + '/sched.xml'
+        self.GEN_COM = self.TMP_BUILD_PATH + '/com'
+        self.GEN_SCHED = self.TMP_BUILD_PATH + '/sched'
         # The main mem should be set at some point, for now it is none
         #self.MAIN_MEM = self.BUILD_PATH + '/main_mem.dat'
         self.MAIN_MEM = 'none'

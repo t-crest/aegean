@@ -27,9 +27,10 @@
 	</platform>
 
 	<application>
-
-		<!-- <communication type="all2all"/"custom" phits="s"> -->
-		<communication comType="all2all" phits="3" />
+		<configurations>
+			<!-- <communication type="all2all"/"custom" phits="s"> -->
+			<communication comType="all2all" phits="3" />
+		</configurations>
 
 	</application>
 
