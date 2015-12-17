@@ -5,7 +5,7 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
-            <bus burstLength="4" writeCombine="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
@@ -29,7 +29,7 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
-            <bus burstLength="4" writeCombine="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
@@ -51,7 +51,7 @@
 
             <frequency Hz="66000000" />
             <pipeline dual="false" />
-            <bus burstLength="4" writeCombine="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmp_hello"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
@@ -75,7 +75,7 @@
 
             <frequency Hz="50000000" />
             <pipeline dual="false" />
-            <bus burstLength="4" writeCombine="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
@@ -99,7 +99,7 @@
 
             <frequency Hz="50000000" />
             <pipeline dual="false" />
-            <bus burstLength="4" writeCombine="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="2k" assoc="1" repl="" writeThrough="true" />
@@ -124,7 +124,7 @@
 
             <frequency Hz="66000000" />
             <pipeline dual="false" />
-            <bus burstLength="4" writeCombine="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
@@ -148,7 +148,7 @@
 
             <frequency Hz="66000000" />
             <pipeline dual="false" />
-            <bus burstLength="4" writeCombine="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
