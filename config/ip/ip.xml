@@ -142,7 +142,7 @@
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
-                <IO DevTypeRef="Leds" offset="9" />
+                <IO DevTypeRef="Led" offset="9" />
             </IOs>
         </patmos>
     </IPCore>
@@ -166,7 +166,7 @@
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
-                <IO DevTypeRef="Leds" offset="9" />
+                <IO DevTypeRef="Led" offset="9" />
             </IOs>
 
         </patmos>
@@ -178,7 +178,7 @@
             <frequency Hz="80000000" />
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" />
-            <bootrom app="bootable-argo2_libnoc2"/>
+            <bootrom app="bootable-argo2_libnoc"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="1k" />
