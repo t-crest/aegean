@@ -6,8 +6,32 @@
             <in node="pat0" name="rxd" pin="G12" />
             <out node="pat0" name="txd" pin="G9" />
         </IOPort>
-        <IOPort name="LedPins">
-            <out node="pat0" name="led" pin="F17,G21,G22,G20,H21,E24,E25,E22,E21" />
+        <IOPort name="Led0Pins">
+            <out node="pat0" name="led" pin="F17" />
+        </IOPort>
+        <IOPort name="Led1Pins">
+            <out node="pat1" name="led" pin="G21" />
+        </IOPort>
+        <IOPort name="Led2Pins">
+            <out node="pat2" name="led" pin="G22" />
+        </IOPort>
+        <IOPort name="Led3Pins">
+            <out node="pat3" name="led" pin="G20" />
+        </IOPort>
+       <IOPort name="Led4Pins">
+            <out node="pat4" name="led" pin="H21" />
+        </IOPort>
+        <IOPort name="Led5Pins">
+            <out node="pat5" name="led" pin="E24" />
+        </IOPort>
+        <IOPort name="Led6Pins">
+            <out node="pat6" name="led" pin="E25" />
+        </IOPort>
+        <IOPort name="Led7Pins">
+            <out node="pat7" name="led" pin="E22" />
+        </IOPort>
+        <IOPort name="Led8Pins">
+            <out node="pat8" name="led" pin="E21" />
         </IOPort>
 		<IOPort name="EMACPins">
             <in node="pat0" name="glbl_rst" pin="H10" />

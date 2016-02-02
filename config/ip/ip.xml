@@ -133,7 +133,7 @@
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
-            <ISPM size="0" />
+            <ISPM size="8" />
             <DSPM size="2k" />
 
             <ExtMem size="1M" />
@@ -142,7 +142,7 @@
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
-                <IO DevTypeRef="Leds" offset="9" />
+                <IO DevTypeRef="Led" offset="9" />
             </IOs>
         </patmos>
     </IPCore>
@@ -157,7 +157,7 @@
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
-            <ISPM size="0" />
+            <ISPM size="8" />
             <DSPM size="2k" />
 
             <ExtMem size="1M" />
@@ -166,7 +166,7 @@
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Uart" offset="8" />
-                <IO DevTypeRef="Leds" offset="9" />
+                <IO DevTypeRef="Led" offset="9" />
             </IOs>
 
         </patmos>
