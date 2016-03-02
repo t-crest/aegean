@@ -5,7 +5,7 @@
             <param name="IRQCount" value="2" />
         </params>
         <ports>
-            <inport name="irq" />
+            <inport name="io_extIRQPins_irq" width="2" />
         </ports>
     </Dev>
     <Dev DevType="Timer" entity="Timer" iface="OcpCore" />
@@ -16,8 +16,8 @@
             <param name="fifoDepth" value="16" />
         </params>
         <ports>
-            <inport name="rxd" />
-            <outport name="txd" />
+            <inport name="io_uartPins_rx" />
+            <outport name="io_uartPins_tx" />
         </ports>
     </Dev>
     <Dev DevType="Leds" entity="Leds" iface="OcpCore">
@@ -25,7 +25,7 @@
             <param name="ledCount" value="9" />
         </params>
         <ports>
-            <outport name="led" width="9" />
+            <outport name="io_ledsPins_led" width="9" />
         </ports>
     </Dev>
     <Dev DevType="Led" entity="Leds" iface="OcpCore">
@@ -33,7 +33,7 @@
             <param name="ledCount" value="1" />
         </params>
         <ports>
-            <outport name="led" width="1" />
+            <outport name="io_ledsPins_led" width="1" />
         </ports>
     </Dev>
     <Dev DevType="ExtIODevice" entity="ExtIODevice" iface="OcpCore">
@@ -48,6 +48,20 @@
             <inport name="io_ExtIODevice_S_Data" width="32" />
             <inport name="io_ExtIODevice_S_Resp" width="2" />
             <inport name="io_ExtIODevice_S_CmdAccept" width="1" />
+
+        </ports>
+    </Dev>
+    <Dev DevType="Avalon-MM" entity="AvalonMMBridge" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="4" />
+            <param name="dataWidth" value="32" />
+        </params>
+        <ports>
+            <outport name="io_avalonMMBridgePins_avs_write_n" width="1" />
+            <outport name="io_avalonMMBridgePins_avs_read_n" width="1" />
+            <outport name="io_avalonMMBridgePins_avs_address" width="4" />
+            <outport name="io_avalonMMBridgePins_avs_writedata" width="32" />
+            <inport name="io_avalonMMBridgePins_avs_readdata" width="32" />
 
         </ports>
     </Dev>

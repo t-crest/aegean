@@ -62,23 +62,24 @@ class AegeanGen(object):
         self.genFiles = []
         self.SPMSizes = []
 
+
     def parseDevs(self):
         Devs = list(util.findTag(self.platform,'Devs'))
-        for i in range(0,len(Devs)):
-            Dev = Devs[i]
+        for Dev in Devs:
             name = Dev.get('DevType')
             self.Devs[name] = Dev
 
+
     def parseIPCores(self):
         IPCores = list(util.findTag(self.platform,'IPCores'))
-        for i in range(0,len(IPCores)):
-            IPCore = IPCores[i]
+        for IPCore in IPCores:
             name = IPCore.get('IPType')
             r = util.findTag(IPCore,'patmos')
             if str(r) == 'None': # The IPCore is not a patmos processor
                 self.IPCores[name] = IPCore
             else: # The IPCore is a patmos processor
                 self.IPCores[name] = r
+
 
     def parseIOPorts(self):
         clock = util.findTag(self.board,'clock')
@@ -101,6 +102,7 @@ class AegeanGen(object):
                 IOSignal = [portName,signalName,signal.tag,len(pins),pins]
                 self.IOSignals.append(IOSignal)
 
+
     def parseSize(self,s):
         m = re.split('(\d+)([KMG]?)',s.upper())
         while '' in m:
@@ -113,6 +115,7 @@ class AegeanGen(object):
         elif m[1]=='G':
             suffixMult = (1 << 30)
         return int(m[0])*suffixMult
+
 
     def generateNodes(self):
         nodes = list(self.nodes)
@@ -157,6 +160,7 @@ class AegeanGen(object):
                 self.patmosGen(IPTypeID.replace('-','_'),BootApp,self.p.TMP_BUILD_PATH + '/' + IPTypeID.replace('-','_') + '.xml') # IPTypeRef -> IPTypeID
                 self.genIPCores[IPTypeID.replace('-','_')] = IPCore # IPTypeRef -> IPTypeID
 
+
     def generateMemory(self):
         if str(self.memory) == 'None':
             return
@@ -173,6 +177,7 @@ class AegeanGen(object):
         self.arbiterGen(len(self.nodes),self.ocpBurstAddrWidth,32,4)
 
         aegeanCode.writeConfig(self.p.OcpConfFile,self.ocpBurstAddrWidth)
+
 
     def addDeviceToQSF(self):
         boardName = self.board.get('name')
@@ -196,6 +201,7 @@ class AegeanGen(object):
         if ret != 0:
             raise SystemExit(__file__ +': Error: sed: return value: ' + str(ret))
 
+
     def addDeviceToCDF(self):
         device = self.board.get('device')
         sedString = 's|' + 'Device PartName(DEVICE) Path("build/PROJECTNAME/quartus/output_files/") File("PROJECTNAME_top.sof")$' + '|'
@@ -206,6 +212,7 @@ class AegeanGen(object):
         ret = subprocess.call(Sed)
         if ret != 0:
             raise SystemExit(__file__ +': Error: sed: return value: ' + str(ret))
+
 
     def addGeneratedFilesToQSF(self):
         sedString = 's|' + 'set_global_assignment -name VERILOG_FILE GENERATED' + '|'
@@ -228,6 +235,7 @@ class AegeanGen(object):
         if ret != 0:
             raise SystemExit(__file__ +': Error: sed: return value: ' + str(ret))
 
+
     def addPinsToQSF(self):
         sedString = 's|' + 'set_location_assignment PIN_XXX -to XXX' + '|'
         for IOSignal in self.IOSignals: # For each signal
@@ -246,6 +254,127 @@ class AegeanGen(object):
         ret = subprocess.call(Sed)
         if ret != 0:
             raise SystemExit(__file__ +': Error: sed: return value: ' + str(ret))
+
+
+    def generate(self,noc):
+        self.parseDevs()
+        self.parseIPCores()
+        self.parseIOPorts()
+        self.generateNodes()
+        self.generateMemory()
+
+        vlog_src = open(self.p.BUILD_PATH+'/.vlog_src','w')
+        for f in self.genFiles:
+            if f.endswith('.v'):
+                vlog_src.write(self.p.BUILD_PATH + f[2:] + ' ')
+        
+
+        aegean = aegeanCode.getAegean()
+        # add IO pins
+        #aegean.entity.addPort('led','out','std_logic_vector',9)
+        #aegean.entity.addPort('txd','out')
+        #aegean.entity.addPort('rxd','in')
+
+        arbiter = aegeanCode.getArbiter(len(self.nodes),self.ocpBurstAddrWidth)
+        aegean.arch.declComp(arbiter)
+
+
+        # Declare Patmos processors
+        for IPType in self.genIPCores.keys(): 
+            IPCore = self.genIPCores[IPType]
+            IOs = util.findTag(IPCore,'IOs')
+            patmos = aegeanCode.getPatmos(IPType,self.ocpBurstAddrWidth)
+
+            for IO in list(IOs):
+                DevTypeRef = IO.get('DevTypeRef')
+                Dev = self.Devs[DevTypeRef]
+                ports = util.findTag(Dev,'ports')
+                if ports == None:
+                    continue
+                for port in list(ports):
+                    direction = port.tag
+                    name = port.get('name')
+                    width = port.get('width')
+                    if width != None:
+                        width = int(width)
+                    if direction == "outport":
+                        direction = "out"
+                    elif direction == "inport":
+                        direction = "in"
+                    if ((width == None) or (width == 1)) :
+                        patmos.entity.addPort(name,direction,'std_logic')
+                    else:
+                        patmos.entity.addPort(name,direction,'std_logic_vector',width)
+
+            aegean.arch.declComp(patmos)
+            self.genComps[IPType] = patmos
+
+        aegeanCode.declareSignals(aegean,len(self.nodes))
+        aegeanCode.setSPMSize(aegean,self.SPMSizes)
+
+        for p in range(0,len(self.nodes)):
+            node = self.nodes[p]
+            label = node.get('id')
+            IPType = node.get('IPTypeRef')
+            BootApp = node.get('BootApp')
+            if str(BootApp) != 'None':
+                IPType = (IPType + '-' + BootApp).replace('-','_')
+
+            patmos = self.genComps[IPType]
+            aegeanCode.bindPatmos(patmos,len(self.nodes),p)
+
+            IOs = util.findTag(self.genIPCores[IPType],'IOs')
+            for IO in list(IOs):
+                DevTypeRef = IO.get('DevTypeRef')
+                Dev = self.Devs[DevTypeRef]
+                ports = util.findTag(Dev,'ports')
+                if ports == None:
+                    continue
+                for port in list(ports):
+                    direction = port.tag
+                    name = port.get('name')
+                    width = port.get('width')
+                    if width != None:
+                        width = int(width)
+                    if direction == "outport":
+                        direction = "out"
+                    elif direction == "inport":
+                        direction = "in"
+                    if ((width == None) or (width == 1)) :
+                        aegean.entity.addPort(name + str(p),direction,'std_logic')
+                        patmos.entity.bindPort(name,name + str(p))
+                    else:
+                        aegean.entity.addPort(name + str(p),direction,'std_logic_vector',width)
+                        patmos.entity.bindPort(name,name + str(p))
+
+            #    if DevTypeRef == 'Leds':
+            #        ledPort = 'leds' + str(p) 
+            #        ledWidth = 9
+            #        aegean.entity.addPort('leds' + str(p),'out','std_logic_vector',9)
+            #    elif DevTypeRef == 'Led':
+            #        ledPort = 'led' + str(p)
+            #        aegean.entity.addPort('led' + str(p),'out','std_logic')
+            #        ledWidth = 1
+            #    elif DevTypeRef == 'Uart':
+            #        txdPort = 'txd' + str(p)
+            #        rxdPort = 'rxd' + str(p)
+            #        aegean.entity.addPort('txd' + str(p),'out')
+            #        aegean.entity.addPort('rxd' + str(p),'in')
+            #    elif DevTypeRef == 'ExtIRQ':
+            #        irqPort = True
+            
+            aegean.arch.instComp(patmos,label)
+
+        aegean.arch.addToBody(aegeanCode.addSPM())
+        aegeanCode.bindNoc(noc)
+        aegean.arch.instComp(noc,'noc',True)
+        aegeanCode.bindArbiter(arbiter,len(self.nodes))
+        aegean.arch.instComp(arbiter,'arbit')
+
+        aegean.writeComp(self.p.AegeanFile)
+
+        return aegean
+
 
     def generateTopLevel(self,aegean):
         vendor = self.board.get('vendor')
@@ -342,100 +471,6 @@ class AegeanGen(object):
         return top
 
 
-    def generate(self,noc):
-        self.parseDevs()
-        self.parseIPCores()
-        self.parseIOPorts()
-        self.generateNodes()
-        self.generateMemory()
-
-        vlog_src = open(self.p.BUILD_PATH+'/.vlog_src','w')
-        for f in self.genFiles:
-            if f.endswith('.v'):
-                vlog_src.write(self.p.BUILD_PATH + f[2:] + ' ')
-        
-
-        aegean = aegeanCode.getAegean()
-        # add IO pins
-        aegean.entity.addPort('led','out','std_logic_vector',9)
-        #aegean.entity.addPort('txd','out')
-        #aegean.entity.addPort('rxd','in')
-
-        arbiter = aegeanCode.getArbiter(len(self.nodes),self.ocpBurstAddrWidth)
-        aegean.arch.declComp(arbiter)
-
-
-        for IPType in self.genIPCores.keys(): 
-            ledPort = None
-            uartPort = None
-            irqPort = None
-            IPCore = self.genIPCores[IPType]
-            IOs = util.findTag(IPCore,'IOs')
-            for IO in list(IOs):
-                DevTypeRef = IO.get('DevTypeRef')
-                if DevTypeRef == 'Leds':
-                    ledPort = True
-                    ledWidth = 9 # TODO: extract from XML
-                if DevTypeRef == 'Led':
-                    ledPort = True
-                    ledWidth = 1
-                elif DevTypeRef == 'Uart':
-                    uartPort = True
-                elif DevTypeRef == 'ExtIRQ':
-                    irqPort = True
-            patmos = aegeanCode.getPatmos(IPType,ledPort,ledWidth,uartPort,self.ocpBurstAddrWidth,irqPort)
-            aegean.arch.declComp(patmos)
-            self.genComps[IPType] = patmos
-
-        aegeanCode.declareSignals(aegean,len(self.nodes))
-        aegeanCode.setSPMSize(aegean,self.SPMSizes)
-
-        for p in range(0,len(self.nodes)):
-            patmos = self.nodes[p]
-            label = patmos.get('id')
-            IPType = patmos.get('IPTypeRef')
-            BootApp = patmos.get('BootApp')
-            if str(BootApp) != 'None':
-                IPType = (IPType + '-' + BootApp).replace('-','_')
-
-            ledPort = None
-            txdPort = None
-            rxdPort = None
-            irqPort = None
-            # TODO: this assumes that core 0 handles all I/O
-            IOs = util.findTag(self.genIPCores[IPType],'IOs')
-            for IO in list(IOs):
-                DevTypeRef = IO.get('DevTypeRef')
-                
-                if DevTypeRef == 'Leds':
-                    ledPort = 'leds' + str(p) 
-                    ledWidth = 9
-                    aegean.entity.addPort('leds' + str(p),'out','std_logic_vector',9)
-                elif DevTypeRef == 'Led':
-                    ledPort = 'led' + str(p)
-                    aegean.entity.addPort('led' + str(p),'out','std_logic')
-                    ledWidth = 1
-                elif DevTypeRef == 'Uart':
-                    txdPort = 'txd' + str(p)
-                    rxdPort = 'rxd' + str(p)
-                    aegean.entity.addPort('txd' + str(p),'out')
-                    aegean.entity.addPort('rxd' + str(p),'in')
-                elif DevTypeRef == 'ExtIRQ':
-                    irqPort = True
-            comp = self.genComps[IPType]
-            aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort,irqPort)
-            aegean.arch.instComp(comp,label)
-
-        aegean.arch.addToBody(aegeanCode.addSPM())
-        aegeanCode.bindNoc(noc)
-        aegean.arch.instComp(noc,'noc',True)
-        aegeanCode.bindArbiter(arbiter,len(self.nodes))
-        aegean.arch.instComp(arbiter,'arbit')
-
-        aegean.writeComp(self.p.AegeanFile)
-
-        return aegean
-
     def patmosGen(self,IPType,bootapp,configfile):
         Patmos = ['make','-C',self.p.PATMOSHW_PATH]
         Patmos+= ['BOOTAPP='+bootapp]
@@ -451,6 +486,7 @@ class AegeanGen(object):
 
         self.genFiles.append('../'+IPType+'PatmosCore.v')
 
+
     def ssramGen(self,entity,addr):
         Ssram = ['make','-C',self.p.PATMOSHW_PATH]
         Ssram+= ['HWBUILDDIR='+self.p.BUILD_PATH]
@@ -461,6 +497,7 @@ class AegeanGen(object):
             raise SystemExit(__file__ +': Error: Generation of Sram controller: return value: ' + str(ret))
 
         self.genFiles.append('../'+entity+'.v')
+
 
     def arbiterGen(self,cnt,addr,data,burstLength):
         Arbiter = ['make','-C',self.p.PATMOSHW_PATH]

@@ -229,6 +229,7 @@ class NoCGen(object):
         argo_src.write(self.p.ARGO_PATH+'/src/argo_types.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/noc_interface.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/mem/tdp_ram.vhd ')
+        argo_src.write(self.p.ARGO_PATH+'/src/mem/tdp_bram.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/rx_unit.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/irq_fifo.vhd ')
         argo_src.write(self.p.ARGO_PATH+'/src/ni/config_bus.vhd ')
