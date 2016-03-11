@@ -270,10 +270,6 @@ class AegeanGen(object):
         
 
         aegean = aegeanCode.getAegean()
-        # add IO pins
-        #aegean.entity.addPort('led','out','std_logic_vector',9)
-        #aegean.entity.addPort('txd','out')
-        #aegean.entity.addPort('rxd','in')
 
         arbiter = aegeanCode.getArbiter(len(self.nodes),self.ocpBurstAddrWidth)
         aegean.arch.declComp(arbiter)
@@ -347,21 +343,6 @@ class AegeanGen(object):
                         aegean.entity.addPort(name + str(p),direction,'std_logic_vector',width)
                         patmos.entity.bindPort(name,name + str(p))
 
-            #    if DevTypeRef == 'Leds':
-            #        ledPort = 'leds' + str(p) 
-            #        ledWidth = 9
-            #        aegean.entity.addPort('leds' + str(p),'out','std_logic_vector',9)
-            #    elif DevTypeRef == 'Led':
-            #        ledPort = 'led' + str(p)
-            #        aegean.entity.addPort('led' + str(p),'out','std_logic')
-            #        ledWidth = 1
-            #    elif DevTypeRef == 'Uart':
-            #        txdPort = 'txd' + str(p)
-            #        rxdPort = 'rxd' + str(p)
-            #        aegean.entity.addPort('txd' + str(p),'out')
-            #        aegean.entity.addPort('rxd' + str(p),'in')
-            #    elif DevTypeRef == 'ExtIRQ':
-            #        irqPort = True
             
             aegean.arch.instComp(patmos,label)
 
