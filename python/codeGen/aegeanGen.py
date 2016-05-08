@@ -73,7 +73,7 @@ class AegeanGen(object):
     def parseIPCores(self):
         IPCores = list(util.findTag(self.platform,'IPCores'))
         for IPCore in IPCores:
-            name = IPCore.get('IPType')
+            name = IPCore.get('IPType').replace('-','_')
             r = util.findTag(IPCore,'patmos')
             if str(r) == 'None': # The IPCore is not a patmos processor
                 self.IPCores[name] = IPCore
@@ -121,12 +121,12 @@ class AegeanGen(object):
         nodes = list(self.nodes)
         for i in range(0,len(nodes)):
             node = nodes[i]
-            IPTypeRef = node.get('IPTypeRef')
+            IPTypeRef = node.get('IPTypeRef').replace('-','_')
             SPMSize = node.get('SPMSize')
             self.SPMSizes.append(self.parseSize(SPMSize))
 
             BootApp = node.get('BootApp')
-            IPTypeID = IPTypeRef
+            IPTypeID = IPTypeRef.replace('-','_')
             if str(BootApp) != 'None':
                 IPTypeID = (IPTypeRef + '-' + BootApp).replace('-','_')
             if IPTypeID not in self.genIPCores: # IPTypeRef -> IPTypeID
@@ -311,7 +311,7 @@ class AegeanGen(object):
         for p in range(0,len(self.nodes)):
             node = self.nodes[p]
             label = node.get('id')
-            IPType = node.get('IPTypeRef')
+            IPType = node.get('IPTypeRef').replace('-','_')
             BootApp = node.get('BootApp')
             if str(BootApp) != 'None':
                 IPType = (IPType + '-' + BootApp).replace('-','_')

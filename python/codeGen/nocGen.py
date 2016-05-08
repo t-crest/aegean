@@ -168,7 +168,7 @@ class NoCGen(object):
 
         for k in range(0,len(nodes)):
             j, i = nodes[k].get('loc').strip('()').split(',')
-            instancename = nodes[k].get('id') + '_' + nodes[k].get('IPTypeRef')
+            instancename = nodes[k].get('id') + '_' + nodes[k].get('IPTypeRef').replace('-','_')
             nocNode = self.getNocNode()
             if k == 0:
                 nocMaster = True
