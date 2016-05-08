@@ -78,6 +78,7 @@ class SWConfig(object):
             Poseidon+= ['-c',self.p.GEN_COM+str(i)+'.xml']   # Communication specification
             Poseidon+= ['-s',self.p.GEN_SCHED+str(i)+'.xml'] # XML Schedule output
             Poseidon+= ['-m','GREEDY']         # Optimization algorithm
+            Poseidon+= ['-v',"2"]              # Argo version
             Poseidon+= ['-d']                  # Draw the topology
             ret = subprocess.call(Poseidon)
             if ret != 0:
