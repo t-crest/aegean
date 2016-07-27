@@ -88,5 +88,6 @@
 
 <xs:attribute name="topoType" type="topo"/>
 <xs:attribute name="comType" type="com"/>
+<xs:attribute name="reconfig" type="coordinate"/>
 
 </xs:schema>

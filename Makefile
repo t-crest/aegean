@@ -30,9 +30,6 @@ AEGEAN_SRC_PATH?=$(AEGEAN_PATH)/vhdl
 AEGEAN_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	noc.vhd aegean.vhd)
 
-AEGEAN_CONFIG_SRC=$(ARGO_PATH)/src/config_types.vhd $(patsubst %,$(BUILD_PATH)/%,\
-	config.vhd)
-
 TEST_SRC=$(patsubst %,$(AEGEAN_SRC_PATH)/%,\
 	packages/test.vhd sim/pll.vhd)
 MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
@@ -41,7 +38,7 @@ MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
 	CY7C10612DV33/package_utility.vhd \
 	CY7C10612DV33/cy7c10612dv33.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
-	top.vhd aegean_testbench.vhd)
+	aegean_top.vhd aegean_testbench.vhd)
 	
 # Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
@@ -49,6 +46,7 @@ SYNTH_PATH=$(BUILD_PATH)/quartus
 SYNTH_PATH_XILINX=$(BUILD_PATH)/ise
 VLIB=vlib -quiet work
 VCOM?=vcom -quiet -93 -work $(BUILD_PATH)/work
+VCOM08?=vcom -quiet -2008 -work $(BUILD_PATH)/work
 VLOG?=vlog -quiet -work $(BUILD_PATH)/work
 VSIM?=vsim -novopt -lib $(BUILD_PATH)/work
 
@@ -88,9 +86,6 @@ platform: $(BUILD_PATH)/nocinit.c
 
 $(BUILD_PATH)/nocinit.c: $(PGEN)
 
-#platform: $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files
-#	python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
-
 $(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files ise_files
 	@python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
 	@echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
@@ -99,21 +94,21 @@ $(BUILD_PATH):
 	mkdir -p $(BUILD_PATH)/xml
 
 quartus_files: \
-	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.cdf \
-	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qpf \
-	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf \
-	$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc
+	$(BUILD_PATH)/quartus/aegean_top.cdf \
+	$(BUILD_PATH)/quartus/aegean_top.qpf \
+	$(BUILD_PATH)/quartus/aegean_top.qsf \
+	$(BUILD_PATH)/quartus/aegean_top.sdc
 
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.cdf: $(AEGEAN_PATH)/quartus/aegean_top.cdf
+$(BUILD_PATH)/quartus/aegean_top.cdf: $(AEGEAN_PATH)/quartus/aegean_top.cdf
 	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qpf: $(AEGEAN_PATH)/quartus/aegean_top.qpf
+$(BUILD_PATH)/quartus/aegean_top.qpf: $(AEGEAN_PATH)/quartus/aegean_top.qpf
 	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.qsf: $(AEGEAN_PATH)/quartus/aegean_top.qsf
+$(BUILD_PATH)/quartus/aegean_top.qsf: $(AEGEAN_PATH)/quartus/aegean_top.qsf
 	-mkdir -p $(dir $@)
 	-cp $< $@
-$(BUILD_PATH)/quartus/$(AEGEAN_PLATFORM)_top.sdc: $(AEGEAN_PATH)/quartus/aegean_top.sdc
+$(BUILD_PATH)/quartus/aegean_top.sdc: $(AEGEAN_PATH)/quartus/aegean_top.sdc
 	-mkdir -p $(dir $@)
 	-cp $< $@
 
@@ -140,27 +135,18 @@ $(SYNTH_PATH_XILINX)/$(AEGEAN_PLATFORM)_async.xise: $(AEGEAN_PATH)/ise/ml605oc_a
 # Compilation of source code for the platform described in AEGEAN_PLATFORM
 # Call make compile
 ##########################################################################
-compile: $(BUILD_PATH)/work compile-config compile-argo compile-vlog  $(AEGEAN_SRC)
+compile: $(BUILD_PATH)/work compile-argo compile-vlog  $(AEGEAN_SRC)
 	$(PREFIX) $(VCOM) $(AEGEAN_SRC)
 
 $(BUILD_PATH)/work:
 	mkdir -p $(BUILD_PATH)
 	cd $(BUILD_PATH) && $(PREFIX) $(VLIB)
 
-compile-argo: $(BUILD_PATH)/work compile-config $(shell cat $(ARGO_SRC)) $(ARGO_SRC)
-	$(PREFIX) $(VCOM) $(shell cat $(ARGO_SRC))
-
-#$(PATMOS_SOURCE): $(PATMOS_PATH)/c/nocinit.c .FORCE
-#	make -C $(PATMOS_PATH) BOOTAPP=$(PATMOS_BOOTAPP) BOOTBUILDDIR=$(BUILD_PATH) HWBUILDDIR=$(BUILD_PATH) gen
-
-#compile-patmos: $(BUILD_PATH)/work $(shell cat $(PATMOS_SOURCE)) $(PATMOS_SOURCE)
-#	$(PREFIX) $(VLOG) $(PATMOS_SOURCE)
+compile-argo: $(BUILD_PATH)/work $(shell cat $(ARGO_SRC)) $(ARGO_SRC)
+	$(PREFIX) $(VCOM08) $(shell cat $(ARGO_SRC))
 
 compile-vlog: $(BUILD_PATH)/work $(shell cat $(VLOG_SRC)) $(VLOG_SRC)
 	$(PREFIX) $(VLOG) $(shell cat $(VLOG_SRC))
-
-compile-config: $(BUILD_PATH)/work $(AEGEAN_CONFIG_SRC)
-	$(PREFIX) $(VCOM) $(AEGEAN_CONFIG_SRC)
 
 #########################################################################
 # Map Xilinx libraries
@@ -173,7 +159,7 @@ map-xilinx-libs:
 # Simulation of source code for the platform described in AEGEAN_PLATFORM
 # Call make sim
 #########################################################################
-sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
+sim: compile $(BUILD_PATH)/work $(TEST_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 	
@@ -182,13 +168,13 @@ sim-fpga: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTB
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
 
 synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(ARGO_SRC)
-	quartus_map $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top --verilog_macro="SYNTHESIS"
-	quartus_fit $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
-	quartus_asm $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
-	quartus_sta $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top
+	quartus_map $(SYNTH_PATH)/aegean_top --verilog_macro="SYNTHESIS"
+	quartus_fit $(SYNTH_PATH)/aegean_top
+	quartus_asm $(SYNTH_PATH)/aegean_top
+	quartus_sta $(SYNTH_PATH)/aegean_top
 
 config:
-	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf
+	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/aegean_top.cdf
 
 clean:
 	-rm -rf $(BUILD_PATH)
@@ -200,7 +186,7 @@ test:
 	for test in $(BUILDBOT_TESTS); \
 	do \
 	 	make -C ../patmos APP=$$test comp ; \
-	 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/$(AEGEAN_PLATFORM)_top.cdf ; \
+	 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/aegean_top.cdf ; \
 	 	patserdow -v /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A700aiK5-if00-port0 ../patmos/tmp/$$test.elf ; \
 	done
 

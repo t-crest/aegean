@@ -70,7 +70,7 @@ set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *io_sramPins_ra
 
 
 set_global_assignment -name VHDL_FILE ../config.vhd
-set_global_assignment -name VHDL_FILE ../top.vhd
+set_global_assignment -name VHDL_FILE ../aegean_top.vhd
 set_global_assignment -name VHDL_FILE ../aegean.vhd
 set_global_assignment -name VHDL_FILE ../noc.vhd
 set_global_assignment -name VERILOG_FILE GENERATED

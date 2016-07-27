@@ -39,10 +39,10 @@
 	</platform>
 
 	<application>
-		<!-- <communication comtype="all2all"/"custom" phits="s"> -->
-		<communication comType="all2all" phits="3">
-
-		</communication>
+		<configurations>
+                        <!-- <communication type="all2all"/"custom" phits="s"> -->
+                        <communication comType="all2all" phits="3" />
+                </configurations>
 	</application>
 
 </aegean>

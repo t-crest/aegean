@@ -7,11 +7,11 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
-            <ICache type="method" size="8k" assoc="16" repl="fifo" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
-            <ISPM size="1k" />
-            <DSPM size="2k" />
+            <ISPM size="2k" />
+            <DSPM size="0" />
 
             <ExtMem size="2M" />
 
@@ -31,11 +31,11 @@
             <pipeline dual="false" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
-            <ICache type="method" size="8k" assoc="16" repl="fifo" />
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
-            <ISPM size="1k" />
-            <DSPM size="2k" />
+            <ISPM size="2k" />
+            <DSPM size="0" />
 
             <ExtMem size="2M" />
 
@@ -43,6 +43,55 @@
                 <IO DevTypeRef="CpuInfo" offset="0"/>
                 <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
                 <IO DevTypeRef="Led" offset="9" />
+            </IOs>
+        </patmos>
+    </IPCore>
+    <IPCore IPType="Master-MC">
+        <patmos>
+            <description>Single issue patmos master</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpmaster"/>
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="2k" />
+            <DSPM size="0" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Led" offset="9" />
+                <IO DevTypeRef="Avalon-MM" offset="11" />
+            </IOs>
+        </patmos>
+    </IPCore>
+    <IPCore IPType="Slave-MC">
+        <patmos>
+            <description>Single issue patmos slave</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpslave"/>
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="2k" />
+            <DSPM size="0" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Led" offset="9" />
+                <IO DevTypeRef="Avalon-MM" offset="11" />
             </IOs>
         </patmos>
     </IPCore>
@@ -169,6 +218,31 @@
                 <IO DevTypeRef="Led" offset="9" />
             </IOs>
 
+        </patmos>
+    </IPCore>
+    <IPCore IPType="argo2tester">
+        <patmos>
+            <description>Single issue patmos master</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-argo2_libnoc"/>
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="1k" />
+            <ISPM size="4k" />
+            <DSPM size="512" />
+
+            <ExtMem size="2M" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="ExtIRQ" offset="1" intrs="8,15" />
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Led" offset="9" />
+            </IOs>
         </patmos>
     </IPCore>
     <IPCore IPType="ACC" entity="accelerator" srcFile="../vhdl/accelerator.vhd" />

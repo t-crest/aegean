@@ -18,7 +18,7 @@
         <IOPort name="Led3Pins">
             <out node="pat3" name="led" pin="G20" />
         </IOPort>
-       <IOPort name="Led4Pins">
+        <IOPort name="Led4Pins">
             <out node="pat4" name="led" pin="H21" />
         </IOPort>
         <IOPort name="Led5Pins">
