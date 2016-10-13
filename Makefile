@@ -13,7 +13,8 @@
 -include config.mk
 # The project being build when calling
 # "make platform|compile|sim|synth|config"
-AEGEAN_PLATFORM?=default-altde2-115
+#AEGEAN_PLATFORM?=default-altde2-115
+AEGEAN_PLATFORM?=default-altde2-115-audio
 # Tests to be run by buildbot
 BUILDBOT_TESTS?=corethread_test test_cmp libctest
 # Aegean path names
@@ -42,7 +43,7 @@ MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
 	CY7C10612DV33/cy7c10612dv33.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	top.vhd aegean_testbench.vhd)
-	
+
 # Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
 SYNTH_PATH=$(BUILD_PATH)/quartus
@@ -176,7 +177,7 @@ map-xilinx-libs:
 sim: compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
-	
+
 sim-fpga: map-xilinx-libs compile $(BUILD_PATH)/work compile $(TEST_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VCOM) $(TEST_SRC) $(MEM_SRC) $(TESTBENCH_SRC)
 	$(PREFIX) $(VSIM) -do $(SIM_PATH)/aegean.do aegean_testbench
@@ -205,7 +206,7 @@ test:
 	done
 
 buildbot-test: clean platform compile synth test
-	
+
 
 
 help:

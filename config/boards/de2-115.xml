@@ -42,5 +42,15 @@
         <IOPort name="Led8Pins">
             <out node="pat8" name="led" pin="E21" />
         </IOPort>
+        <IOPort name="AudioInterfacePins">
+          <inout node="pat0" name="ADCLRCK"  pin="C2" />
+          <in    node="pat0" name="ADCDAT"   pin="D2" />
+          <inout node="pat0" name="DACLRCK"  pin="E3" />
+          <out   node="pat0" name="DACDAT"   pin="D1" />
+          <out   node="pat0" name="XCK"      pin="E1" />
+          <inout node="pat0" name="BCLK"     pin="F2" />
+          <out   node="pat0" name="I2C_SCLK" pin="B7" />
+          <out   node="pat0" name="I2C_SDAT" pin="A8" />
+        </IOPort>
     </IOPorts>
 </board>
