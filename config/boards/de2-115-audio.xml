@@ -1,4 +1,4 @@
-<board name="de2-115" vendor="Altera" family="Cyclone IV E" device="EP4CE115F29C7" >
+<board name="de2-115-audio" vendor="Altera" family="Cyclone IV E" device="EP4CE115F29C7" >
     <clock name="clk" frequency="50000000" pin="Y2" />
 <!-- The pins are listed (width-1 DOWNTO 0) -->
     <IOPorts>
@@ -41,6 +41,18 @@
         </IOPort>
         <IOPort name="Led8Pins">
             <out node="pat8" name="led" pin="E21" />
+        </IOPort>
+        <IOPort name="AudioPins">
+            <out   node="pat0" name="dacdat"  pin="D1" />
+            <out   node="pat0" name="daclrck" pin="E3" />
+            <in    node="pat0" name="adcdat"  pin="D2" />
+            <out   node="pat0" name="adclrck" pin="C2" />
+            <in    node="pat0" name="i2csdi"  pin="D444" />
+            <out   node="pat0" name="i2csdo"  pin="A8" />
+            <out   node="pat0" name="i2cwe"   pin="D555" />
+            <out   node="pat0" name="i2csclk" pin="B7" />
+            <out   node="pat0" name="xck"     pin="E1" />
+            <out   node="pat0" name="bclk"    pin="F2" />
         </IOPort>
     </IOPorts>
 </board>

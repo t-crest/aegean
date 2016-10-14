@@ -127,7 +127,7 @@ class AegeanGen(object):
             if str(BootApp) != 'None':
                 IPTypeID = (IPTypeRef + '-' + BootApp).replace('-','_')
             if IPTypeID not in self.genIPCores: # IPTypeRef -> IPTypeID
-                IPCore = self.IPCores[IPTypeRef] 
+                IPCore = self.IPCores[IPTypeRef]
                 b = util.findTag(IPCore,'bootrom')
                 if str(b) == 'None' and str(BootApp) == 'None':
                     if IPCore.tag == 'patmos':
@@ -353,7 +353,7 @@ class AegeanGen(object):
         for f in self.genFiles:
             if f.endswith('.v'):
                 vlog_src.write(self.p.BUILD_PATH + f[2:] + ' ')
-        
+
 
         aegean = aegeanCode.getAegean()
         # add IO pins
@@ -365,9 +365,10 @@ class AegeanGen(object):
         aegean.arch.declComp(arbiter)
 
 
-        for IPType in self.genIPCores.keys(): 
+        for IPType in self.genIPCores.keys():
             ledPort = None
             uartPort = None
+            audioPort = None
             IPCore = self.genIPCores[IPType]
             IOs = util.findTag(IPCore,'IOs')
             for IO in list(IOs):
@@ -380,7 +381,9 @@ class AegeanGen(object):
                     ledWidth = 1
                 elif DevTypeRef == 'Uart':
                     uartPort = True
-            patmos = aegeanCode.getPatmos(IPType,ledPort,ledWidth,uartPort,self.ocpBurstAddrWidth)
+                elif DevTypeRef == 'AudioInterface':
+                    audioPort = None
+            patmos = aegeanCode.getPatmos(IPType,ledPort,ledWidth,uartPort,audioPort,self.ocpBurstAddrWidth)
             aegean.arch.declComp(patmos)
             self.genComps[IPType] = patmos
 
@@ -398,13 +401,23 @@ class AegeanGen(object):
             ledPort = None
             txdPort = None
             rxdPort = None
+            dacdatPort = None
+            daclrckPort = None
+            adcdatPort = None
+            adclrckPort = None
+            i2csdiPort = None
+            i2csdoPort = None
+            i2cwePort = None
+            i2csclkPort = None
+            xckPort = None
+            bclkPort = None
             # TODO: this assumes that core 0 handles all I/O
             IOs = util.findTag(self.genIPCores[IPType],'IOs')
             for IO in list(IOs):
                 DevTypeRef = IO.get('DevTypeRef')
-                
+
                 if DevTypeRef == 'Leds':
-                    ledPort = 'leds' + str(p) 
+                    ledPort = 'leds' + str(p)
                     ledWidth = 9
                     aegean.entity.addPort('leds' + str(p),'out','std_logic_vector',9)
                 elif DevTypeRef == 'Led':
@@ -416,6 +429,27 @@ class AegeanGen(object):
                     rxdPort = 'rxd' + str(p)
                     aegean.entity.addPort('txd' + str(p),'out')
                     aegean.entity.addPort('rxd' + str(p),'in')
+                elif DevTypeRef == 'AudioInterface':
+                    dacdatPort = 'dacdat' + str(p)
+                    daclrckPort = 'daclrck' + str(p)
+                    adcdatPort = 'adcdat' + str(p)
+                    adclrckPort = 'adclrck' + str(p)
+                    i2csdiPort = 'i2csdi' + str(p)
+                    i2csdoPort = 'i2csdo' + str(p)
+                    i2cwePort = 'i2cwe' + str(p)
+                    i2csclkPort = 'i2csclk' + str(p)
+                    xckPort = 'xck' + str(p)
+                    bclkPort = 'bclk' + str(p)
+                    aegean.entity.addPort('dacdat' + str(p),'out')
+                    aegean.entity.addPort('daclrck' + str(p),'out')
+                    aegean.entity.addPort('adcdat' + str(p),'in')
+                    aegean.entity.addPort('adclrck' + str(p),'out')
+                    aegean.entity.addPort('i2csdi' + str(p),'in')
+                    aegean.entity.addPort('i2csdo' + str(p),'out')
+                    aegean.entity.addPort('i2cwe' + str(p),'out')
+                    aegean.entity.addPort('i2csclk' + str(p),'out')
+                    aegean.entity.addPort('xck' + str(p),'out')
+                    aegean.entity.addPort('bclk' + str(p),'out')
             comp = self.genComps[IPType]
             aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort)
             aegean.arch.instComp(comp,label)

@@ -22,7 +22,7 @@
 		<!-- The standard IO devices are included -->
 		<xi:include href="./io/dev.xml" />
 		<!-- The IO ports for the de2-115 board are included-->
-		<xi:include href="./boards/de2-115.xml" />
+		<xi:include href="./boards/de2-115-audio.xml" />
 
 	</platform>
 

@@ -114,5 +114,17 @@
       <param name="maxDacBufferPower" value="8"/>  <!-- for a maximum DAC buffer of 2^8 = 256 -->
       <param name="maxAdcBufferPower" value="8"/>  <!-- for a maximum ADC buffer of 2^8 = 256 -->
     </params>
+    <ports>
+      <outport name="dacdat" />
+      <outport name="daclrck" />
+      <inport  name="adcdat" />
+      <outport name="adclrck" />
+      <inport  name="i2csdi" />
+      <outport name="i2csdo" />
+      <outport name="i2cwe" />
+      <outport name="i2csclk" />
+      <outport name="xck" />
+      <outport name="bclk" />
+    </ports>
   </Dev>
 </Devs>

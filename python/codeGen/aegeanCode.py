@@ -45,7 +45,7 @@ use ieee.std_logic_1164.all;
 
 package ocp_config is
 
-    constant BURST_ADDR_WIDTH : integer := '''+str(burstAddrWidth)+'''; 
+    constant BURST_ADDR_WIDTH : integer := '''+str(burstAddrWidth)+''';
 
 end package ; -- ocp_config
 ''')
@@ -95,7 +95,7 @@ def getArbiter(numPorts,ocpBurstAddrWidth):
     return arbiter
 
 
-def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,ocpBurstAddrWidth=21):
+def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,audioPort=None,ocpBurstAddrWidth=21):
     patmos = Component(IPType+'PatmosCore')
     patmos.entity.addPort('clk')
     patmos.entity.addPort('reset')
@@ -136,6 +136,17 @@ def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,ocpBurstAddrWidth=
     if uartPort is not None:
         patmos.entity.addPort('io_uartPins_tx','out','std_logic')
         patmos.entity.addPort('io_uartPins_rx','in','std_logic')
+    if audioPort is not None:
+        patmos.entity.addPort('io_audioInterfacePins_dacDat')
+        patmos.entity.addPort('io_audioInterfacePins_dacLrc')
+        patmos.entity.addPort('io_audioInterfacePins_adcDat')
+        patmos.entity.addPort('io_audioInterfacePins_adcLrc')
+        patmos.entity.addPort('io_audioInterfacePins_sdIn')
+        patmos.entity.addPort('io_audioInterfacePins_sdOut')
+        patmos.entity.addPort('io_audioInterfacePins_we')
+        patmos.entity.addPort('io_audioInterfacePins_sclkOut')
+        patmos.entity.addPort('io_audioInterfacePins_xclk')
+        patmos.entity.addPort('io_audioInterfacePins_bclk')
 
     return patmos
 
@@ -159,7 +170,7 @@ def setSPMSize(aegean,sizes):
     aegean.arch.declConstant('SPM_WIDTH', 'size_array', 1, '('+ s +')')
 
 
-def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None):
+def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None, dacdatPort=None, daclrckPort=None, adcdatPort=None, adclrckPort=None, i2csdiPort=None, i2csdoPort=None, i2cwePort=None, i2csclkPort=None, xckPort=None, bclkPort=None):
 
     patmos.entity.bindPort('clk','clk')
     patmos.entity.bindPort('reset','reset')
@@ -189,12 +200,32 @@ def bindPatmos(patmos,cnt,p,ledPort=None,txdPort=None,rxdPort=None):
     patmos.entity.bindPort('io_memPort_S_CmdAccept','ocp_burst_ss('+str(p)+').SCmdAccept')
     patmos.entity.bindPort('io_memPort_S_DataAccept','ocp_burst_ss('+str(p)+').SDataAccept')
 
-    if ledPort is not None:    
+    if ledPort is not None:
         patmos.entity.bindPort('io_ledsPins_led',ledPort)
     if txdPort is not None:
         patmos.entity.bindPort('io_uartPins_tx',txdPort)
     if rxdPort is not None:
         patmos.entity.bindPort('io_uartPins_rx',rxdPort)
+    if dacdatPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_dacDat', dacdatPort)
+    if daclrckPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_dacLrc', daclrckPort)
+    if adcdatPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_adcDat', adcdatPort)
+    if adclrckPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_adcLrc', adclrckPort)
+    if i2csdiPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_sdIn', i2csdiPort)
+    if i2csdoPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_sdOut', i2csdoPort)
+    if i2cwePort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_we', i2cwePort)
+    if i2csclkPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_sclkOut', i2csclkPort)
+    if xckPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_xclk', xckPort)
+    if bclkPort is not None:
+        patmos.entity.bindPort('io_audioInterfacePins_bclk', bclkPort)
 
 
 def bindNoc(noc):
@@ -247,4 +278,3 @@ def bindArbiter(arbiter,numPorts):
         arbiter.entity.bindPort('io_master_'+str(i)+'_S_Data      ','ocp_burst_ss('+str(i)+').SData')
         arbiter.entity.bindPort('io_master_'+str(i)+'_S_CmdAccept ','ocp_burst_ss('+str(i)+').SCmdAccept')
         arbiter.entity.bindPort('io_master_'+str(i)+'_S_DataAccept','ocp_burst_ss('+str(i)+').SDataAccept')
-
