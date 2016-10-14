@@ -382,7 +382,7 @@ class AegeanGen(object):
                 elif DevTypeRef == 'Uart':
                     uartPort = True
                 elif DevTypeRef == 'AudioInterface':
-                    audioPort = None
+                    audioPort = True
             patmos = aegeanCode.getPatmos(IPType,ledPort,ledWidth,uartPort,audioPort,self.ocpBurstAddrWidth)
             aegean.arch.declComp(patmos)
             self.genComps[IPType] = patmos
@@ -451,7 +451,7 @@ class AegeanGen(object):
                     aegean.entity.addPort('xck' + str(p),'out')
                     aegean.entity.addPort('bclk' + str(p),'out')
             comp = self.genComps[IPType]
-            aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort)
+            aegeanCode.bindPatmos(comp,len(self.nodes),p,ledPort,txdPort,rxdPort, dacdatPort, daclrckPort, adcdatPort, adclrckPort, i2csdiPort, i2csdoPort, i2cwePort, i2csclkPort, xckPort, bclkPort)
             aegean.arch.instComp(comp,label)
 
         aegean.arch.addToBody(aegeanCode.addSPM())

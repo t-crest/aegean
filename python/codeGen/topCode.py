@@ -206,5 +206,5 @@ def bindAegean(aegean,nodes=0):
     aegean.entity.bindPort('bclk0', 'oAudioPins_bclk')
     for p in range(0,nodes):
         aegean.entity.bindPort('led' + str(p),'oLed' + str(p) + 'Pins_led')
-    aegean.entity.bindPort('sram_burst_m0','sram_burst_m')
-    aegean.entity.bindPort('sram_burst_s0','sram_burst_s')
+    aegean.entity.bindPort('sram_burst_m','sram_burst_m')
+    aegean.entity.bindPort('sram_burst_s','sram_burst_s')

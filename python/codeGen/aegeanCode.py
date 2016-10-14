@@ -137,16 +137,16 @@ def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,audioPort=None,ocp
         patmos.entity.addPort('io_uartPins_tx','out','std_logic')
         patmos.entity.addPort('io_uartPins_rx','in','std_logic')
     if audioPort is not None:
-        patmos.entity.addPort('io_audioInterfacePins_dacDat')
-        patmos.entity.addPort('io_audioInterfacePins_dacLrc')
-        patmos.entity.addPort('io_audioInterfacePins_adcDat')
-        patmos.entity.addPort('io_audioInterfacePins_adcLrc')
-        patmos.entity.addPort('io_audioInterfacePins_sdIn')
-        patmos.entity.addPort('io_audioInterfacePins_sdOut')
-        patmos.entity.addPort('io_audioInterfacePins_we')
-        patmos.entity.addPort('io_audioInterfacePins_sclkOut')
-        patmos.entity.addPort('io_audioInterfacePins_xclk')
-        patmos.entity.addPort('io_audioInterfacePins_bclk')
+        patmos.entity.addPort('io_audioInterfacePins_dacDat','out','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_dacLrc','out','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_adcDat','in','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_adcLrc','out','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_sdIn','in','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_sdOut','out','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_we','out','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_sclkOut','out','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_xclk','out','std_logic')
+        patmos.entity.addPort('io_audioInterfacePins_bclk','out','std_logic')
 
     return patmos
 
