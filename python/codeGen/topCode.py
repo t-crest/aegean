@@ -84,7 +84,10 @@ def bindSram(sram,name,ocpMSignal,ocpSSignal):
 
 
 
-
+def writeAudioTriStateSigs(top):
+    top.arch.declSignal('saudio_we', 'std_logic')
+    top.arch.declSignal('saudio_sdOut', 'std_logic')
+    top.arch.declSignal('saudio_sdIn', 'std_logic')
 
 def writeTriStateSig(top,name,dataWidth):
     if dataWidth > 1:
@@ -139,6 +142,23 @@ def reset(top):
             res_reg2 <= res_reg1;
             int_res  <= res_reg2;
         end if;
+    end process;
+''')
+
+def audioI2tristate(top):
+    top.arch.addToBody('''
+    -- Audio I2C tristate buffer control
+    --AudioPins_i2csdat <= saudio_sdOut when (saudio_we  = '0') else 'Z';
+    --saudio_sdIn <= AudioPins_i2csdat when (saudio_we ='1') else '1';
+    process(saudio_we, saudio_sdOut, AudioPins_i2csdat)
+    begin
+      if saudio_we = '1' then
+        AudioPins_i2csdat <= saudio_sdOut;
+        saudio_sdIn <= '1';
+      else
+        AudioPins_i2csdat <= 'Z';
+        saudio_sdIn <= AudioPins_i2csdat;
+      end if;
     end process;
 ''')
 
@@ -198,9 +218,9 @@ def bindAegean(aegean,nodes=0):
     aegean.entity.bindPort('daclrck0', 'oAudioPins_daclrck')
     aegean.entity.bindPort('adcdat0', 'iAudioPins_adcdat')
     aegean.entity.bindPort('adclrck0', 'oAudioPins_adclrck')
-    aegean.entity.bindPort('i2csdi0', 'iAudioPins_i2csdi')
-    aegean.entity.bindPort('i2csdo0', 'oAudioPins_i2csdo')
-    aegean.entity.bindPort('i2cwe0', 'oAudioPins_i2cwe')
+    aegean.entity.bindPort('i2csdi0', 'saudio_sdIn')
+    aegean.entity.bindPort('i2csdo0', 'saudio_sdOut')
+    aegean.entity.bindPort('i2cwe0', 'saudio_we')
     aegean.entity.bindPort('i2csclk0', 'oAudioPins_i2csclk')
     aegean.entity.bindPort('xck0', 'oAudioPins_xck')
     aegean.entity.bindPort('bclk0', 'oAudioPins_bclk')
