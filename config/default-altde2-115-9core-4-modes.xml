@@ -3,7 +3,7 @@
 <aegean version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude" >
     <description>Test platform</description>
 
-	<platform width="2" height="2">
+	<platform width="3" height="3">
 
 		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
 		<topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
@@ -11,8 +11,14 @@
 		<nodes>
 			<node id="pat0" loc="(0,0)" IPTypeRef="patmosMaster" SPMSize="4K" />
 			<node id="pat1" loc="(1,0)" IPTypeRef="patmosSlave" SPMSize="4K" />
-			<node id="pat2" loc="(0,1)" IPTypeRef="patmosSlave" SPMSize="4K" />
-			<node id="pat3" loc="(1,1)" IPTypeRef="patmosSlave" SPMSize="4K" />
+			<node id="pat2" loc="(2,0)" IPTypeRef="patmosSlave" SPMSize="4K" />
+			<node id="pat3" loc="(0,1)" IPTypeRef="patmosSlave" SPMSize="4K" />
+			<node id="pat4" loc="(1,1)" IPTypeRef="patmosSlave" SPMSize="4K" />
+			<node id="pat5" loc="(2,1)" IPTypeRef="patmosSlave" SPMSize="4K" />
+			<node id="pat6" loc="(0,2)" IPTypeRef="patmosSlave" SPMSize="4K" />
+			<node id="pat7" loc="(1,2)" IPTypeRef="patmosSlave" SPMSize="4K" />
+			<node id="pat8" loc="(2,2)" IPTypeRef="patmosSlave" SPMSize="4K" />
+
 		</nodes>
 
 		<memory id="ram0" DevTypeRef="Ssram16" size="2M" />
@@ -29,7 +35,13 @@
 	<application>
 		<configurations>
 			<!-- <communication type="all2all"/"custom" phits="s"> -->
-			<communication comType="all2all" phits="3" />
+			<communication comType="all2all" phits="3" reconfig="(0,0)"/>
+			<communication comType="custom" phits="3" reconfig="(0,0)">
+				<channel from="(1,0)" to="(1,1)" bandwidth="10" />
+				<channel from="(1,0)" to="(1,2)" bandwidth="10" />
+			</communication>
+			<communication comType="all2all" phits="5" reconfig="(0,0)"/>
+			<communication comType="all2all" phits="7" reconfig="(0,0)"/>
 		</configurations>
 
 	</application>

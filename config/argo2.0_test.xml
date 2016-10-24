@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <aegean version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude" >
-	<description>Demonstration of a system with the phase enabled NI</description>
+    <description>Test platform</description>
 
 	<platform width="2" height="2">
 
-		<!-- <topology topotype="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
+		<!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
 		<topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
 
 		<nodes>
-			<node id="pat0" loc="(0,0)" IPTypeRef="patmosPhase" SPMSize="4K" />
-			<node id="pat1" loc="(1,0)" IPTypeRef="patmosPhase" SPMSize="4K" />
-			<node id="pat2" loc="(0,1)" IPTypeRef="patmosPhase" SPMSize="4K" />
-			<node id="pat3" loc="(1,1)" IPTypeRef="patmosPhase" SPMSize="4K" />
+			<node id="pat0" loc="(0,0)" IPTypeRef="argo2tester" SPMSize="4K" />
+			<node id="pat1" loc="(1,0)" IPTypeRef="argo2tester" SPMSize="4K" />
+			<node id="pat2" loc="(0,1)" IPTypeRef="argo2tester" SPMSize="4K" />
+			<node id="pat3" loc="(1,1)" IPTypeRef="argo2tester" SPMSize="4K" />
 		</nodes>
 
 		<memory id="ram0" DevTypeRef="Ssram16" size="2M" />
 
 		<!-- The standard IP cores are included -->
 		<xi:include href="./ip/ip.xml" />
-		<!-- The standard Devices are included -->
+		<!-- The standard IO devices are included -->
 		<xi:include href="./io/dev.xml" />
 		<!-- The IO ports for the de2-115 board are included-->
 		<xi:include href="./boards/de2-115.xml" />
@@ -27,10 +27,15 @@
 	</platform>
 
 	<application>
+
 		<configurations>
 			<!-- <communication type="all2all"/"custom" phits="s"> -->
 			<communication comType="all2all" phits="3" />
+
+			<!-- <communication type="all2all"/"custom" phits="s"> -->
+			<communication comType="custom" phits="3" reconfig="(0,0)"/>
 		</configurations>
+
 	</application>
 
 </aegean>

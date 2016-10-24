@@ -68,8 +68,8 @@ class Paths(object):
         ###################################################
         # Intermediate files
         self.GEN_PLAT = self.TMP_BUILD_PATH + '/plat.xml'
-        self.GEN_COM = self.TMP_BUILD_PATH + '/com.xml'
-        self.GEN_SCHED = self.TMP_BUILD_PATH + '/sched.xml'
+        self.GEN_COM = self.TMP_BUILD_PATH + '/com'
+        self.GEN_SCHED = self.TMP_BUILD_PATH + '/sched'
         # The main mem should be set at some point, for now it is none
         #self.MAIN_MEM = self.BUILD_PATH + '/main_mem.dat'
         self.MAIN_MEM = 'none'
@@ -79,12 +79,12 @@ class Paths(object):
         self.CSCHED = self.BUILD_PATH + '/nocinit.c'
         self.NOCFile = self.BUILD_PATH + '/noc.vhd'
         self.AegeanFile = self.BUILD_PATH + '/aegean.vhd'
-        self.TopFile = self.BUILD_PATH + '/top.vhd'
+        self.TopFile = self.BUILD_PATH + '/aegean_top.vhd'
         self.TestFile = self.BUILD_PATH + '/aegean_testbench.vhd'
         self.ConfFile = self.BUILD_PATH + '/config.vhd'
         self.OcpConfFile = self.BUILD_PATH + '/ocp_config.vhd'
-        self.QUARTUS_FILE_QSF = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.qsf'
-        self.QUARTUS_FILE_CDF = self.BUILD_PATH + '/quartus/'+str(projectname)+'_top.cdf'
+        self.QUARTUS_FILE_QSF = self.BUILD_PATH + '/quartus/aegean_top.qsf'
+        self.QUARTUS_FILE_CDF = self.BUILD_PATH + '/quartus/aegean_top.cdf'
 
     # From http://stackoverflow.com/questions/9877462/is-there-a-python-equivalent-to-the-which-command
     def which_fallback(self, pgm):

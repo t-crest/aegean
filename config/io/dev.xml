@@ -1,5 +1,13 @@
 <Devs>
-  <Dev DevType="CpuInfo" entity="CpuInfo" iface="OcpCore" />
+    <Dev DevType="CpuInfo" entity="CpuInfo" iface="OcpCore" />
+    <Dev DevType="ExtIRQ" entity="ExtIRQ" iface="OcpCore">
+        <params>
+            <param name="IRQCount" value="2" />
+        </params>
+        <ports>
+            <inport name="io_extIRQPins_irq" width="2" />
+        </ports>
+    </Dev>
   <Dev DevType="Timer" entity="Timer" iface="OcpCore" />
   <Dev DevType="Uart" entity="Uart" iface="OcpCore">
     <!-- Maybe the Dev should also have a srcfile attribute -->
@@ -8,102 +16,116 @@
       <param name="fifoDepth" value="16" />
     </params>
     <ports>
-      <inport name="rxd" />
-      <outport name="txd" />
-    </ports>
-  </Dev>
-  <Dev DevType="Leds" entity="Leds" iface="OcpCore">
-    <params>
-      <param name="ledCount" value="9" />
-    </params>
-    <ports>
-      <outport name="led" width="9" />
-    </ports>
-  </Dev>
-  <Dev DevType="Led" entity="Leds" iface="OcpCore">
-    <params>
-      <param name="ledCount" value="1" />
-    </params>
-    <ports>
-      <outport name="led" width="1" />
-    </ports>
-  </Dev>
-  <Dev DevType="ExtIODevice" entity="ExtIODevice" iface="OcpCore">
-    <params>
-      <param name="extAddrWidth" value="8" />
-      <param name="dataWidth" value="32" />
-    </params>
-    <ports>
-      <outport name="io_ExtIODevice_M_Addr" width="8" />
-      <outport name="io_ExtIODevice_M_Data" width="32" />
-      <outport name="io_ExtIODevice_M_RespAccept" width="1" />
-      <inport name="io_ExtIODevice_S_Data" width="32" />
-      <inport name="io_ExtIODevice_S_Resp" width="2" />
-      <inport name="io_ExtIODevice_S_CmdAccept" width="1" />
+            <inport name="io_uartPins_rx" />
+            <outport name="io_uartPins_tx" />
+        </ports>
+    </Dev>
+    <Dev DevType="Leds" entity="Leds" iface="OcpCore">
+        <params>
+            <param name="ledCount" value="9" />
+        </params>
+        <ports>
+            <outport name="io_ledsPins_led" width="9" />
+        </ports>
+    </Dev>
+    <Dev DevType="Led" entity="Leds" iface="OcpCore">
+        <params>
+            <param name="ledCount" value="1" />
+        </params>
+        <ports>
+            <outport name="io_ledsPins_led" width="1" />
+        </ports>
+    </Dev>
+    <Dev DevType="ExtIODevice" entity="ExtIODevice" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="8" />
+            <param name="dataWidth" value="32" />
+        </params>
+        <ports>
+            <outport name="io_ExtIODevice_M_Addr" width="8" />
+            <outport name="io_ExtIODevice_M_Data" width="32" />
+            <outport name="io_ExtIODevice_M_RespAccept" width="1" />
+            <inport name="io_ExtIODevice_S_Data" width="32" />
+            <inport name="io_ExtIODevice_S_Resp" width="2" />
+            <inport name="io_ExtIODevice_S_CmdAccept" width="1" />
 
-    </ports>
-  </Dev>
-  <Dev DevType="Ssram32" entity="SSRam32Ctrl" iface="OcpBurst">
-    <params>
-      <param name="addr_width" value="21" />
-    </params>
-    <ports>
-      <outport name="io_sSRam32CtrlPins_ramOut_addr" width="19" />
-      <outport name="io_sSRam32CtrlPins_ramOut_dout" width="32" />
-      <inport  name="io_sSRam32CtrlPins_ramIn_din" width="32" />
-      <outport name="io_sSRam32CtrlPins_ramOut_doutEna" />
-      <outport name="io_sSRam32CtrlPins_ramOut_nadsc" />
-      <outport name="io_sSRam32CtrlPins_ramOut_noe" />
-      <outport name="io_sSRam32CtrlPins_ramOut_nbwe" />
-      <outport name="io_sSRam32CtrlPins_ramOut_nbw" width="4" />
-      <outport name="io_sSRam32CtrlPins_ramOut_ngw" />
-      <outport name="io_sSRam32CtrlPins_ramOut_nce1" />
-      <outport name="io_sSRam32CtrlPins_ramOut_ce2" />
-      <outport name="io_sSRam32CtrlPins_ramOut_nce3" />
-      <outport name="io_sSRam32CtrlPins_ramOut_nadsp" />
-      <outport name="io_sSRam32CtrlPins_ramOut_nadv" />
-    </ports>
-  </Dev>
-  <Dev DevType="Ssram16" entity="SRamCtrl" iface="OcpBurst">
-    <params>
-      <param name="addr_width" value="21" />
-    </params>
-    <ports>
-      <outport name="io_sRamCtrlPins_ramOut_addr" width="20" />
-      <outport name="io_sRamCtrlPins_ramOut_dout" width="16" />
-      <inport  name="io_sRamCtrlPins_ramIn_din" width="16" />
-      <outport name="io_sRamCtrlPins_ramOut_doutEna" />
-      <outport name="io_sRamCtrlPins_ramOut_nce" />
-      <outport name="io_sRamCtrlPins_ramOut_noe" />
-      <outport name="io_sRamCtrlPins_ramOut_nwe" />
-      <outport name="io_sRamCtrlPins_ramOut_nlb" />
-      <outport name="io_sRamCtrlPins_ramOut_nub" />
-    </ports>
-  </Dev>
-  <Dev DevType="OCRam" entity="OCRamCtrl" iface="OcpBurst">
-    <params>
-      <param name="addr_width" value="20" />
-    </params>
-  </Dev>
-  <Dev DevType="EMAC" entity="EMAC" iface="OcpCore">
-    <ports>
-      <inport name="io_eMACPins_glbl_rst" />
-      <inport name="io_eMACPins_gtx_clk_bufg" />
-      <inport name="io_eMACPins_cpu_clk" />
-      <inport name="io_eMACPins_refclk_bufg" />
-      <inport name="io_eMACPins_dcm_lck" />
-      <outport name="io_eMACPins_phy_resetn" />
-      <outport name="io_eMACPins_gmii_txd" width="8" />
-      <outport name="io_eMACPins_gmii_tx_en" />
-      <outport name="io_eMACPins_gmii_tx_er" />
-      <outport name="io_eMACPins_gmii_tx_clk" />
-      <inport name="io_eMACPins_gmii_rxd" width="8" />
-      <inport name="io_eMACPins_gmii_rx_dv" />
-      <inport name="io_eMACPins_gmii_rx_er" />
-      <inport name="io_eMACPins_gmii_rx_clk" />
-      <inport name="io_eMACPins_gmii_col" />
-      <inport name="io_eMACPins_gmii_crs" />
-      <inport name="io_eMACPins_mii_tx_clk" />
+        </ports>
+    </Dev>
+    <Dev DevType="Avalon-MM" entity="AvalonMMBridge" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="4" />
+            <param name="dataWidth" value="32" />
+        </params>
+        <ports>
+            <outport name="io_avalonMMBridgePins_avs_write_n" width="1" />
+            <outport name="io_avalonMMBridgePins_avs_read_n" width="1" />
+            <outport name="io_avalonMMBridgePins_avs_address" width="4" />
+            <outport name="io_avalonMMBridgePins_avs_writedata" width="32" />
+            <inport name="io_avalonMMBridgePins_avs_readdata" width="32" />
+
+        </ports>
+    </Dev>
+    <Dev DevType="Ssram32" entity="SSRam32Ctrl" iface="OcpBurst">
+        <params>
+            <param name="addr_width" value="21" />
+        </params>
+        <ports>
+            <outport name="io_sSRam32CtrlPins_ramOut_addr" width="19" />
+            <outport name="io_sSRam32CtrlPins_ramOut_dout" width="32" />
+            <inport  name="io_sSRam32CtrlPins_ramIn_din" width="32" />
+            <outport name="io_sSRam32CtrlPins_ramOut_doutEna" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nadsc" />
+            <outport name="io_sSRam32CtrlPins_ramOut_noe" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nbwe" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nbw" width="4" />
+            <outport name="io_sSRam32CtrlPins_ramOut_ngw" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nce1" />
+            <outport name="io_sSRam32CtrlPins_ramOut_ce2" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nce3" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nadsp" />
+            <outport name="io_sSRam32CtrlPins_ramOut_nadv" />
+        </ports>
+    </Dev>
+    <Dev DevType="Ssram16" entity="SRamCtrl" iface="OcpBurst">
+        <params>
+            <param name="addr_width" value="21" />
+        </params>
+        <ports>
+            <outport name="io_sRamCtrlPins_ramOut_addr" width="20" />
+            <outport name="io_sRamCtrlPins_ramOut_dout" width="16" />
+            <inport  name="io_sRamCtrlPins_ramIn_din" width="16" />
+            <outport name="io_sRamCtrlPins_ramOut_doutEna" />
+            <outport name="io_sRamCtrlPins_ramOut_nce" />
+            <outport name="io_sRamCtrlPins_ramOut_noe" />
+            <outport name="io_sRamCtrlPins_ramOut_nwe" />
+            <outport name="io_sRamCtrlPins_ramOut_nlb" />
+            <outport name="io_sRamCtrlPins_ramOut_nub" />
+        </ports>
+    </Dev>
+    <Dev DevType="OCRam" entity="OCRamCtrl" iface="OcpBurst">
+        <params>
+            <param name="addr_width" value="20" />
+        </params>
+    </Dev>
+	<Dev DevType="EMAC" entity="EMAC" iface="OcpCore">
+        <ports>
+            <inport name="io_eMACPins_glbl_rst" />
+			<inport name="io_eMACPins_gtx_clk_bufg" />
+			<inport name="io_eMACPins_cpu_clk" />
+			<inport name="io_eMACPins_refclk_bufg" />
+			<inport name="io_eMACPins_dcm_lck" />
+			<outport name="io_eMACPins_phy_resetn" />
+			<outport name="io_eMACPins_gmii_txd" width="8" />
+			<outport name="io_eMACPins_gmii_tx_en" />
+			<outport name="io_eMACPins_gmii_tx_er" />
+			<outport name="io_eMACPins_gmii_tx_clk" />
+			<inport name="io_eMACPins_gmii_rxd" width="8" />
+			<inport name="io_eMACPins_gmii_rx_dv" />
+			<inport name="io_eMACPins_gmii_rx_er" />
+			<inport name="io_eMACPins_gmii_rx_clk" />
+			<inport name="io_eMACPins_gmii_col" />
+			<inport name="io_eMACPins_gmii_crs" />
+			<inport name="io_eMACPins_mii_tx_clk" />
     </ports>
   </Dev>
   <Dev DevType="AudioInterface" entity="AudioInterface" iface="OcpCore">
@@ -115,14 +137,14 @@
       <param name="maxAdcBufferPower" value="8"/>  <!-- for a maximum ADC buffer of 2^8 = 256 -->
     </params>
     <ports>
-      <outport   name="dacdat" />
-      <outport   name="daclrck" />
-      <inport    name="adcdat" />
-      <outport   name="adclrck" />
-      <outport   name="i2csdat" />
-      <outport   name="i2csclk" />
-      <outport   name="xck" />
-      <outport   name="bclk" />
-    </ports>
-  </Dev>
+      <outport   name="io_audioInterfacePins_dacdat" />
+      <outport   name="io_audioInterfacePins_daclrck" />
+      <inport    name="io_audioInterfacePins_adcdat" />
+      <outport   name="io_audioInterfacePins_adclrck" />
+      <outport   name="io_audioInterfacePins_i2csdat" />
+      <outport   name="io_audioInterfacePins_i2csclk" />
+      <outport   name="io_audioInterfacePins_xck" />
+      <outport   name="io_audioInterfacePins_bclk" />
+        </ports>
+    </Dev>
 </Devs>
