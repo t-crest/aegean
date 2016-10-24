@@ -267,7 +267,7 @@ class AegeanGen(object):
         for f in self.genFiles:
             if f.endswith('.v'):
                 vlog_src.write(self.p.BUILD_PATH + f[2:] + ' ')
-        
+
 
         aegean = aegeanCode.getAegean()
 
@@ -276,7 +276,7 @@ class AegeanGen(object):
 
 
         # Declare Patmos processors
-        for IPType in self.genIPCores.keys(): 
+        for IPType in self.genIPCores.keys():
             IPCore = self.genIPCores[IPType]
             IOs = util.findTag(IPCore,'IOs')
             patmos = aegeanCode.getPatmos(IPType,self.ocpBurstAddrWidth)
@@ -343,7 +343,7 @@ class AegeanGen(object):
                         aegean.entity.addPort(name + str(p),direction,'std_logic_vector',width)
                         patmos.entity.bindPort(name,name + str(p))
 
-            
+
             aegean.arch.instComp(patmos,label)
 
         aegean.arch.addToBody(aegeanCode.addSPM())
@@ -455,8 +455,8 @@ class AegeanGen(object):
 
         return top
 
-'''
-#old stuff:
+    '''
+    #old stuff:
 
     def generate(self,noc):
         self.parseDevs()
@@ -579,7 +579,7 @@ class AegeanGen(object):
         aegean.writeComp(self.p.AegeanFile)
 
         return aegean
-'''
+    '''
 
     def patmosGen(self,IPType,bootapp,configfile):
         Patmos = ['make','-C',self.p.PATMOSHW_PATH]

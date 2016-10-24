@@ -77,4 +77,3 @@ swc = SWConfig(p,aegean)
 # because the schedule (init.h) is included in the patmos.v
 swc.config(hwc.routerDepth)
 hwc.config()
-
