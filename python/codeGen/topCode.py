@@ -94,9 +94,14 @@ def writeTriStateSig(top,name,dataWidth):
     else:
         strDataWidth = ''
     top.arch.declSignal(name+'_out_dout_ena','std_logic')
-    top.arch.declSignal(name+'_out_dout','std_logic_vector'+strDataWidth)
-    top.arch.declSignal(name+'_in_din','std_logic_vector'+strDataWidth)
-    top.arch.declSignal(name+'_in_din_reg','std_logic_vector'+strDataWidth)
+    if dataWidth > 1:
+        top.arch.declSignal(name+'_out_dout','std_logic_vector'+strDataWidth)
+        top.arch.declSignal(name+'_in_din','std_logic_vector'+strDataWidth)
+        top.arch.declSignal(name+'_in_din_reg','std_logic_vector'+strDataWidth)
+    else:
+        top.arch.declSignal(name+'_out_dout','std_logic')
+        top.arch.declSignal(name+'_in_din','std_logic')
+        top.arch.declSignal(name+'_in_din_reg','std_logic')
 
 
 def attr(top):
@@ -164,7 +169,22 @@ def audioI2tristate(top):
 
 
 def writeTriState(top,name,sram,dataSig):
-    if sram == 'SSRam32Ctrl':
+    if name == 'Audio0Pins':
+        top.arch.addToBody('''
+    '''+name+'''_in_din <= '''+dataSig+''';
+
+    -- tristate output to '''+name+'''
+    process('''+name+'''_out_dout_ena, '''+name+'''_out_dout)
+    begin
+        if '''+name+'''_out_dout_ena='1' then
+            '''+dataSig+''' <= '''+name+'''_out_dout;
+        else
+            '''+dataSig+''' <= 'Z';
+        end if;
+    end process;
+''')
+
+    elif sram == 'SSRam32Ctrl':
         top.arch.addToBody('''
     -- capture input from '''+name+''' on falling clk edge
     process(clk_int, int_res)
