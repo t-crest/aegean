@@ -42,7 +42,7 @@
         <IOPort name="Led8Pins">
             <out node="pat8" name="led" pin="E21" />
         </IOPort>
-        <IOPort name="AudioPins">
+        <IOPort name="Audio0Pins">
             <out   node="pat0" name="dacdat"  pin="D1" />
             <out   node="pat0" name="daclrck" pin="E3" />
             <in    node="pat0" name="adcdat"  pin="D2" />

@@ -141,7 +141,9 @@
       <outport   name="io_audioInterfacePins_daclrck" />
       <inport    name="io_audioInterfacePins_adcdat" />
       <outport   name="io_audioInterfacePins_adclrck" />
-      <outport   name="io_audioInterfacePins_i2csdat" />
+      <inport    name="io_audioInterfacePins_i2csdin" />
+      <outport   name="io_audioInterfacePins_i2csdout" />
+      <outport   name="io_audioInterfacePins_i2cwe" />
       <outport   name="io_audioInterfacePins_i2csclk" />
       <outport   name="io_audioInterfacePins_xck" />
       <outport   name="io_audioInterfacePins_bclk" />

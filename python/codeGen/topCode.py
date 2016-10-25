@@ -83,7 +83,6 @@ def bindSram(sram,name,ocpMSignal,ocpSSignal):
         raise SystemError(__file__ +': Error: SramEntity "'+name+'" not supported.')
 
 
-
 def writeAudioTriStateSigs(top):
     top.arch.declSignal('saudio_we', 'std_logic')
     top.arch.declSignal('saudio_sdOut', 'std_logic')
@@ -145,6 +144,7 @@ def reset(top):
     end process;
 ''')
 
+
 def audioI2tristate(top):
     top.arch.addToBody('''
     -- Audio I2C tristate buffer control
@@ -161,6 +161,7 @@ def audioI2tristate(top):
       end if;
     end process;
 ''')
+
 
 def writeTriState(top,name,sram,dataSig):
     if sram == 'SSRam32Ctrl':
@@ -218,9 +219,9 @@ def bindAegean(aegean,nodes=0):
     aegean.entity.bindPort('io_audioInterfacePins_daclrck0', 'oAudio0Pins_daclrck')
     aegean.entity.bindPort('io_audioInterfacePins_adcdat0', 'iAudio0Pins_adcdat')
     aegean.entity.bindPort('io_audioInterfacePins_adclrck0', 'oAudio0Pins_adclrck')
-    #aegean.entity.bindPort('io_audioInterfacePins_i2csdi0', 'saudio_sdIn')
-    #aegean.entity.bindPort('io_audioInterfacePins_i2csdo0', 'saudio_sdOut')
-    #aegean.entity.bindPort('io_audioInterfacePins_i2cwe0', 'saudio_we')
+    aegean.entity.bindPort('io_audioInterfacePins_i2csdin0', 'Audio0Pins_in_din')
+    aegean.entity.bindPort('io_audioInterfacePins_i2csdout0', 'Audio0Pins_out_dout')
+    aegean.entity.bindPort('io_audioInterfacePins_i2cwe0', 'Audio0Pins_out_dout_ena')
     aegean.entity.bindPort('io_audioInterfacePins_i2csclk0', 'oAudio0Pins_i2csclk')
     aegean.entity.bindPort('io_audioInterfacePins_xck0', 'oAudio0Pins_xck')
     aegean.entity.bindPort('io_audioInterfacePins_bclk0', 'oAudio0Pins_bclk')

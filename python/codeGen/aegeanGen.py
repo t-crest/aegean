@@ -395,14 +395,15 @@ class AegeanGen(object):
         # One tri state for the sram possibly in a for loop for more tri states
         for IOSignal in self.IOSignals:
             if IOSignal[2] == 'inout':
-                if (IOSignal[0] == 'AudioPins'):
-                    topCode.writeAudioTriStateSigs(top)
-                else:
-                    topCode.writeTriStateSig(top,IOSignal[0],IOSignal[3])
+                topCode.writeTriStateSig(top,IOSignal[0],IOSignal[3])
+                #if (IOSignal[0] == 'AudioPins'):
+                #    topCode.writeAudioTriStateSigs(top)
+                #else:
+                #    topCode.writeTriStateSig(top,IOSignal[0],IOSignal[3])
 
         topCode.attr(top)
         topCode.reset(top)
-        topCode.audioI2tristate(top)
+        #topCode.audioI2tristate(top)
 
         sramType = self.memory.get('DevTypeRef')
         sramDev = self.Devs[sramType]
@@ -417,7 +418,7 @@ class AegeanGen(object):
 
         # The tristate logic and registers
         for IOSignal in self.IOSignals:
-            if ( (IOSignal[2] == 'inout') and (IOSignal[0] != 'AudioPins') ):
+            if IOSignal[2] == 'inout': # and (IOSignal[0] != 'AudioPins') ):
                 topCode.writeTriState(top,IOSignal[0],sramEntity,IOSignal[1])
 
         sram = Component(sramEntity)
