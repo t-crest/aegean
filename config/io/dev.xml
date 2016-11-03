@@ -137,16 +137,16 @@
       <param name="maxAdcBufferPower" value="8"/>  <!-- for a maximum ADC buffer of 2^8 = 256 -->
     </params>
     <ports>
-      <outport   name="io_audioInterfacePins_dacdat" />
-      <outport   name="io_audioInterfacePins_daclrck" />
-      <inport    name="io_audioInterfacePins_adcdat" />
-      <outport   name="io_audioInterfacePins_adclrck" />
-      <inport    name="io_audioInterfacePins_i2csdin" />
-      <outport   name="io_audioInterfacePins_i2csdout" />
-      <outport   name="io_audioInterfacePins_i2cwe" />
-      <outport   name="io_audioInterfacePins_i2csclk" />
-      <outport   name="io_audioInterfacePins_xck" />
+      <outport   name="io_audioInterfacePins_dacDat" />
+      <outport   name="io_audioInterfacePins_dacLrc" />
+      <inport    name="io_audioInterfacePins_adcDat" />
+      <outport   name="io_audioInterfacePins_adcLrc" />
+      <inport    name="io_audioInterfacePins_sdIn" />
+      <outport   name="io_audioInterfacePins_sdOut" />
+      <outport   name="io_audioInterfacePins_we" />
+      <outport   name="io_audioInterfacePins_sclkOut" />
       <outport   name="io_audioInterfacePins_bclk" />
+      <outport   name="io_audioInterfacePins_xclk" />
         </ports>
     </Dev>
 </Devs>

@@ -43,14 +43,14 @@
             <out node="pat8" name="led" pin="E21" />
         </IOPort>
         <IOPort name="Audio0Pins">
-            <out   node="pat0" name="dacdat"  pin="D1" />
-            <out   node="pat0" name="daclrck" pin="E3" />
-            <in    node="pat0" name="adcdat"  pin="D2" />
-            <out   node="pat0" name="adclrck" pin="C2" />
-            <inout node="pat0" name="i2csdat" pin="A8" />
-            <out   node="pat0" name="i2csclk" pin="B7" />
-            <out   node="pat0" name="xck"     pin="E1" />
+            <out   node="pat0" name="dacDat"  pin="D1" />
+            <out   node="pat0" name="dacLrc"  pin="E3" />
+            <in    node="pat0" name="adcDat"  pin="D2" />
+            <out   node="pat0" name="adcLrc"  pin="C2" />
+            <inout node="pat0" name="sDat"    pin="A8" />
+            <out   node="pat0" name="sclkOut" pin="B7" />
             <out   node="pat0" name="bclk"    pin="F2" />
+            <out   node="pat0" name="xclk"     pin="E1" />
         </IOPort>
     </IOPorts>
 </board>
