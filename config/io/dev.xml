@@ -128,6 +128,14 @@
 			<inport name="io_eMACPins_mii_tx_clk" />
     </ports>
   </Dev>
+  <Dev DevType="Keys" entity="Keys" iface="OcpCore">
+    <params>
+      <param name="keyCount" value="4"/>
+    </params>
+    <ports>
+      <inport name="io_keysPins_key" width="4" />
+    </ports>
+  </Dev>
   <Dev DevType="AudioInterface" entity="AudioInterface" iface="OcpCore">
     <params>
       <param name="audioLength"	value="16"/>  <!-- either 16, 20, 24 or 32 -->

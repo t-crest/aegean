@@ -267,6 +267,7 @@
         <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
         <IO DevTypeRef="Uart" offset="8" />
         <IO DevTypeRef="Led" offset="9" />
+        <IO DevTypeRef="Keys" offset="10" intrs="2,3,4,5"/>
 	<IO DevTypeRef="AudioInterface" offset="11"/>
       </IOs>
     </patmos>
