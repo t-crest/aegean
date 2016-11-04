@@ -43,16 +43,7 @@
             <out node="pat8" name="led" pin="E21" />
         </IOPort>
         <IOPort name="Keys0Pins">
-            <in node="pat0" name="key" pin="M23" />
-        </IOPort>
-        <IOPort name="Keys1Pins">
-            <in node="pat0" name="key" pin="M21" />
-        </IOPort>
-        <IOPort name="Keys2Pins">
-            <in node="pat0" name="key" pin="N21" />
-        </IOPort>
-        <IOPort name="Keys3Pins">
-            <in node="pat0" name="key" pin="R24" />
+            <in node="pat0" name="key" width="4" pin="R24,N21,M21,M23" />
         </IOPort>
         <IOPort name="Audio0Pins">
             <out   node="pat0" name="dacDat"  pin="D1" />
