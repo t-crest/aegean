@@ -95,8 +95,6 @@ def getArbiter(numPorts,ocpBurstAddrWidth):
         arbiter.entity.addPort('io_master_'+str(i)+'_S_DataAccept','out','std_logic')
     return arbiter
 
-
-#def getPatmos(IPType,ledPort=None,ledWidth=None,uartPort=None,audioPort=None,ocpBurstAddrWidth=21,irqPort=None):
 def getPatmos(IPType,ocpBurstAddrWidth=21):
     patmos = Component(IPType+'PatmosCore')
     patmos.entity.addPort('clk')
@@ -130,30 +128,6 @@ def getPatmos(IPType,ocpBurstAddrWidth=21):
     patmos.entity.addPort('io_memPort_S_Data','in', 'std_logic_vector',32)
     patmos.entity.addPort('io_memPort_S_CmdAccept','in', 'std_logic')
     patmos.entity.addPort('io_memPort_S_DataAccept','in', 'std_logic')
-
-#    if irqPort is not None:
-#        patmos.entity.addPort('io_extIRQPins_irq','in','std_logic_vector',2)
-#    if uartPort is not None:
-#        patmos.entity.addPort('io_uartPins_tx','out','std_logic')
-#        patmos.entity.addPort('io_uartPins_rx','in','std_logic')
-#    if ledPort is not None:
-#        if ledWidth is None:
-#            raise SystemError(__file__ +': Error: ledWidth not specified.')
-#        if ledWidth == 1:
-#            patmos.entity.addPort('io_ledsPins_led','out','std_logic')
-#        else:
-#            patmos.entity.addPort('io_ledsPins_led','out','std_logic_vector',ledWidth)
-#    if audioPort is not None:
-#        patmos.entity.addPort('io_audioInterfacePins_dacDat','out','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_dacLrc','out','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_adcDat','in','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_adcLrc','out','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_sdIn','in','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_sdOut','out','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_we','out','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_sclkOut','out','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_xclk','out','std_logic')
-#        patmos.entity.addPort('io_audioInterfacePins_bclk','out','std_logic')
 
     return patmos
 
@@ -210,36 +184,6 @@ def bindPatmos(patmos,cnt,p):
     patmos.entity.bindPort('io_memPort_S_Data','ocp_burst_ss('+str(p)+').SData')
     patmos.entity.bindPort('io_memPort_S_CmdAccept','ocp_burst_ss('+str(p)+').SCmdAccept')
     patmos.entity.bindPort('io_memPort_S_DataAccept','ocp_burst_ss('+str(p)+').SDataAccept')
-
-  #  if irqPort is not None:
-  #      patmos.entity.bindPort('io_extIRQPins_irq','irq(('+str(p)+'*2)+1 downto '+str(p)+'*2)')
-  #  if ledPort is not None:    
-  #      patmos.entity.bindPort('io_ledsPins_led',ledPort)
-  #  if txdPort is not None:
-  #      patmos.entity.bindPort('io_uartPins_tx',txdPort)
-  #  if rxdPort is not None:
-  #      patmos.entity.bindPort('io_uartPins_rx',rxdPort)
-  #  if dacdatPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_dacDat', dacdatPort)
-  #  if daclrckPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_dacLrc', daclrckPort)
-  #  if adcdatPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_adcDat', adcdatPort)
-  #  if adclrckPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_adcLrc', adclrckPort)
-  #  if i2csdiPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_sdIn', i2csdiPort)
-  #  if i2csdoPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_sdOut', i2csdoPort)
-  #  if i2cwePort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_we', i2cwePort)
-  #  if i2csclkPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_sclkOut', i2csclkPort)
-  #  if xckPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_xclk', xckPort)
-  #  if bclkPort is not None:
-  #      patmos.entity.bindPort('io_audioInterfacePins_bclk', bclkPort)
-
 
 
 def bindNoc(noc):
