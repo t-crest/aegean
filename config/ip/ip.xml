@@ -255,10 +255,10 @@
       <bus burstLength="4" writeCombine="false" mmu="false" />
       <bootrom app="bootable-cmpmaster"/>
       <ICache type="method" size="4k" assoc="16" repl="fifo" />
-      <DCache size="2k" assoc="1" repl="" writeThrough="true" />
-      <SCache size="2k" />
-      <ISPM size="1k" />
-      <DSPM size="2k" />
+      <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+      <SCache size="4k" />
+      <ISPM size="2k" />
+      <DSPM size="0" />
 
       <ExtMem size="2M" />
 
