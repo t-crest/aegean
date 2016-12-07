@@ -86,7 +86,7 @@ projectname:
 	@echo $(AEGEAN_PLATFORM)
 
 noc-sched:
-	@python3 $(AEGEAN_PATH)/python/nocSched.py $(AEGEAN_NOCSCHED_FILE)
+	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE)
 
 platform: $(BUILD_PATH)/nocinit.c
 

@@ -3,6 +3,13 @@
 <nocsched version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude">
   <description>NoC TDM scheduling</description>
 
+  <platform width="3" height="3">
+
+    <!-- <topology type="bitorus"/"mesh"/"custom" routerDepth="k" linkDepth="k"> -->
+    <topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
+
+  </platform>
+
   <application>
     <configurations>
       <!-- <communication type="all2all"/"custom" phits="s"> -->
