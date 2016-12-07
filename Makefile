@@ -20,6 +20,9 @@ BUILDBOT_TESTS?=corethread_test test_cmp libctest
 AEGEAN_PATH?=$(CURDIR)
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
+AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
+AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
+
 BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
 # Source file variables
@@ -39,7 +42,7 @@ MEM_SRC=$(patsubst %,$(PATMOS_PATH)/hardware/modelsim/%,\
 	CY7C10612DV33/cy7c10612dv33.vhd)
 TESTBENCH_SRC=$(patsubst %,$(BUILD_PATH)/%,\
 	aegean_top.vhd aegean_testbench.vhd)
-	
+
 # Tool paths
 SIM_PATH?=$(AEGEAN_SRC_PATH)/sim
 SYNTH_PATH=$(BUILD_PATH)/quartus
@@ -81,6 +84,9 @@ all: platform
 projectname:
 	@echo "Current project name:"
 	@echo $(AEGEAN_PLATFORM)
+
+noc-sched:
+	@python3 $(AEGEAN_PATH)/python/nocSched.py $(AEGEAN_NOCSCHED_FILE)
 
 platform: $(BUILD_PATH)/nocinit.c
 

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="simple.xsd"/>
+	<xs:include schemaLocation="patmos.xsd"/>
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="www.w3.org/2001/03/xml.xsd" />
+
+	<xs:element name="channel">
+		<xs:complexType>
+			<xs:attribute ref="from" use="required"/>
+			<xs:attribute ref="to" use="required"/>
+			<xs:attribute ref="bandwidth" use="optional"/>
+			<xs:attribute ref="phits" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- The communication patter of the application. -->
+	<xs:element name="communication">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="channel" maxOccurs="unbounded" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute ref="comType" use="required"/>
+			<xs:attribute ref="phits" use="optional"/>
+			<xs:attribute ref="reconfig" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- The communication patter of the application. -->
+	<xs:element name="configurations">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="communication" maxOccurs="unbounded" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- A description of the application running on the platform. The description includes the processes and how they communicate -->
+	<xs:element name="application">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="configurations"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- NoC TDM scheduling-->
+	<xs:element name="nocsched">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="description" type="xs:string"/>
+				<xs:element ref="application"/>
+			</xs:sequence>
+			<xs:attribute ref="version" use="required"/>
+		</xs:complexType>
+
+	</xs:element>
+
+</xs:schema>
