@@ -8,6 +8,7 @@ from io import StringIO
 from paths import Paths
 
 from paths import Paths
+from hardwareConfig import HWConfig
 from nocSchedConfig import NoCSchedConfig
 
 def parseXML(filename,xmlscheme):
@@ -34,9 +35,10 @@ nocsched = parseXML(sys.argv[1],xmlscheme)
 projectname = ntpath.basename(sys.argv[1])
 projectname = os.path.splitext(projectname)[0]
 print("Projectname: " + projectname)
-
 p = Paths(projectname)
 mkdir_p(p.TMP_BUILD_PATH)
 
+
+hwc = HWConfig(p,nocsched)
 nsc = NoCSchedConfig(p,nocsched)
 nsc.config()

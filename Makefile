@@ -20,10 +20,12 @@ BUILDBOT_TESTS?=corethread_test test_cmp libctest
 AEGEAN_PATH?=$(CURDIR)
 AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
+BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
+
 AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
 AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
 
-BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
+BUILD_NOCSCHED_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_NOCSCHED)
 
 # Source file variables
 PATMOS_PATH?=$(CURDIR)/../patmos
@@ -85,8 +87,15 @@ projectname:
 	@echo "Current project name:"
 	@echo $(AEGEAN_PLATFORM)
 
-noc-sched:
+noc-sched-name:
+	@echo "Current NoC scheduling topoligy:"
+	@echo $(AEGEAN_NOCSCHED)
+
+noc-sched: $(AEGEAN_NOCSCHED_FILE) $(BUILD_NOCSCHED_PATH)
 	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE)
+
+$(BUILD_NOCSCHED_PATH):
+	mkdir -p $(BUILD_NOCSCHED_PATH)/xml
 
 platform: $(BUILD_PATH)/nocinit.c
 
@@ -182,6 +191,9 @@ synth: $(PATMOS_SOURCE) $(CONFIG_SRC) $(shell cat $(ARGO_SRC)) $(AEGEAN_SRC) $(A
 config:
 	quartus_pgm -c USB-Blaster -m JTAG $(SYNTH_PATH)/aegean_top.cdf
 
+clean-noc-sched:
+	-rm -rf $(BUILD_NOCSCHED_PATH)
+
 clean:
 	-rm -rf $(BUILD_PATH)
 
@@ -213,11 +225,16 @@ help:
 	@echo "==     platform   : Generates the source files for the platform described"
 	@echo "==                   in AEGEAN_PLATFORM file."
 	@echo "=="
+	@echo "==     noc-sched  : Generates the nocinit.c file for the specified scheduling."
+	@echo "=="
 	@echo "==     compile    : Compiles the full platform."
 	@echo "=="
 	@echo "==     sim        : Starts the simulation of the platform."
 	@echo "=="
 	@echo "==     synth      : Synthesises the platform."
+	@echo "=="
+	@echo "==     clean-noc-sched : Cleans the build directory of the specified"
+	@echo "==                   NoC TDM scheduling."
 	@echo "=="
 	@echo "==     clean      : Cleans the build directory of the specified"
 	@echo "==                   platform specification."
