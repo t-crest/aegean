@@ -4,9 +4,7 @@
   <description>NoC TDM scheduling</description>
 
   <platform width="2" height="2">
-
     <topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
-
   </platform>
 
   <application>
@@ -15,9 +13,9 @@
 
       <!-- <communication comType="all2all" phits="3" reconfig="(0,0)"/> -->
       <communication comType="custom" phits="3"> <!--reconfig="(0,0)"> -->
-	<channel from="(0,0)" to="(1,1)" bandwidth="128" />
-	<channel from="(1,1)" to="(0,1)" bandwidth="128" />
-	<channel from="(0,1)" to="(0,0)" bandwidth="128" />
+	<channel from="(0,0)" to="(1,1)" bandwidth="10" />
+	<channel from="(1,1)" to="(0,1)" bandwidth="10" />
+	<channel from="(0,1)" to="(0,0)" bandwidth="10" />
       </communication>
       <!--
       <communication comType="all2all" phits="5" reconfig="(0,0)"/>
