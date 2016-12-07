@@ -3,7 +3,7 @@
 <nocsched version="0.1" xmlns:xi="http://www.w3.org/2001/XInclude">
   <description>NoC TDM scheduling</description>
 
-  <platform width="3" height="3">
+  <platform width="2" height="2">
 
     <topology topoType="bitorus" routerDepth="3" linkDepth="0" routerType="sync" />
 
@@ -13,13 +13,16 @@
     <configurations>
       <!-- <communication comType="all2all" phits="3"/> --> <!-- reconfig="(0,0)"/> -->
 
-      <communication comType="all2all" phits="3" reconfig="(0,0)"/>
-      <communication comType="custom" phits="3" reconfig="(0,0)">
-	<channel from="(1,0)" to="(1,1)" bandwidth="10" />
-	<channel from="(1,0)" to="(1,2)" bandwidth="10" />
+      <!-- <communication comType="all2all" phits="3" reconfig="(0,0)"/> -->
+      <communication comType="custom" phits="3"> <!--reconfig="(0,0)"> -->
+	<channel from="(0,0)" to="(1,1)" bandwidth="128" />
+	<channel from="(1,1)" to="(0,1)" bandwidth="128" />
+	<channel from="(0,1)" to="(0,0)" bandwidth="128" />
       </communication>
+      <!--
       <communication comType="all2all" phits="5" reconfig="(0,0)"/>
       <communication comType="all2all" phits="7" reconfig="(0,0)"/>
+      -->
 
     </configurations>
 
