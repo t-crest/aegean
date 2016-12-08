@@ -7,8 +7,9 @@ from io import StringIO
 
 import json
 
-#Channel configurations
-Confs = [
+'''
+#Possible channel configuration example
+NoCConfs = [
     {'comType' : 'custom',
      'phits'   : '3',
      'channels' : [
@@ -21,56 +22,23 @@ Confs = [
      'reconfig' : '(0,0)'
     }
 ]
-#Platform NoC configuration
-NoC = {'width'       : '2',
-       'height'      : '2',
-       'topoType'    : 'bitorus',
-       'routerDepth' : '3',
-       'linkDepth'   : '0',
-       'routerType'  : 'sync',
-       'configurations' : Confs
-}
-
-
-
-
-# Create the root element and new document tree
-nocsched = etree.Element('nocsched', version='0.1', nsmap={'xi': 'http://www.w3.org/2001/XInclude'})
-doc = etree.ElementTree(nocsched)
-# Description
-desc = etree.SubElement(nocsched, 'description')
-desc.text = 'NoC TDM scheduling'
-#platform & topology
-platform = etree.SubElement(nocsched, 'platform', width=NoC['width'], height=NoC['height'])
-topology = etree.SubElement(platform, 'topology', topoType=NoC['topoType'],
-                            routerDepth=NoC['routerDepth'], linkDepth=NoC['linkDepth'],
-                            routerType=NoC['routerType'])
-#application & configurations
-configurations = etree.SubElement(etree.SubElement(nocsched, 'application'), 'configurations')
-for commun in Confs:
-    #iterate through keys (except "channels")
-    communDict = {}
-    communKeys = commun.keys()
-    for key in communKeys:
-        if(key != 'channels'):
-            communDict[key] = commun[key]
-    communication = etree.SubElement(configurations, 'communication', communDict)
-    #add channels, if there are
-    if 'channels' in communKeys:
-        for channel in commun['channels']:
-            channel = etree.SubElement(communication, 'channel', channel)
-
-# Save to XML file
-doc.write('output.xml', xml_declaration=True, encoding='utf-8')
-
-
-
-''' ----------------------- MAPPING FX TO CORES ------------------------'''
-
+'''
 
 class AudioMain:
+    #################### FX ######################
     #Amount of available cores in the platform
     CORE_AMOUNT = 4
+    #Core order for minimal NoC channel usage
+    coreOrder = [
+        { 'id'  : 0,
+          'pos' : '(0,0)' },
+        { 'id'  : 1,
+          'pos' : '(1,0)' },
+        { 'id'  : 3,
+          'pos' : '(1,1)' },
+        { 'id'  : 2,
+          'pos' : '(0,1)' }
+    ]
     #List of available effects: S: samples processed per execution
     FX = [
         { 'name' : 'DRY',          'S' : 1 },
@@ -93,7 +61,26 @@ class AudioMain:
     FXList = []
     fx_id = 0
     core = 0
-
+    chan_id = 0
+    Latency = 0
+    #################### NoC ######################
+    #Platform NoC description
+    NoC = {'width'       : '2',
+           'height'      : '2',
+           'topoType'    : 'bitorus',
+           'routerDepth' : '3',
+           'linkDepth'   : '0',
+           'routerType'  : 'sync',
+           'configurations' : []
+    }
+    #List of NoC channels needed
+    NoCChannels = []
+    #Describer of the scheduler XML
+    NoCConfs = [
+        {'comType' : 'custom',
+         'phits'   : '3',
+         'channels' : [] }
+    ]
 
     def __init__ (self):
         #Read Audio APP JSON
@@ -120,7 +107,7 @@ class AudioMain:
                         return 1
                 #store object
                 fxObj = { 'fx_id'   : self.fx_id,
-                          'core'    : self.core,
+                          'core'    : self.coreOrder[self.core]['id'],
                           'fx_type' : fx_type,
                           'xb_size' : S,
                           'yb_size' : S,
@@ -140,15 +127,14 @@ class AudioMain:
 
     #function to create connections
     def connectFX(self):
-        chan_id = 0
         for i in range(0,len(self.FXList)):
             #in_type: 0 only for 1st
             #out_type: 0 only for last
             #from_id, to_id: -1 for 1st and last, chan_id for others
             in_type  = 1
             out_type = 1
-            from_id  = chan_id - 1
-            to_id    = chan_id
+            from_id  = self.chan_id - 1
+            to_id    = self.chan_id
             if i == 0:
                 in_type = 0
                 from_id = -1
@@ -164,7 +150,7 @@ class AudioMain:
             #add fxAdd to dict
             self.FXList[i].update(fxAdd)
             #increment chan_id
-            chan_id += 1
+            self.chan_id += 1
 
     #function to change buffer sizes
     def setBufSizes(self):
@@ -194,6 +180,56 @@ class AudioMain:
                 self.FXList[i]['xb_size'] = maxBuf
                 self.FXList[i]['yb_size'] = maxBuf
 
+    #function to calculate the latency in samples from input to output
+    def calcLatency(self):
+        coresDone = []
+        for fx in self.FXList:
+            #check that latency of this core has not jet been considered
+            if fx['core'] not in coresDone:
+                coresDone.append(fx['core'])
+                self.Latency += fx['yb_size']
+
+    #function to extract NoC channels info
+    def extNoCChannels(self):
+        #first, create list with channel IDs
+        chanIDs = []
+        for fx in self.FXList:
+            if (fx['in_type'] == 1) and (fx['from_id'] not in chanIDs):
+                chanIDs.append(fx['from_id'])
+            if (fx['out_type'] == 1) and (fx['to_id'] not in chanIDs):
+                chanIDs.append(fx['to_id'])
+        #then, extract info
+        for ci in chanIDs:
+            chanObj = { 'chan_id'    : ci,
+                        'buf_amount' : 8 #fixed for now
+            }
+            for fx in self.FXList:
+                if (fx['from_id'] == ci) and (fx['in_type'] == 1):
+                    chanObj['to_core'] = fx['core']
+                if (fx['to_id'] == ci) and (fx['out_type'] == 1):
+                    chanObj['from_core'] = fx['core']
+            self.NoCChannels.append(chanObj)
+
+    #function to fill in the NoCConfs array
+    def confNoC(self):
+        for chan in self.NoCChannels:
+            for core in self.coreOrder:
+                if chan['from_core'] == core['id']:
+                    from_p = core['pos']
+                if chan['to_core'] == core['id']:
+                    to_p = core['pos']
+            chanObj = { 'from' : from_p,
+                        'to'   : to_p,
+                        'bandwidth' : '10' #fixed for now
+            }
+            #create reverted channel (for ACK)
+            chanObjRev = { 'from' : to_p,
+                           'to'   : from_p,
+                           'bandwidth' : '10' #fixed for now
+            }
+            self.NoCConfs[0]['channels'].append(chanObj)
+            self.NoCConfs[0]['channels'].append(chanObjRev)
+
     #function to create header file
     def createHeader(self):
         FX_H = '''
@@ -214,13 +250,66 @@ class AudioMain:
                 str(fx['to_id']) + ' },'
         FX_H += '''
         };'''
+        FX_H += '''
+        //amount of NoC channels
+        const int CHAN_AMOUNT = ''' + str(self.chan_id-1)
+        FX_H += ''';
+        //amount of buffers on each NoC channel ID
+        const int CHAN_BUF_AMOUNT[CHAN_AMOUNT] = [ '''
+        for chan in self.NoCChannels:
+            FX_H += str(chan['buf_amount']) + ', '
+        FX_H += '''];
+        //latency from input to output in samples (without considering NoC)
+        const int LATENCY = ''' + str(self.Latency) + ';'
         #write file
         file = open("audioinit.c", "w")
         file.write(FX_H)
         file.close()
 
+    # Create the root element and new document tree
+    def genNoCSchedule(self):
+        nocsched = etree.Element('nocsched', version='0.1',
+                                 nsmap={'xi': 'http://www.w3.org/2001/XInclude'})
+        doc = etree.ElementTree(nocsched)
+        # Description
+        desc = etree.SubElement(nocsched, 'description')
+        desc.text = 'NoC TDM scheduling'
+        #platform & topology
+        platform = etree.SubElement(nocsched, 'platform',
+                                    width=self.NoC['width'],
+                                    height=self.NoC['height'])
+        topology = etree.SubElement(platform, 'topology',
+                                    topoType=self.NoC['topoType'],
+                                    routerDepth=self.NoC['routerDepth'],
+                                    linkDepth=self.NoC['linkDepth'],
+                                    routerType=self.NoC['routerType'])
+        #application & configurations
+        configurations = etree.SubElement(etree.SubElement(nocsched, 'application'), 'configurations')
+        for commun in self.NoCConfs:
+            #iterate through keys (except "channels")
+            communDict = {}
+            communKeys = commun.keys()
+            for key in communKeys:
+                if(key != 'channels'):
+                    communDict[key] = commun[key]
+            communication = etree.SubElement(configurations, 'communication', communDict)
+            #add channels, if there are
+            if 'channels' in communKeys:
+                for channel in commun['channels']:
+                    channel = etree.SubElement(communication, 'channel', channel)
 
+        # Save to XML file
+        doc.write('output.xml', xml_declaration=True, encoding='utf-8')
+
+
+
+
+
+
+#create class
 myAudio=AudioMain()
+
+#FX stuff
 if myAudio.addFX():
     print('EXITING...')
     exit(1)
@@ -229,4 +318,13 @@ myAudio.setBufSizes()
 myAudio.makeEdgesXeY()
 #need to run again to connections on edges
 myAudio.setBufSizes()
+#latency from input to output in samples
+myAudio.calcLatency()
+myAudio.extNoCChannels()
 myAudio.createHeader()
+
+#NoC stuff
+myAudio.confNoC()
+myAudio.genNoCSchedule()
+
+print('EXIT SUCCESSFULLY')
