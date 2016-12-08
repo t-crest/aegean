@@ -1,0 +1,5 @@
+{ "chains" :
+  [
+      { "FX" : ["VIBRATO", "DRY_8SAMPLES", "BP", "GUACHOPANO", "CHORUS"] }
+  ]
+}
