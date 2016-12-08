@@ -180,8 +180,21 @@ class AudioMain:
                 if next_xb_size > self.FXList[i]['yb_size']:
                     self.FXList[i]['yb_size'] = next_xb_size
 
+    #function to set first and last FX to XeY
+    def makeEdgesXeY(self):
+        maxBuf = 0
+        #first find max from x/y in/out
+        for i in range(0,len(self.FXList)):
+            if (i==0) or (i==(len(self.FXList)-1)):
+                maxTemp = max(self.FXList[i]['xb_size'], self.FXList[i]['yb_size'])
+                maxBuf = max(maxBuf, maxTemp)
+        #then set values
+        for i in range(0,len(self.FXList)):
+            if (i==0) or (i==(len(self.FXList)-1)):
+                self.FXList[i]['xb_size'] = maxBuf
+                self.FXList[i]['yb_size'] = maxBuf
+
     #function to create header file
-    #Create FX_H file
     def createHeader(self):
         FX_H = '''
         //how many cores take part in the audio system
@@ -212,5 +225,8 @@ if myAudio.addFX():
     print('EXITING...')
     exit(1)
 myAudio.connectFX()
+myAudio.setBufSizes()
+myAudio.makeEdgesXeY()
+#need to run again to connections on edges
 myAudio.setBufSizes()
 myAudio.createHeader()
