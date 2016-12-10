@@ -7,7 +7,7 @@ from lxml import etree
 from io import StringIO
 
 import json
-
+import math
 
 #Possible channel configuration example
 '''
@@ -188,14 +188,20 @@ class AudioMain:
                 self.FXList[i]['xb_size'] = maxBuf
                 self.FXList[i]['yb_size'] = maxBuf
 
-    #function to calculate the latency in samples from input to output
+    #function to calculate the latency in RUNS (not in samples from input to output
     def calcLatency(self):
         coresDone = []
+        #first, latency for the 1st sample to arrive
         for fx in self.FXList:
             #check that latency of this core has not jet been considered
             if fx['core'] not in coresDone:
                 coresDone.append(fx['core'])
                 self.Latency += fx['yb_size']
+        #then, add xb_size of LAST
+        last_xb_size = self.FXList[len(self.FXList)-1]['xb_size']
+        self.Latency += last_xb_size
+        #finally, divide by xb_size of LAST and ceil
+        self.Latency = math.ceil(self.Latency / last_xb_size)
 
     #function to extract NoC channels info
     def extNoCChannels(self):
@@ -263,10 +269,10 @@ class AudioMain:
         const int CHAN_AMOUNT = ''' + str(self.chan_id-1)
         FX_H += ''';
         //amount of buffers on each NoC channel ID
-        const int CHAN_BUF_AMOUNT[CHAN_AMOUNT] = [ '''
+        const int CHAN_BUF_AMOUNT[CHAN_AMOUNT] = { '''
         for chan in self.NoCChannels:
             FX_H += str(chan['buf_amount']) + ', '
-        FX_H += '''];
+        FX_H += '''};
         //latency from input to output in samples (without considering NoC)
         const int LATENCY = ''' + str(self.Latency) + ';'
         #write file

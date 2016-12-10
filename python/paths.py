@@ -69,7 +69,7 @@ class Paths(object):
         # audioinit.c file
         self.PATMOSC_PATH = self.PATMOS_PATH + '/c'
         self.AUDIOLIB_PATH = self.PATMOSC_PATH + '/libaudio'
-        self.AudioInitFile = self.AUDIOLIB_PATH + '/audioinit.c'
+        self.AudioInitFile = self.AUDIOLIB_PATH + '/audioinit.h'
 
         ###################################################
         # Intermediate files

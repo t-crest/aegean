@@ -1,0 +1,5 @@
+{ "chains" :
+  [
+      { "FX" : ["DELAY", "HP", "DRY_8SAMPLES", "VIBRATO"] }
+  ]
+}
