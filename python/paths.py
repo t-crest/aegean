@@ -53,7 +53,7 @@ class Paths(object):
         except AttributeError: # Fallback to less robust Python < 3.3 method
             self.POSEIDON_CONV = self.which_fallback("poseidon-conv")
             self.POSEIDON = self.which_fallback("posiedon")
-            
+
         # default to poseidon in ../local/bin
         if not self.POSEIDON_CONV or not self.POSEIDON:
             self.POSEIDON_PATH = self.AEGEAN_PATH + '/../local/bin'
@@ -64,6 +64,12 @@ class Paths(object):
         self.PATMOSHW_PATH = self.PATMOS_PATH + '/hardware'
         self.BUILD_PATH = self.AEGEAN_PATH + '/build/' + str(projectname)
         self.TMP_BUILD_PATH = self.BUILD_PATH + '/xml'
+
+        ###################################################
+        # audioinit.c file
+        self.PATMOSC_PATH = self.PATMOS_PATH + '/c'
+        self.AUDIOLIB_PATH = self.PATMOSC_PATH + '/libaudio'
+        self.AudioInitFile = self.AUDIOLIB_PATH + '/audioinit.c'
 
         ###################################################
         # Intermediate files

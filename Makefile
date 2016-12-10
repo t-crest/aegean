@@ -25,6 +25,9 @@ BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
 AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
 
+AUDIO_APP?=default_audio_app
+AUDIO_APP_FILE=$(AEGEAN_PATH)/audio_apps/$(AUDIO_APP).json
+
 BUILD_NOCSCHED_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_NOCSCHED)
 
 # Source file variables
@@ -87,11 +90,21 @@ projectname:
 	@echo "Current project name:"
 	@echo $(AEGEAN_PLATFORM)
 
+audio-app-name:
+	@echo "Current Audio APP name":
+	@echo $(AUDIO_APP)
+
+audio-setup: clean-noc-sched audio-generate noc-sched
+
+audio-generate: $(AUDIO_APP_FILE)
+	@python3 $(AEGEAN_PATH)/python/audioFXGen.py $(AUDIO_APP_FILE) $(AEGEAN_NOCSCHED_FILE)
+
 noc-sched-name:
 	@echo "Current NoC scheduling topoligy:"
 	@echo $(AEGEAN_NOCSCHED)
 
 noc-sched: $(AEGEAN_NOCSCHED_FILE) $(BUILD_NOCSCHED_PATH)
+	@echo "GENERATING nocinit.c FILE FROM NoC TDM SCHEDULE"
 	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE)
 
 $(BUILD_NOCSCHED_PATH):
@@ -225,16 +238,15 @@ help:
 	@echo "==     platform   : Generates the source files for the platform described"
 	@echo "==                   in AEGEAN_PLATFORM file."
 	@echo "=="
-	@echo "==     noc-sched  : Generates the nocinit.c file for the specified scheduling."
+	@echo "==     audio-setup : Generates the NoC TDM scheduling XML file and the"
+	@echo "==                    audioinit.c file first. Then, it generates the"
+	@echo "== 	 	     nocinit.c file from the NoCschedule."
 	@echo "=="
 	@echo "==     compile    : Compiles the full platform."
 	@echo "=="
 	@echo "==     sim        : Starts the simulation of the platform."
 	@echo "=="
 	@echo "==     synth      : Synthesises the platform."
-	@echo "=="
-	@echo "==     clean-noc-sched : Cleans the build directory of the specified"
-	@echo "==                   NoC TDM scheduling."
 	@echo "=="
 	@echo "==     clean      : Cleans the build directory of the specified"
 	@echo "==                   platform specification."

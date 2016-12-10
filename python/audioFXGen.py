@@ -2,13 +2,15 @@ import sys
 import paths
 import os, errno
 import ntpath
+from paths import Paths
 from lxml import etree
 from io import StringIO
 
 import json
 
-'''
+
 #Possible channel configuration example
+'''
 NoCConfs = [
     {'comType' : 'custom',
      'phits'   : '3',
@@ -81,10 +83,16 @@ class AudioMain:
          'phits'   : '3',
          'channels' : [] }
     ]
+    #setup project name and paths
+    projectname = sys.argv[2]
+    projectname = os.path.splitext(projectname)[0]
+    print("PROJECT NAME: " + projectname)
+    p = Paths(projectname)
 
     def __init__ (self):
         #Read Audio APP JSON
-        with open ('audioApp.json') as audioApp_json:
+        print("READING AUDIO APP FILE: " + sys.argv[1])
+        with open (sys.argv[1]) as audioApp_json:
             self.audioApp = json.load(audioApp_json)
 
     #function to add chains form audioApp into the FX List
@@ -262,7 +270,7 @@ class AudioMain:
         //latency from input to output in samples (without considering NoC)
         const int LATENCY = ''' + str(self.Latency) + ';'
         #write file
-        file = open("audioinit.c", "w")
+        file = open(self.p.AudioInitFile, "w")
         file.write(FX_H)
         file.close()
 
@@ -299,11 +307,8 @@ class AudioMain:
                     channel = etree.SubElement(communication, 'channel', channel)
 
         # Save to XML file
-        doc.write('output.xml', xml_declaration=True, encoding='utf-8')
-
-
-
-
+        print("GENERATING NoC TDM SCHEDULING XML FILE: " + sys.argv[2])
+        doc.write(sys.argv[2], xml_declaration=True, encoding='utf-8')
 
 
 #create class
