@@ -80,6 +80,8 @@ class AudioMain:
     #Describer of the scheduler XML
     NoCConfs = [
         {'comType' : 'custom',
+         #phits: words per packet. Stereo audio: 2 shorts = 1 word
+         #including header and flag: phits=3 (minimum data is 1 word for ack channels)
          'phits'   : '3',
          'channels' : [] }
     ]
@@ -226,6 +228,13 @@ class AudioMain:
 
     #function to fill in the NoCConfs array
     def confNoC(self):
+        #first, find out minimum buffer size:
+        minBufSize = 16 #(start from a maximum of 16)
+        for fx in self.FXList:
+            if fx['xb_size'] < minBufSize:
+                minBufSize = fx['xb_size']
+        #no need to check for repeated channels (between same cores):
+        #they have different IDs on the object (i.e. are different channels)
         for chan in self.NoCChannels:
             for core in self.coreOrder:
                 if chan['from_core'] == core['id']:
@@ -234,12 +243,13 @@ class AudioMain:
                     to_p = core['pos']
             chanObj = { 'from' : from_p,
                         'to'   : to_p,
-                        'bandwidth' : '10' #fixed for now
+                        'bandwidth' : str(minBufSize)
+                        #packets per TDM period: each packet is a sample in this case.
             }
             #create reverted channel (for ACK)
             chanObjRev = { 'from' : to_p,
                            'to'   : from_p,
-                           'bandwidth' : '10' #fixed for now
+                           'bandwidth' : '1' #only 1 needed for ack
             }
             self.NoCConfs[0]['channels'].append(chanObj)
             self.NoCConfs[0]['channels'].append(chanObjRev)
@@ -247,6 +257,9 @@ class AudioMain:
     #function to create header file
     def createHeader(self):
         FX_H = '''
+        #ifndef _AUDIOINIT_H_
+        #define _AUDIOINIT_H_
+
         //how many cores take part in the audio system
         const int AUDIO_CORES = ''' + str(self.core)
         FX_H += ''';
@@ -274,7 +287,9 @@ class AudioMain:
             FX_H += str(chan['buf_amount']) + ', '
         FX_H += '''};
         //latency from input to output in samples (without considering NoC)
-        const int LATENCY = ''' + str(self.Latency) + ';'
+        const int LATENCY = ''' + str(self.Latency) + ''';
+
+        #endif /* _AUDIOINIT_H_ */'''
         #write file
         file = open(self.p.AudioInitFile, "w")
         file.write(FX_H)
