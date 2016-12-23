@@ -236,12 +236,6 @@ class AudioMain:
                         chanObj['from_core'] = fx['core']
                         chanObj['mode'] = mode_i
             self.NoCChannels.append(chanObj)
-        print('MODES LIST:')
-        print(self.ModesList)
-        print('LATENCY LIST:')
-        print(self.LatencyList)
-        print('NOC CHANNELS LIST:')
-        print(self.NoCChannels)
 
     #function to fill in the NoCConfs array
     def confNoC(self):
@@ -285,43 +279,87 @@ class AudioMain:
                     NoCConf['channels'].append(chanObj)
                     NoCConf['channels'].append(chanObjRev)
             self.NoCConfs.append(NoCConf)
-        print('NOC CONFS:')
-        print(self.NoCConfs)
 
     #function to create header file
     def createHeader(self):
+        #find info needed for audioinit.h
+        audioCoresList = []
+        FXAmountList = []
+        allCores = 0
+        maxFX = 0
+        modes = 0
+        for FXList in self.ModesList:
+            coresUsed = []
+            FXidsUsed = []
+            modes += 1
+            for fx in FXList:
+                if fx['core'] not in coresUsed:
+                    coresUsed.append(fx['core'])
+                if fx['fx_id'] not in FXidsUsed:
+                    FXidsUsed.append(fx['fx_id'])
+            audioCoresList.append(len(coresUsed))
+            FXAmountList.append(len(FXidsUsed))
+            if len(coresUsed) > allCores:
+                allCores = len(coresUsed)
+            if len(FXidsUsed) > maxFX:
+                maxFX = len(FXidsUsed)
         FX_H = '''
         #ifndef _AUDIOINIT_H_
         #define _AUDIOINIT_H_
 
-        //how many cores take part in the audio system
-        const int AUDIO_CORES = ''' + str(self.core)
-        FX_H += ''';
-        //how many effects are on the system in total
-        const int FX_AMOUNT = ''' + str(len(self.FXList))
-        FX_H += ''';
-        // FX_ID | CORE | FX_TYPE | XB_SIZE | YB_SIZE | P (S) | IN_TYPE | OUT_TYPE | FROM_ID | TO_ID //
-        const int FX_SCHED[FX_AMOUNT][10] = {'''
-        #add files
-        for fx in self.FXList:
+
+        //max amount of cores (from all modes)
+        const int ALL_CORES = ''' + str(allCores) + ''';
+        //configuration modes
+        const int MODES = ''' + str(modes) + ''';
+        //how many cores take part in each mode
+        const int AUDIO_CORES[MODES] = {'''
+        for audioCores in audioCoresList:
+            FX_H += str(audioCores) + ', '
+        FX_H += '''};
+        //how many effects are on each mode in total
+        const int FX_AMOUNT[MODES] = {'''
+        for FXAmount in FXAmountList:
+            FX_H += str(FXAmount) + ', '
+        FX_H += '''};
+        //maximum FX_AMOUNT
+        const int MAX_FX = ''' + str(maxFX) + ''';
+        // FX_ID | CORE | FX_TYPE | XB_SIZE | YB_SIZE | P (S) | IN_TYPE | OUT_TYPE | FROM_ID | TO_ID //'''
+        for mode in range(0,modes):
             FX_H += '''
-            { ''' + str(fx['fx_id']) + ', ' + str(fx['core']) + ', ' + str(fx['fx_type']) + ', ' + \
-                str(fx['xb_size']) + ', ' + str(fx['yb_size']) + ', ' + str(fx['S']) + ', ' + \
-                str(fx['in_type']) + ', ' + str(fx['out_type']) + ', ' + str(fx['from_id']) + ', ' + \
-                str(fx['to_id']) + ' },'
-        FX_H += '''
+        const int FX_SCHED_''' + str(mode) + '''[''' \
+            + str(FXAmountList[mode]) + '''][10] = {'''
+            #add files
+            for fx in self.ModesList[mode]:
+                FX_H += '''
+            { ''' + str(fx['fx_id']) + ', ' + str(fx['core']) + ', ' \
+                + str(fx['fx_type']) + ', ' + str(fx['xb_size']) + ', ' \
+                + str(fx['yb_size']) + ', ' + str(fx['S']) + ', ' \
+                + str(fx['in_type']) + ', ' + str(fx['out_type']) \
+                + ', ' + str(fx['from_id']) + ', ' + str(fx['to_id']) \
+                + ' },'
+            FX_H += '''
         };'''
         FX_H += '''
+        const int *FX_SCHED_PNT[MODES] = {'''
+        for mode in range(0,modes):
+            FX_H += '''
+            (const int *)FX_SCHED_''' + str(mode) + ','
+        FX_H += '''
+        };
         //amount of NoC channels
-        const int CHAN_AMOUNT = ''' + str(self.chan_id-1)
-        FX_H += ''';
+        const int CHAN_AMOUNT = ''' + str(self.chan_id) + ''';
         //amount of buffers on each NoC channel ID
         const int CHAN_BUF_AMOUNT[CHAN_AMOUNT] = { '''
         for chan in self.NoCChannels:
             FX_H += str(chan['buf_amount']) + ', '
         FX_H += '''};
         //latency from input to output in samples (without considering NoC)
-        const int LATENCY = ''' + str(self.Latency) + ''';
+        //for each mode:
+        const int LATENCY[MODES] = {'''
+        for Latency in self.LatencyList:
+            FX_H += str(Latency) + ', '
+        FX_H += '''};
 
         #endif /* _AUDIOINIT_H_ */'''
         #write file
@@ -381,7 +419,7 @@ myAudio.setBufSizes()
 #latency from input to output in samples
 myAudio.calcLatency()
 myAudio.extNoCChannels()
-#myAudio.createHeader()
+myAudio.createHeader()
 
 #NoC stuff
 myAudio.confNoC()
