@@ -60,11 +60,9 @@ class AudioMain:
     #loaded JSON object
     audioApp = {}
     #List describing the used effects (used to create header)
-    FXList = []
-    fx_id = 0
-    core = 0
+    ModesList = []
     chan_id = 0
-    Latency = 0
+    LatencyList = []
     #################### NoC ######################
     #Platform NoC description
     NoC = {'width'       : '2',
@@ -78,13 +76,7 @@ class AudioMain:
     #List of NoC channels needed
     NoCChannels = []
     #Describer of the scheduler XML
-    NoCConfs = [
-        {'comType' : 'custom',
-         #phits: words per packet. Stereo audio: 2 shorts = 1 word
-         #including header and flag: phits=3 (minimum data is 1 word for ack channels)
-         'phits'   : '3',
-         'channels' : [] }
-    ]
+    NoCConfs = []
     #setup project name and paths
     projectname = sys.argv[2]
     projectname = os.path.splitext(projectname)[0]
@@ -99,160 +91,202 @@ class AudioMain:
 
     #function to add chains form audioApp into the FX List
     def addFX(self):
-        for chain in self.audioApp['chains']:
-            #iterate FX
-            for fxname in chain['FX']:
-                if self.core == self.CORE_AMOUNT:
-                    print('ERROR: TOO MANY EFFECTS, DONT FIT IN ' \
-                          + str(CORE_AMOUNT) + ' CORES')
-                    return 1
-                for fxi in range(0,len(self.FX)):
-                    #get fx_type and S
-                    if self.FX[fxi]['name'] == fxname:
-                        fx_type = fxi
-                        S = self.FX[fxi]['S']
-                        break
-                    if fxi == (len(self.FX)-1):
-                        print('ERROR: EFFECT ' + fxname + ' DOES NOT EXIST')
+        for mode in self.audioApp['modes']:
+            FXList = []
+            fx_id = 0
+            core = 0
+            for chain in mode['chains']:
+                #iterate FX
+                for fxname in chain:
+                    if core >= self.CORE_AMOUNT:
+                        print('ERROR: TOO MANY EFFECTS, DONT FIT IN ' \
+                              + str(CORE_AMOUNT) + ' CORES')
                         return 1
-                #store object
-                fxObj = { 'fx_id'   : self.fx_id,
-                          'core'    : self.coreOrder[self.core]['id'],
-                          'fx_type' : fx_type,
-                          'xb_size' : S,
-                          'yb_size' : S,
-                          'S'       : S
-                }
-                self.FXList.append(fxObj)
-                self.fx_id += 1
-                self.core += 1
-        #add final effect: dry
-        self.FXList.append( { 'fx_id'   : len(self.FXList),
-                              'core'    : 0,
-                              'fx_type' : 0,
-                              'xb_size' : 1,
-                              'yb_size' : 1,
-                              'S'       : 1 })
+                    for fxi in range(0,len(self.FX)):
+                        #get fx_type and S
+                        if self.FX[fxi]['name'] == fxname:
+                            fx_type = fxi
+                            S = self.FX[fxi]['S']
+                            break
+                            if fxi == (len(self.FX)-1):
+                                print('ERROR: EFFECT ' \
+                                      + fxname + ' DOES NOT EXIST')
+                                return 1
+                    #store object
+                    fxObj = { 'fx_id'   : fx_id,
+                              'core'    : self.coreOrder[core]['id'],
+                              'fx_type' : fx_type,
+                              'xb_size' : S,
+                              'yb_size' : S,
+                              'S'       : S
+                    }
+                    FXList.append(fxObj)
+                    fx_id += 1
+                    core += 1
+            #add final effect: dry
+            FXList.append( { 'fx_id'   : len(FXList),
+                                  'core'    : 0,
+                                  'fx_type' : 0,
+                                  'xb_size' : 1,
+                                  'yb_size' : 1,
+                                  'S'       : 1 })
+            #add mode to modes list
+            self.ModesList.append(FXList)
         return 0
 
     #function to create connections
     def connectFX(self):
-        for i in range(0,len(self.FXList)):
-            #in_type: 0 only for 1st
-            #out_type: 0 only for last
-            #from_id, to_id: -1 for 1st and last, chan_id for others
-            in_type  = 1
-            out_type = 1
-            from_id  = self.chan_id - 1
-            to_id    = self.chan_id
-            if i == 0:
-                in_type = 0
-                from_id = -1
-            if i == (len(self.FXList)-1):
-                out_type = 0
-                to_id = -1
+        for FXList in self.ModesList:
+            for i in range(0,len(FXList)):
+                #in_type: 0 only for 1st
+                #out_type: 0 only for last
+                #from_id, to_id: -1 for 1st and last, chan_id for others
+                in_type  = 1
+                out_type = 1
+                from_id  = self.chan_id - 1
+                to_id    = self.chan_id
+                if i == 0:
+                    in_type = 0
+                    from_id = -1
+                if i == (len(FXList)-1):
+                    out_type = 0
+                    to_id = -1
 
-            fxAdd = { 'in_type'  : in_type,
-                      'out_type' : out_type,
-                      'from_id'  : from_id,
-                      'to_id'    : to_id
-            }
-            #add fxAdd to dict
-            self.FXList[i].update(fxAdd)
-            #increment chan_id
-            self.chan_id += 1
+                fxAdd = { 'in_type'  : in_type,
+                          'out_type' : out_type,
+                          'from_id'  : from_id,
+                          'to_id'    : to_id
+                      }
+                #add fxAdd to dict
+                FXList[i].update(fxAdd)
+                #increment chan_id
+                if out_type == 1:
+                    self.chan_id += 1
 
     #function to change buffer sizes
     def setBufSizes(self):
-        for i in range(0,len(self.FXList)):
-            #xb_size: only for non-first
-            if i != 0:
-                prev_yb_size = self.FXList[i-1]['yb_size']
-                if prev_yb_size > self.FXList[i]['xb_size']:
-                    self.FXList[i]['xb_size'] = prev_yb_size
-            #yb_size: only for non-last
-            if i != (len(self.FXList)-1):
-                next_xb_size = self.FXList[i+1]['xb_size']
-                if next_xb_size > self.FXList[i]['yb_size']:
-                    self.FXList[i]['yb_size'] = next_xb_size
+        for FXList in self.ModesList:
+            for i in range(0,len(FXList)):
+                #xb_size: only for non-first
+                if i != 0:
+                    prev_yb_size = FXList[i-1]['yb_size']
+                    if prev_yb_size > FXList[i]['xb_size']:
+                        FXList[i]['xb_size'] = prev_yb_size
+                #yb_size: only for non-last
+                if i != (len(FXList)-1):
+                    next_xb_size = FXList[i+1]['xb_size']
+                    if next_xb_size > FXList[i]['yb_size']:
+                        FXList[i]['yb_size'] = next_xb_size
 
     #function to set first and last FX to XeY
     def makeEdgesXeY(self):
         maxBuf = 0
-        #first find max from x/y in/out
-        for i in range(0,len(self.FXList)):
-            if (i==0) or (i==(len(self.FXList)-1)):
-                maxTemp = max(self.FXList[i]['xb_size'], self.FXList[i]['yb_size'])
-                maxBuf = max(maxBuf, maxTemp)
-        #then set values
-        for i in range(0,len(self.FXList)):
-            if (i==0) or (i==(len(self.FXList)-1)):
-                self.FXList[i]['xb_size'] = maxBuf
-                self.FXList[i]['yb_size'] = maxBuf
+        for FXList in self.ModesList:
+            #first find max from x/y in/out
+            for i in range(0,len(FXList)):
+                if (i==0) or (i==(len(FXList)-1)):
+                    maxTemp = max(FXList[i]['xb_size'], FXList[i]['yb_size'])
+                    maxBuf = max(maxBuf, maxTemp)
+            #then set values
+            for i in range(0,len(FXList)):
+                if (i==0) or (i==(len(FXList)-1)):
+                    FXList[i]['xb_size'] = maxBuf
+                    FXList[i]['yb_size'] = maxBuf
 
     #function to calculate the latency in RUNS (not in samples from input to output
     def calcLatency(self):
-        coresDone = []
-        #first, latency for the 1st sample to arrive
-        for fx in self.FXList:
-            #check that latency of this core has not jet been considered
-            if fx['core'] not in coresDone:
-                coresDone.append(fx['core'])
-                self.Latency += fx['yb_size']
-        #then, add xb_size of LAST
-        last_xb_size = self.FXList[len(self.FXList)-1]['xb_size']
-        self.Latency += last_xb_size
-        #finally, divide by xb_size of LAST and ceil
-        self.Latency = math.ceil(self.Latency / last_xb_size)
+        for FXList in self.ModesList:
+            coresDone = []
+            Latency = 0
+            #first, latency for the 1st sample to arrive
+            for fx in FXList:
+                #check that latency of this core has not jet been considered
+                if fx['core'] not in coresDone:
+                    coresDone.append(fx['core'])
+                    Latency += fx['yb_size']
+            #then, add xb_size of LAST
+            last_xb_size = FXList[len(FXList)-1]['xb_size']
+            Latency += last_xb_size
+            #finally, divide by xb_size of LAST and ceil
+            Latency = math.ceil(Latency / last_xb_size)
+            #add to latencies list
+            self.LatencyList.append(Latency)
 
     #function to extract NoC channels info
     def extNoCChannels(self):
         #first, create list with channel IDs
         chanIDs = []
-        for fx in self.FXList:
-            if (fx['in_type'] == 1) and (fx['from_id'] not in chanIDs):
-                chanIDs.append(fx['from_id'])
-            if (fx['out_type'] == 1) and (fx['to_id'] not in chanIDs):
-                chanIDs.append(fx['to_id'])
+        for FXList in self.ModesList:
+            for fx in FXList:
+                if (fx['in_type'] == 1) and (fx['from_id'] not in chanIDs):
+                    chanIDs.append(fx['from_id'])
+                if (fx['out_type'] == 1) and (fx['to_id'] not in chanIDs):
+                    chanIDs.append(fx['to_id'])
         #then, extract info
         for ci in chanIDs:
             chanObj = { 'chan_id'    : ci,
                         'buf_amount' : 8 #fixed for now
             }
-            for fx in self.FXList:
-                if (fx['from_id'] == ci) and (fx['in_type'] == 1):
-                    chanObj['to_core'] = fx['core']
-                if (fx['to_id'] == ci) and (fx['out_type'] == 1):
-                    chanObj['from_core'] = fx['core']
+            for mode_i in range(0, len(self.ModesList)):
+                for fx in self.ModesList[mode_i]:
+                    if (fx['from_id'] == ci) and (fx['in_type'] == 1):
+                        chanObj['to_core'] = fx['core']
+                        chanObj['mode'] = mode_i
+                    if (fx['to_id'] == ci) and (fx['out_type'] == 1):
+                        chanObj['from_core'] = fx['core']
+                        chanObj['mode'] = mode_i
             self.NoCChannels.append(chanObj)
+        print('MODES LIST:')
+        print(self.ModesList)
+        print('LATENCY LIST:')
+        print(self.LatencyList)
+        print('NOC CHANNELS LIST:')
+        print(self.NoCChannels)
 
     #function to fill in the NoCConfs array
     def confNoC(self):
-        #first, find out minimum buffer size:
-        minBufSize = 16 #(start from a maximum of 16)
-        for fx in self.FXList:
-            if fx['xb_size'] < minBufSize:
-                minBufSize = fx['xb_size']
+        minBufSizes = [] # min buffer size for each mode
+        for FXList in self.ModesList:
+            #first, find out minimum buffer size:
+            minBufSize = 16 #(start from a maximum of 16)
+            for fx in FXList:
+                if fx['xb_size'] < minBufSize:
+                    minBufSize = fx['xb_size']
+            minBufSizes.append(minBufSize)
         #no need to check for repeated channels (between same cores):
-        #they have different IDs on the object (i.e. are different channels)
-        for chan in self.NoCChannels:
-            for core in self.coreOrder:
-                if chan['from_core'] == core['id']:
-                    from_p = core['pos']
-                if chan['to_core'] == core['id']:
-                    to_p = core['pos']
-            chanObj = { 'from' : from_p,
-                        'to'   : to_p,
-                        'bandwidth' : str(minBufSize)
-                        #packets per TDM period: each packet is a sample in this case.
-            }
-            #create reverted channel (for ACK)
-            chanObjRev = { 'from' : to_p,
-                           'to'   : from_p,
-                           'bandwidth' : '1' #only 1 needed for ack
-            }
-            self.NoCConfs[0]['channels'].append(chanObj)
-            self.NoCConfs[0]['channels'].append(chanObjRev)
+        #they have different IDs on the object
+        #(i.e. are different channels)
+        for mode in range(0,len(minBufSizes)):
+            NoCConf = {'comType' : 'custom',
+                       #phits: words per packet.
+                       #Stereo audio: 2 shorts = 1 word
+                       #including header and flag: phits=3
+                       #(minimum data is 1 word for ack channels)
+                       'phits'   : '3',
+                       'channels' : [] }
+            for chan in self.NoCChannels:
+                if chan['mode'] == mode:
+                    for core in self.coreOrder:
+                        if chan['from_core'] == core['id']:
+                            from_p = core['pos']
+                        if chan['to_core'] == core['id']:
+                            to_p = core['pos']
+                    chanObj = { 'from' : from_p,
+                                'to'   : to_p,
+                                'bandwidth' : str(minBufSizes[mode])
+                                #packets per TDM period:
+                                #each packet is a sample in this case.
+                            }
+                    #create reverted channel (for ACK)
+                    chanObjRev = { 'from' : to_p,
+                                   'to'   : from_p,
+                                   'bandwidth' : '1' #only 1 needed for ack
+                               }
+                    NoCConf['channels'].append(chanObj)
+                    NoCConf['channels'].append(chanObjRev)
+            self.NoCConfs.append(NoCConf)
+        print('NOC CONFS:')
+        print(self.NoCConfs)
 
     #function to create header file
     def createHeader(self):
@@ -347,7 +381,7 @@ myAudio.setBufSizes()
 #latency from input to output in samples
 myAudio.calcLatency()
 myAudio.extNoCChannels()
-myAudio.createHeader()
+#myAudio.createHeader()
 
 #NoC stuff
 myAudio.confNoC()

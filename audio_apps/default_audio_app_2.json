@@ -1,5 +1,8 @@
-{ "chains" :
-  [
-      { "FX" : ["DELAY", "HP", "DRY_8SAMPLES", "VIBRATO"] }
-  ]
-}
+{ "modes" : [
+    { "chains" : [
+        [ "DELAY", "HP", "DRY_8SAMPLES", "VIBRATO" ]
+    ]},
+    { "chains" : [
+        [ "LP", "DRY_8SAMPLES", "OVERDRIVE" ]
+    ]}
+]}
