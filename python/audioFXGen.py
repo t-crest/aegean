@@ -279,14 +279,44 @@ class AudioMain:
                 fxAdd = { 'in_con'  : in_con,
                           'out_con' : out_con
                 }
-                if i > 0: #not first
-                    fxAdd['from_id'] = self.chan_id - 1
+                #output connections IDs
                 if i < (len(FXList) - 1): #not last
-                    fxAdd['to_id'] = self.chan_id
+                    fxAdd['to_id'] = []
+                    if 'is_fork' in FXList[i]:
+                        #amount of chains: as many as 'chain_start' amount
+                        for fx in range(0, len(FXList)):
+                            if 'chain_start' in FXList[fx]:
+                                fxAdd['to_id'].append(self.chan_id)
+                                self.chan_id += 1
+                    else:
+                        fxAdd['to_id'].append(self.chan_id)
+                        self.chan_id += 1
                 #add fxAdd to dict
                 FXList[i].update(fxAdd)
-                #increment chan_id
-                self.chan_id += 1
+            #loop again for input connections IDs
+            for i in range(0,len(FXList)):
+                if i > 0: #not first
+                    fxAdd = {'from_id' : []}
+                    if 'is_join' in FXList[i]:
+                        #check channels of effects that are 'chain_end'
+                        for fx in range(0, len(FXList)):
+                            if 'chain_end' in FXList[fx]:
+                                fxAdd['from_id'].append(FXList[fx]['to_id'][0])
+                    else: #not a join
+                        #if its a chain start:
+                        if 'chain_start' in FXList[i]:
+                            #check channels of effects that are fork
+                            for fx in range(0, len(FXList)):
+                                if 'is_fork' in FXList[fx]:
+                                    #channel index is given by chain_id
+                                    fxAdd['from_id'].append \
+                                        (FXList[fx]['to_id'][(FXList[i]['chain_id']-1)])
+                                    break #there is only one fork
+                        else:
+                            #receive from previous effect
+                            fxAdd['from_id'].append(FXList[i-1]['to_id'][0])
+                    #add fxAdd to dict
+                    FXList[i].update(fxAdd)
 
         #print all
         for mode in self.ModesList:
