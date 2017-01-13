@@ -108,8 +108,14 @@ class AudioMain:
                 return (1, fx_id, core, FXList, CORE_OCCUP)
         same_core_in = False
         #if chain starts or finishes, must update core
+        chainStarts = False
+        chainEnds = False
         if thisChain != prevChain:
             core += 1
+            if thisChain > 0:
+                chainStarts = True
+            if thisChain == 0:
+                chainEnds = True
             #print('chain start or finish')
         else:
             #see if there is enough occupation space on this core for this FX
@@ -144,6 +150,14 @@ class AudioMain:
                 FXList[len(FXList)-1]['is_fork'] = True
             if (thisChain == 0) and (prevChain > 0):
                 fxObj['is_join'] = True
+        #if it is first or last of chain:
+        if chainStarts:
+            fxObj['chain_start'] = True
+            #check if last one was not fork: if not, it was a chain end
+            if 'is_fork' not in FXList[len(FXList)-1]:
+                FXList[len(FXList)-1]['chain_end'] = True
+        if chainEnds:
+            FXList[len(FXList)-1]['chain_end'] = True
         FXList.append(fxObj)
         #print(thisFX + ', chain=' + str(thisChain) + ', core ' + str(core) + ': fx_occup=' + str(occup) + ', core_occup='+ str(CORE_OCCUP[core]))
         fx_id += 1
@@ -211,6 +225,7 @@ class AudioMain:
             #check if last one is a join
             if prevChain > 0:
                 fxObj['is_join'] = True
+                FXList[len(FXList)-1]['chain_end'] = True
             FXList.append(fxObj)
             #add mode to modes list
             self.ModesList.append(FXList)
