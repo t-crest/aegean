@@ -238,6 +238,7 @@ class AudioMain:
                     if cores_per_chain[c] != chain_cores_base:
                         print('ERROR: chains have different amount of cores, must have the same')
                         return 1
+        return 0
 
     #function to create connections
     def connectFX(self):
