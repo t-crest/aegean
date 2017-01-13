@@ -318,12 +318,41 @@ class AudioMain:
                     #add fxAdd to dict
                     FXList[i].update(fxAdd)
 
-        #print all
-        for mode in self.ModesList:
-            print('''
-*******NEW MODE********''')
-            for fx in mode:
-                print(fx)
+    #function to match buffer sizes on a join effect
+    def setJoinSizes(self, jind, FXList):
+        #input size: max(<chain_end yb_sizes>, <input>)
+        size = FXList[jind]['xb_size']
+        #loop 1st time: find maximum
+        for channel_in in FXList[jind]['from_id']:
+            for fx in range(0, len(FXList)-1):
+                if FXList[fx]['to_id'][0] == channel_in:
+                    size = max(size, FXList[fx]['yb_size'])
+        FXList[jind]['xb_size'] = size
+        #print('join ' + str(jind) + ': max size: ' + str(size))
+        #loop 2nd time: set value
+        for channel_in in FXList[jind]['from_id']:
+            for fx in range(0, len(FXList)-1):
+                if FXList[fx]['to_id'][0] == channel_in:
+                    FXList[fx]['yb_size'] = size
+        return FXList
+
+    #function to match buffer sizes on a fork effect
+    def setForkSizes(self, find, FXList):
+        #output size: max(<chain_start xb_sizes>, <input>)
+        size = FXList[find]['yb_size']
+        #loop 1st time: find maximum
+        for channel_out in FXList[find]['to_id']:
+            for fx in range(1, len(FXList)):
+                if FXList[fx]['from_id'][0] == channel_out:
+                    size = max(size, FXList[fx]['xb_size'])
+        FXList[find]['yb_size'] = size
+        #print('fork ' + str(find) + ': max size: ' + str(size))
+        #loop 2nd time: set value
+        for channel_out in FXList[find]['to_id']:
+            for fx in range(1, len(FXList)):
+                if FXList[fx]['from_id'][0] == channel_out:
+                    FXList[fx]['xb_size'] = size
+        return FXList
 
     #function to change buffer sizes
     def setBufSizes(self):
@@ -331,14 +360,84 @@ class AudioMain:
             for i in range(0,len(FXList)):
                 #xb_size: only for non-first
                 if i != 0:
-                    prev_yb_size = FXList[i-1]['yb_size']
-                    if prev_yb_size > FXList[i]['xb_size']:
-                        FXList[i]['xb_size'] = prev_yb_size
+                    if FXList[i]['in_con'] == 3: #same core in
+                        #all must have same size: XeY
+                        size = max(FXList[i]['xb_size'], FXList[i]['yb_size'], \
+                                   FXList[i-1]['xb_size'], FXList[i-1]['yb_size'])
+                        FXList[i]['xb_size'] = size
+                        FXList[i]['yb_size'] = size
+                        FXList[i-1]['xb_size'] = size
+                        FXList[i-1]['yb_size'] = size
+                    else: #NoC in
+                        #is it a join?
+                        if 'is_join' in FXList[i]:
+                            FXList = self.setJoinSizes(i, FXList)
+                        #is it a 'chain_start'?
+                        elif 'chain_start' in FXList[i]:
+                            chan_id = FXList[i]['from_id'][0]
+                            #find the fork
+                            for fx in range(0, len(FXList)):
+                                if 'is_fork' in FXList[fx]:
+                                    #iterate through fork channels
+                                    for channel in FXList[fx]['to_id']:
+                                        if channel == chan_id: #Found the right fork
+                                            FXList = self.setForkSizes(fx, FXList)
+                        else: #No join or chain_start
+                            #debugging
+                            printa = False
+                            if (FXList[i]['chain_id'] == 0) and (FXList[i]['fx_type'] == 1) and (FXList[i]['core'] == 2) and (FXList[i]['out_con'] == 3) and (FXList[i]['in_con'] == 2) and (FXList[i]['fx_id'] == 2):
+                                printa = True
+                            chan_id = FXList[i]['from_id'][0]
+                            if printa:
+                                print('chan_id: ' + str(chan_id))
+                            #look for source FX
+                            for fx in range(0, len(FXList)-1):
+                                if printa:
+                                    print('source fx_id: ' + str(FXList[fx]['fx_id']))
+                                if ('is_fork' not in FXList[fx]) and \
+                                   ('chain_end' not in FXList[fx]) and \
+                                   (FXList[fx]['out_con'] == 2) and (FXList[fx]['to_id'] == chan_id):
+                                    if printa:
+                                        print('FOUND IT! source fx_id: ' + str(FXList[fx]['fx_id']))
+                                    size = max(FXList[i]['xb_size'], FXList[fx]['yb_size'])
+                                    FXList[i]['xb_size']  = size
+                                    FXList[fx]['yb_size'] = size
+                                    break
                 #yb_size: only for non-last
                 if i != (len(FXList)-1):
-                    next_xb_size = FXList[i+1]['xb_size']
-                    if next_xb_size > FXList[i]['yb_size']:
-                        FXList[i]['yb_size'] = next_xb_size
+                    if FXList[i]['out_con'] == 3: #same core out
+                        #all must have same size: XeY
+                        size = max(FXList[i]['xb_size'], FXList[i]['yb_size'], \
+                                   FXList[i+1]['xb_size'], FXList[i+1]['yb_size'])
+                        FXList[i]['xb_size'] = size
+                        FXList[i]['yb_size'] = size
+                        FXList[i+1]['xb_size'] = size
+                        FXList[i+1]['yb_size'] = size
+                    else: #NoC out
+                        #is it a fork?
+                        if 'is_fork' in FXList[i]:
+                            FXList = self.setForkSizes(i, FXList)
+                        #is it a 'chain_end'?
+                        elif 'chain_end' in FXList[i]:
+                            chan_id = FXList[i]['to_id'][0]
+                            #find the join
+                            for fx in range(0, len(FXList)):
+                                if 'is_join' in FXList[fx]:
+                                    #iterate through join channels
+                                    for channel in FXList[fx]['from_id']:
+                                        if channel == chan_id: #Found the right join
+                                            FXList = self.setJoinSizes(fx, FXList)
+                        else: #No fork or chain_end
+                            chan_id = FXList[i]['to_id'][0]
+                            #look for destination FX
+                            for fx in range(1, len(FXList)):
+                                if ('is_join' not in FXList[fx]) and \
+                                   ('chain_start' not in FXList[fx]) and \
+                                   (FXList[fx]['in_con'] == 3) and (FXList[fx]['from_id'] == chan_id):
+                                    size = max(FXList[i]['yb_size'], FXList[fx]['xb_size'])
+                                    FXList[i]['yb_size']  = size
+                                    FXList[fx]['xb_size'] = size
+                                    break
 
     #function to set first and last FX to XeY
     def makeEdgesXeY(self):
@@ -577,10 +676,19 @@ if myAudio.checkChainBalance():
     print('EXITING...')
     exit(1)
 myAudio.connectFX()
-#myAudio.setBufSizes()
-#myAudio.makeEdgesXeY()
+myAudio.setBufSizes()
+myAudio.makeEdgesXeY()
 #need to run again to connections on edges
-#myAudio.setBufSizes()
+myAudio.setBufSizes()
+
+
+#print all
+for mode in myAudio.ModesList:
+    print('''
+    *******NEW MODE********''')
+    for fx in mode:
+        print(fx)
+
 #latency from input to output in samples
 #myAudio.calcLatency()
 #myAudio.extNoCChannels()
