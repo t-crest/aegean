@@ -216,6 +216,15 @@ class AudioMain:
             self.ModesList.append(FXList)
         return 0
 
+    #function to check that the amount of cores in each chain is balanced
+    def checkChainBalance(self):
+        for mode in self.ModesList:
+            chain_amount = 0
+            for fx in mode:
+                if fx['chain'] > chain_amount:
+                    chain_amount = fx['chain']
+            print('chain amount is ' + str(chain_amount))
+
     #function to create connections
     def connectFX(self):
         for FXList in self.ModesList:
@@ -502,6 +511,9 @@ myAudio=AudioMain()
 
 #FX stuff
 if myAudio.addFX():
+    print('EXITING...')
+    exit(1)
+if myAudio.checkChainBalance():
     print('EXITING...')
     exit(1)
 myAudio.connectFX()
