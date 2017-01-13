@@ -221,9 +221,23 @@ class AudioMain:
         for mode in self.ModesList:
             chain_amount = 0
             for fx in mode:
-                if fx['chain'] > chain_amount:
-                    chain_amount = fx['chain']
-            print('chain amount is ' + str(chain_amount))
+                if fx['chain_id'] > chain_amount:
+                    chain_amount = fx['chain_id']
+            cores_per_chain = [0] * chain_amount
+            for i in range(0, len(cores_per_chain)):
+                cores_on_chain = []
+                for fx in mode:
+                    if (fx['chain_id']-1) == i:
+                        if fx['core'] not in cores_on_chain:
+                            cores_on_chain.append(fx['core'])
+                cores_per_chain[i] = len(cores_on_chain)
+            #check that all chains have same amount of cores
+            if len(cores_per_chain) > 0:
+                chain_cores_base = cores_per_chain[0]
+                for c in cores_per_chain:
+                    if cores_per_chain[c] != chain_cores_base:
+                        print('ERROR: chains have different amount of cores, must have the same')
+                        return 1
 
     #function to create connections
     def connectFX(self):
