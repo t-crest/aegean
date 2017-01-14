@@ -602,8 +602,8 @@ class AudioMain:
         for mode in range(0,modes):
             FX_H += '''
         const int FX_SCHED_''' + str(mode) + '''[''' \
-            + str(FXAmountList[mode]) + '''][10] = {'''
-            #add files
+            + str(FXAmountList[mode]) + '''][8] = {'''
+            #fill in matrix
             for fx in self.ModesList[mode]:
                 FX_H += '''
             { ''' + str(fx['fx_id']) + ', ' + str(fx['core']) + ', ' \
@@ -634,6 +634,29 @@ class AudioMain:
             if not(chanPrinted):
                 FX_H += '1, '
         FX_H += '''};
+        // column: FX_ID source   ,   row: CHAN_ID dest'''
+        for mode in range(0,modes):
+            FX_H += '''
+        const int SEND_ARRAY_''' + str(mode) + '''[''' \
+            + str(FXAmountList[mode]) + '''][CHAN_AMOUNT] = {'''
+            #fill in matrix
+            for fx in self.ModesList[mode]:
+                FX_H += '''
+            {'''
+                for chan in range(0, self.chan_id):
+                    thisOutCon = False
+                    if 'to_id' in fx:
+                        for chanTo in fx['to_id']:
+                            if chanTo == chan:
+                                FX_H += '1, '
+                                thisOutCon = True
+                    if not(thisOutCon):
+                        FX_H += '0, '
+                FX_H += '''
+            },'''
+            FX_H += '''
+        };'''
+        FX_H += '''
         //latency from input to output in samples (without considering NoC)
         const unsigned int LATENCY[MODES] = {'''
         for Latency in self.LatencyList:
