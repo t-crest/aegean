@@ -27,6 +27,8 @@ NoCConfs = [
 '''
 
 class AudioMain:
+    #some parameters:
+    OH_MULT_0 = 16
     #################### FX ######################
     #Amount of available cores in the platform
     CORE_AMOUNT = 4
@@ -100,6 +102,9 @@ class AudioMain:
                 fx_type = fxi
                 S = self.FX[fxi]['S']
                 OH_req = self.FX[fxi]['OH_req']
+                #for 0: increase OH_req
+                if fx_id == 0:
+                    OH_req = OH_req * self.OH_MULT_0
                 occup = self.FX[fxi]['occup']
                 break
             if fxi == (len(self.FX)-1):
@@ -181,8 +186,8 @@ class AudioMain:
                                  'core'    : 0,
                                  'fx_type' : 0,
                                  'S'       : 1,
-                                 'xb_size' : 1,
-                                 'yb_size' : 1,
+                                 'xb_size' : self.OH_MULT_0,
+                                 'yb_size' : self.OH_MULT_0,
                                  'chain_id': 0 })
                 fx_id += 1
                 CORE_OCCUP[0] = 1
@@ -484,7 +489,7 @@ class AudioMain:
         #then, extract info
         for ci in chanIDs:
             chanObj = { 'chan_id'    : ci,
-                        'buf_amount' : 8 #fixed for now
+                        'buf_amount' : 2 #fixed for now
             }
             for mode_i in range(0, len(self.ModesList)):
                 for fx in self.ModesList[mode_i]:
@@ -752,10 +757,11 @@ if myAudio.checkChainBalance():
     print('EXITING...')
     exit(1)
 myAudio.connectFX()
-myAudio.setBufSizes()
-myAudio.makeEdgesXeY()
-#need to run again to connections on edges
-myAudio.setBufSizes()
+#iterative process:
+for i in range(0, 10):
+    myAudio.setBufSizes()
+    myAudio.makeEdgesXeY()
+    myAudio.setBufSizes()
 
 
 #print all
