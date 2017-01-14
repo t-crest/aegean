@@ -29,6 +29,8 @@ NoCConfs = [
 class AudioMain:
     #some parameters:
     OH_MULT_0 = 16
+    INOUT_BUF_SIZE = 128
+    Fs = 52083
     #################### FX ######################
     #Amount of available cores in the platform
     CORE_AMOUNT = 4
@@ -453,6 +455,9 @@ class AudioMain:
 
     #function to calculate the latency in RUNS OF CORE 0 (not in samples from input to output)
     def calcLatency(self):
+        print('WC LATENCY OF INPUT/OUTPUT BUFFERS: ' + \
+              str('%.2f' % (self.INOUT_BUF_SIZE * 1000 / self.Fs)) + ' ms')
+        modeInd = 0
         for FXList in self.ModesList:
             coresDone = []
             Latency = 0
@@ -467,10 +472,13 @@ class AudioMain:
             #then, add xb_size of LAST
             last_xb_size = FXList[len(FXList)-1]['xb_size']
             Latency += last_xb_size
+            print('WC LATENCY OF FX PROCESSING IN MODE ' + str(modeInd) + ': ' + \
+                  str('%.2f' % (Latency * 1000 / self.Fs)) + ' ms')
             #finally, divide by xb_size of LAST and ceil
-            Latency = math.ceil(Latency / last_xb_size)
+            MasterLatency = math.ceil(Latency / last_xb_size)
             #add to latencies list
-            self.LatencyList.append(Latency)
+            self.LatencyList.append(MasterLatency)
+            modeInd += 1
 
     #function to extract NoC channels info
     def extNoCChannels(self):
@@ -777,7 +785,7 @@ myAudio.extNoCChannels()
 myAudio.createHeader()
 
 #NoC stuff
-#myAudio.confNoC()
+myAudio.confNoC()
 #myAudio.genNoCSchedule()
 
 print('EXIT SUCCESSFULLY')
