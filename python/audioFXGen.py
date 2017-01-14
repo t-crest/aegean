@@ -383,22 +383,13 @@ class AudioMain:
                                         if channel == chan_id: #Found the right fork
                                             FXList = self.setForkSizes(fx, FXList)
                         else: #No join or chain_start
-                            #debugging
-                            printa = False
-                            if (FXList[i]['chain_id'] == 0) and (FXList[i]['fx_type'] == 1) and (FXList[i]['core'] == 2) and (FXList[i]['out_con'] == 3) and (FXList[i]['in_con'] == 2) and (FXList[i]['fx_id'] == 2):
-                                printa = True
                             chan_id = FXList[i]['from_id'][0]
-                            if printa:
-                                print('chan_id: ' + str(chan_id))
                             #look for source FX
                             for fx in range(0, len(FXList)-1):
-                                if printa:
-                                    print('source fx_id: ' + str(FXList[fx]['fx_id']))
                                 if ('is_fork' not in FXList[fx]) and \
                                    ('chain_end' not in FXList[fx]) and \
-                                   (FXList[fx]['out_con'] == 2) and (FXList[fx]['to_id'] == chan_id):
-                                    if printa:
-                                        print('FOUND IT! source fx_id: ' + str(FXList[fx]['fx_id']))
+                                   (FXList[fx]['out_con'] == 2) and \
+                                   (FXList[fx]['to_id'][0] == chan_id):
                                     size = max(FXList[i]['xb_size'], FXList[fx]['yb_size'])
                                     FXList[i]['xb_size']  = size
                                     FXList[fx]['yb_size'] = size
@@ -433,7 +424,8 @@ class AudioMain:
                             for fx in range(1, len(FXList)):
                                 if ('is_join' not in FXList[fx]) and \
                                    ('chain_start' not in FXList[fx]) and \
-                                   (FXList[fx]['in_con'] == 3) and (FXList[fx]['from_id'] == chan_id):
+                                   (FXList[fx]['in_con'] == 3) and \
+                                   (FXList[fx]['from_id'][0] == chan_id):
                                     size = max(FXList[i]['yb_size'], FXList[fx]['xb_size'])
                                     FXList[i]['yb_size']  = size
                                     FXList[fx]['xb_size'] = size
@@ -441,8 +433,8 @@ class AudioMain:
 
     #function to set first and last FX to XeY
     def makeEdgesXeY(self):
-        maxBuf = 0
         for FXList in self.ModesList:
+            maxBuf = 0
             #first find max from x/y in/out
             for i in range(0,len(FXList)):
                 if (i==0) or (i==(len(FXList)-1)):
@@ -454,7 +446,7 @@ class AudioMain:
                     FXList[i]['xb_size'] = maxBuf
                     FXList[i]['yb_size'] = maxBuf
 
-    #function to calculate the latency in RUNS (not in samples from input to output
+    #function to calculate the latency in RUNS OF CORE 0 (not in samples from input to output)
     def calcLatency(self):
         for FXList in self.ModesList:
             coresDone = []
@@ -462,7 +454,9 @@ class AudioMain:
             #first, latency for the 1st sample to arrive
             for fx in FXList:
                 #check that latency of this core has not jet been considered
-                if fx['core'] not in coresDone:
+                #(because just one FX needs to be considered per core)
+                #Also, consider just one chain: only chains 0 and 1 (if it exists)
+                if (fx['core'] not in coresDone) and ( (fx['chain_id'] == 0) or (fx['chain_id'] == 1) ):
                     coresDone.append(fx['core'])
                     Latency += fx['yb_size']
             #then, add xb_size of LAST
@@ -690,7 +684,7 @@ for mode in myAudio.ModesList:
         print(fx)
 
 #latency from input to output in samples
-#myAudio.calcLatency()
+myAudio.calcLatency()
 #myAudio.extNoCChannels()
 #myAudio.createHeader()
 
