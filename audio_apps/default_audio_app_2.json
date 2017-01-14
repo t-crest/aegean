@@ -1,6 +1,6 @@
 { "modes" : [
     [
-        "DELAY", "HP", "DRY_8SAMPLES", "VIBRATO"
+        "DRY", "HP", "DRY_8SAMPLES", "DRY"
     ],
     [
         "HP", "DRY", { "chains" : [

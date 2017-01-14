@@ -1,5 +1,16 @@
-{ "chains" :
-  [
-      { "FX" : ["VIBRATO", "DRY_8SAMPLES", "BP", "CHORUS"] }
-  ]
-}
+{ "modes" : [
+    [
+        "DELAY", "HP", "DRY_8SAMPLES", "VIBRATO"
+    ],
+    [
+        "HP", "DRY", { "chains" : [
+            [ "DELAY", "DRY" ],
+            [ "VIBRATO" ]]}
+    ],
+    [
+        { "chains" : [
+            [ "VIBRATO", "DELAY" ],
+            [ "TREMOLO", "DRY_8SAMPLES" ]]},
+        "DRY_8SAMPLES"
+    ]
+]}
