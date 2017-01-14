@@ -24,6 +24,7 @@ BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
 AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
 AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
+AEGEAN_NOCSCHED_FILE_USED?=AEGEAN_NOCSCHED_FILE #only different if defined before
 
 AUDIO_APP?=default_audio_app
 AUDIO_APP_FILE=$(AEGEAN_PATH)/audio_apps/$(AUDIO_APP).json
@@ -103,9 +104,9 @@ noc-sched-name:
 	@echo "Current NoC scheduling topoligy:"
 	@echo $(AEGEAN_NOCSCHED)
 
-noc-sched: $(AEGEAN_NOCSCHED_FILE) $(BUILD_NOCSCHED_PATH)
+noc-sched: $(AEGEAN_NOCSCHED_FILE_USED) $(BUILD_NOCSCHED_PATH)
 	@echo "GENERATING nocinit.c FILE FROM NoC TDM SCHEDULE"
-	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE)
+	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE_USED)
 
 $(BUILD_NOCSCHED_PATH):
 	mkdir -p $(BUILD_NOCSCHED_PATH)/xml

@@ -30,8 +30,9 @@ class AudioMain:
     #some parameters:
     OH_MULT_0 = 16
     INOUT_BUF_SIZE = 128
-    MAX_NOC_BANDWIDTH = 16
+    MAX_NOC_BANDWIDTH = 2
     Fs = 52083
+    BUF_AMOUNT = 4
     #################### FX ######################
     #Amount of available cores in the platform
     CORE_AMOUNT = 4
@@ -501,7 +502,7 @@ class AudioMain:
         #then, extract info
         for ci in chanIDs:
             chanObj = { 'chan_id'    : ci,
-                        'buf_amount' : 2 #fixed for now
+                        'buf_amount' : self.BUF_AMOUNT
             }
             for mode_i in range(0, len(self.ModesList)):
                 for fx in self.ModesList[mode_i]:
