@@ -30,6 +30,7 @@ class AudioMain:
     #some parameters:
     OH_MULT_0 = 16
     INOUT_BUF_SIZE = 128
+    MAX_NOC_BANDWIDTH = 16
     Fs = 52083
     #################### FX ######################
     #Amount of available cores in the platform
@@ -455,8 +456,10 @@ class AudioMain:
 
     #function to calculate the latency in RUNS OF CORE 0 (not in samples from input to output)
     def calcLatency(self):
+        L_IO = self.INOUT_BUF_SIZE * 1000 / self.Fs
         print('WC LATENCY OF INPUT/OUTPUT BUFFERS: ' + \
-              str('%.2f' % (self.INOUT_BUF_SIZE * 1000 / self.Fs)) + ' ms')
+              str('%.2f' % L_IO) + ' ms')
+        L_FX = []
         modeInd = 0
         for FXList in self.ModesList:
             coresDone = []
@@ -472,8 +475,9 @@ class AudioMain:
             #then, add xb_size of LAST
             last_xb_size = FXList[len(FXList)-1]['xb_size']
             Latency += last_xb_size
+            L_FX.append(Latency * 1000 / self.Fs)
             print('WC LATENCY OF FX PROCESSING IN MODE ' + str(modeInd) + ': ' + \
-                  str('%.2f' % (Latency * 1000 / self.Fs)) + ' ms')
+                  str('%.2f' % L_FX[len(L_FX)-1]) + ' ms')
             #finally, divide by xb_size of LAST and ceil
             MasterLatency = math.ceil(Latency / last_xb_size)
             #add to latencies list
@@ -513,49 +517,6 @@ class AudioMain:
                                 chanObj['mode'] = mode_i
             self.NoCChannels.append(chanObj)
 
-    #function to fill in the NoCConfs array
-    def confNoC(self):
-        minBufSizes = [] # min buffer size for each mode
-        for FXList in self.ModesList:
-            #first, find out minimum buffer size:
-            minBufSize = 16 #(start from a maximum of 16)
-            for fx in FXList:
-                if fx['xb_size'] < minBufSize:
-                    minBufSize = fx['xb_size']
-            minBufSizes.append(minBufSize)
-        #no need to check for repeated channels (between same cores):
-        #they have different IDs on the object
-        #(i.e. are different channels)
-        for mode in range(0,len(minBufSizes)):
-            NoCConf = {'comType' : 'custom',
-                       #phits: words per packet.
-                       #Stereo audio: 2 shorts = 1 word
-                       #including header and flag: phits=3
-                       #(minimum data is 1 word for ack channels)
-                       'phits'   : '3',
-                       'channels' : [] }
-            for chan in self.NoCChannels:
-                if chan['mode'] == mode:
-                    for core in self.coreOrder:
-                        if chan['from_core'] == core['id']:
-                            from_p = core['pos']
-                        if chan['to_core'] == core['id']:
-                            to_p = core['pos']
-                    chanObj = { 'from' : from_p,
-                                'to'   : to_p,
-                                'bandwidth' : str(minBufSizes[mode])
-                                #packets per TDM period:
-                                #each packet is a sample in this case.
-                            }
-                    #create reverted channel (for ACK)
-                    chanObjRev = { 'from' : to_p,
-                                   'to'   : from_p,
-                                   'bandwidth' : '1' #only 1 needed for ack
-                               }
-                    NoCConf['channels'].append(chanObj)
-                    NoCConf['channels'].append(chanObjRev)
-            self.NoCConfs.append(NoCConf)
-
     #function to create header file
     def createHeader(self):
         #find info needed for audioinit.h
@@ -594,7 +555,8 @@ class AudioMain:
         #ifndef _AUDIOINIT_H_
         #define _AUDIOINIT_H_
 
-
+        //input/output buffer sizes
+        const unsigned int BUFFER_SIZE = ''' + str(self.INOUT_BUF_SIZE) + ''';
         //amount of configuration modes
         const int MODES = ''' + str(modes) + ''';
         //how many cores take part in the audio system (from all modes)
@@ -717,6 +679,55 @@ class AudioMain:
         file.write(FX_H)
         file.close()
 
+    #function to fill in the NoCConfs array
+    def confNoC(self):
+        minBufSizes = [] # min buffer size for each mode
+        for FXList in self.ModesList:
+            #first, find out minimum buffer size:
+            minBufSize = self.MAX_NOC_BANDWIDTH #(start from maximum)
+            for fx in FXList:
+                if fx['xb_size'] < minBufSize:
+                    minBufSize = fx['xb_size']
+            minBufSizes.append(minBufSize)
+        #no need to check for repeated channels (between same cores):
+        #they have different IDs on the object
+        #(i.e. are different channels)
+        for mode in range(0,len(minBufSizes)):
+            NoCConf = {'comType' : 'custom',
+                       #phits: words per packet.
+                       #Stereo audio: 2 shorts = 1 word
+                       #including header and flag: phits=3
+                       #(minimum data is 1 word for ack channels)
+                       'phits'   : '3',
+                       'channels' : [] }
+            for chan in self.NoCChannels:
+                if chan['mode'] == mode:
+                    for core in self.coreOrder:
+                        if chan['from_core'] == core['id']:
+                            from_p = core['pos']
+                        if chan['to_core'] == core['id']:
+                            to_p = core['pos']
+                    chanObj = { 'from' : from_p,
+                                'to'   : to_p,
+                                'bandwidth' : str(minBufSizes[mode])
+                                #packets per TDM period:
+                                #each packet is a sample in this case.
+                            }
+                    #create reverted channel (for ACK)
+                    chanObjRev = { 'from' : to_p,
+                                   'to'   : from_p,
+                                   'bandwidth' : '1' #only 1 needed for ack
+                               }
+                    NoCConf['channels'].append(chanObj)
+                    NoCConf['channels'].append(chanObjRev)
+            self.NoCConfs.append(NoCConf)
+        '''
+        for NoCConf in self.NoCConfs:
+            print('THIS MODE')
+            for chan in NoCConf['channels']:
+                print(chan)
+        '''
+
     # Create the root element and new document tree
     def genNoCSchedule(self):
         nocsched = etree.Element('nocsched', version='0.1',
@@ -771,13 +782,14 @@ for i in range(0, 10):
     myAudio.makeEdgesXeY()
     myAudio.setBufSizes()
 
-
+'''
 #print all
 for mode in myAudio.ModesList:
-    print('''
-    *******NEW MODE********''')
+    print(' ' '
+    *******NEW MODE********' ' ')
     for fx in mode:
         print(fx)
+'''
 
 #latency from input to output in samples
 myAudio.calcLatency()
@@ -786,6 +798,6 @@ myAudio.createHeader()
 
 #NoC stuff
 myAudio.confNoC()
-#myAudio.genNoCSchedule()
+myAudio.genNoCSchedule()
 
 print('EXIT SUCCESSFULLY')
