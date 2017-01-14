@@ -652,11 +652,46 @@ class AudioMain:
                                 thisOutCon = True
                     if not(thisOutCon):
                         FX_H += '0, '
-                FX_H += '''
-            },'''
+                FX_H += '''},'''
             FX_H += '''
         };'''
         FX_H += '''
+        //pointer to send arrays
+        const int *SEND_ARRAY_P[MODES] = {'''
+        for mode in range(0,modes):
+            FX_H += '''
+            (const int *)SEND_ARRAY_''' + str(mode) + ','
+        FX_H += '''
+        };
+        // column: FX_ID dest   ,   row: CHAN_ID source'''
+        for mode in range(0,modes):
+            FX_H += '''
+        const int RECV_ARRAY_''' + str(mode) + '''[''' \
+            + str(FXAmountList[mode]) + '''][CHAN_AMOUNT] = {'''
+            #fill in matrix
+            for fx in self.ModesList[mode]:
+                FX_H += '''
+            {'''
+                for chan in range(0, self.chan_id):
+                    thisInCon = False
+                    if 'from_id' in fx:
+                        for chanFrom in fx['from_id']:
+                            if chanFrom == chan:
+                                FX_H += '1, '
+                                thisInCon = True
+                    if not(thisInCon):
+                        FX_H += '0, '
+                FX_H += '''},'''
+            FX_H += '''
+        };'''
+        FX_H += '''
+        //pointer to receive arrays
+        const int *RECV_ARRAY_P[MODES] = {'''
+        for mode in range(0,modes):
+            FX_H += '''
+            (const int *)RECV_ARRAY_''' + str(mode) + ','
+        FX_H += '''
+        };
         //latency from input to output in samples (without considering NoC)
         const unsigned int LATENCY[MODES] = {'''
         for Latency in self.LatencyList:
