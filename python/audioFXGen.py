@@ -473,10 +473,14 @@ class AudioMain:
         chanIDs = []
         for FXList in self.ModesList:
             for fx in FXList:
-                if (fx['in_type'] == 1) and (fx['from_id'] not in chanIDs):
-                    chanIDs.append(fx['from_id'])
-                if (fx['out_type'] == 1) and (fx['to_id'] not in chanIDs):
-                    chanIDs.append(fx['to_id'])
+                if ('from_id' in fx) and (fx['in_con'] == 2): #not first and NoC in
+                    for chan in fx['from_id']:
+                        if chan not in chanIDs:
+                            chanIDs.append(chan)
+                if ('to_id' in fx) and (fx['out_con'] == 2): #not last and NoC out
+                    for chan in fx['to_id']:
+                        if chan not in chanIDs:
+                            chanIDs.append(chan)
         #then, extract info
         for ci in chanIDs:
             chanObj = { 'chan_id'    : ci,
@@ -484,12 +488,16 @@ class AudioMain:
             }
             for mode_i in range(0, len(self.ModesList)):
                 for fx in self.ModesList[mode_i]:
-                    if (fx['from_id'] == ci) and (fx['in_type'] == 1):
-                        chanObj['to_core'] = fx['core']
-                        chanObj['mode'] = mode_i
-                    if (fx['to_id'] == ci) and (fx['out_type'] == 1):
-                        chanObj['from_core'] = fx['core']
-                        chanObj['mode'] = mode_i
+                    if 'from_id' in fx: #not first
+                        for chan in fx['from_id']:
+                            if chan == ci:
+                                chanObj['to_core'] = fx['core']
+                                chanObj['mode'] = mode_i
+                    if 'to_id' in fx: #not last
+                        for chan in fx['to_id']:
+                            if chan == ci:
+                                chanObj['from_core'] = fx['core']
+                                chanObj['mode'] = mode_i
             self.NoCChannels.append(chanObj)
 
     #function to fill in the NoCConfs array
@@ -558,28 +566,39 @@ class AudioMain:
                 allCores = len(coresUsed)
             if len(FXidsUsed) > maxFX:
                 maxFX = len(FXidsUsed)
+
+        maxFXPerCore = [0] * allCores
+        for FXList in self.ModesList:
+            FXPerCore = [0] * allCores
+            for fx in FXList:
+                FXPerCore[fx['core']] += 1
+            for i in range(0, len(FXPerCore)):
+                maxFXPerCore[i] = max(maxFXPerCore[i], FXPerCore[i])
+
+
+        #Header file
         FX_H = '''
         #ifndef _AUDIOINIT_H_
         #define _AUDIOINIT_H_
 
 
-        //max amount of cores (from all modes)
-        const int ALL_CORES = ''' + str(allCores) + ''';
-        //configuration modes
+        //amount of configuration modes
         const int MODES = ''' + str(modes) + ''';
-        //how many cores take part in each mode
-        const int AUDIO_CORES[MODES] = {'''
-        for audioCores in audioCoresList:
-            FX_H += str(audioCores) + ', '
-        FX_H += '''};
+        //how many cores take part in the audio system (from all modes)
+        const int AUDIO_CORES = ''' + str(allCores) + ''';
         //how many effects are on each mode in total
         const int FX_AMOUNT[MODES] = {'''
         for FXAmount in FXAmountList:
             FX_H += str(FXAmount) + ', '
         FX_H += '''};
+        //maximum amount of effects per core
+        const int MAX_FX_PER_CORE[AUDIO_CORES] = {'''
+        for fxPC in maxFXPerCore:
+            FX_H += str(fxPC) + ', '
+        FX_H += '''};
         //maximum FX_AMOUNT
         const int MAX_FX = ''' + str(maxFX) + ''';
-        // FX_ID | CORE | FX_TYPE | XB_SIZE | YB_SIZE | P (S) | IN_TYPE | OUT_TYPE | FROM_ID | TO_ID //'''
+        // FX_ID | CORE | FX_TYPE | XB_SIZE | YB_SIZE | S | IN_TYPE | OUT_TYPE //'''
         for mode in range(0,modes):
             FX_H += '''
         const int FX_SCHED_''' + str(mode) + '''[''' \
@@ -590,28 +609,33 @@ class AudioMain:
             { ''' + str(fx['fx_id']) + ', ' + str(fx['core']) + ', ' \
                 + str(fx['fx_type']) + ', ' + str(fx['xb_size']) + ', ' \
                 + str(fx['yb_size']) + ', ' + str(fx['S']) + ', ' \
-                + str(fx['in_type']) + ', ' + str(fx['out_type']) \
-                + ', ' + str(fx['from_id']) + ', ' + str(fx['to_id']) \
-                + ' },'
+                + str(fx['in_con']) + ', ' + str(fx['out_con']) + ' },'
             FX_H += '''
         };'''
         FX_H += '''
-        const int *FX_SCHED_PNT[MODES] = {'''
+        //pointer to schedules
+        const int *FX_SCHED_P[MODES] = {'''
         for mode in range(0,modes):
             FX_H += '''
             (const int *)FX_SCHED_''' + str(mode) + ','
         FX_H += '''
         };
-        //amount of NoC channels
+        //amount of NoC channels (NoC or same core) on all modes
         const int CHAN_AMOUNT = ''' + str(self.chan_id) + ''';
         //amount of buffers on each NoC channel ID
         const int CHAN_BUF_AMOUNT[CHAN_AMOUNT] = { '''
-        for chan in self.NoCChannels:
-            FX_H += str(chan['buf_amount']) + ', '
+        for chan in range(0, self.chan_id):
+            chanPrinted = False
+            for c in self.NoCChannels:
+                if chan == c['chan_id']:
+                    FX_H += str(c['buf_amount']) + ', '
+                    chanPrinted = True
+                    break
+            if not(chanPrinted):
+                FX_H += '1, '
         FX_H += '''};
         //latency from input to output in samples (without considering NoC)
-        //for each mode:
-        const int LATENCY[MODES] = {'''
+        const unsigned int LATENCY[MODES] = {'''
         for Latency in self.LatencyList:
             FX_H += str(Latency) + ', '
         FX_H += '''};
@@ -685,8 +709,8 @@ for mode in myAudio.ModesList:
 
 #latency from input to output in samples
 myAudio.calcLatency()
-#myAudio.extNoCChannels()
-#myAudio.createHeader()
+myAudio.extNoCChannels()
+myAudio.createHeader()
 
 #NoC stuff
 #myAudio.confNoC()
