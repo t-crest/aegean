@@ -29,10 +29,10 @@ NoCConfs = [
 class AudioMain:
     #some parameters:
     OH_MULT_0 = 16
-    INOUT_BUF_SIZE = 128
-    MAX_NOC_BANDWIDTH = 2
+    INOUT_BUF_SIZE = 64
+    MAX_NOC_BANDWIDTH = 4
     Fs = 52083
-    BUF_AMOUNT = 4
+    BUF_AMOUNT = 3
     #################### FX ######################
     #Amount of available cores in the platform
     CORE_AMOUNT = 4
@@ -91,12 +91,20 @@ class AudioMain:
     projectname = os.path.splitext(projectname)[0]
     print("PROJECT NAME: " + projectname)
     p = Paths(projectname)
+    #NoC Reconfiguration
+    NoCReconfig = False
 
     def __init__ (self):
         #Read Audio APP JSON
         print("READING AUDIO APP FILE: " + sys.argv[1])
         with open (sys.argv[1]) as audioApp_json:
             self.audioApp = json.load(audioApp_json)
+        #check if reconfiguration is enabled
+        if sys.argv[3] == '1':
+            print('NoC RECONFIGURATION ENABLED')
+            self.NoCReconfig = True
+        else:
+            print('NoC RECONFIGURATION DISABLED')
 
     #function used by addFX to add 1 FX
     def addThisFX(self, thisFX, fx_id, core, FXList, CORE_OCCUP, thisChain, prevChain):
@@ -556,6 +564,13 @@ class AudioMain:
         #ifndef _AUDIOINIT_H_
         #define _AUDIOINIT_H_
 
+        '''
+        #if NoC reconfiguration is enabled:
+        if self.NoCReconfig:
+            FX_H += '''
+        //NoC Reconfiguration enabled
+        #define NOC_RECONFIG'''
+        FX_H += '''
         //input/output buffer sizes
         const unsigned int BUFFER_SIZE = ''' + str(self.INOUT_BUF_SIZE) + ''';
         //amount of configuration modes

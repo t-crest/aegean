@@ -24,7 +24,8 @@ BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
 AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
 AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
-AEGEAN_NOCSCHED_FILE_USED?=AEGEAN_NOCSCHED_FILE #only different if defined before
+#if NoC reconfiguration is disabled:
+AEGEAN_NOCSCHED_FILE_ALL2ALL=$(CURDIR)/config/default-altde2-115-audio-nocsched-all2all.xml
 
 AUDIO_APP?=default_audio_app
 AUDIO_APP_FILE=$(AEGEAN_PATH)/audio_apps/$(AUDIO_APP).json
@@ -98,15 +99,24 @@ audio-app-name:
 audio-setup: clean-noc-sched audio-generate noc-sched
 
 audio-generate: $(AUDIO_APP_FILE)
-	@python3 $(AEGEAN_PATH)/python/audioFXGen.py $(AUDIO_APP_FILE) $(AEGEAN_NOCSCHED_FILE)
+	@python3 $(AEGEAN_PATH)/python/audioFXGen.py $(AUDIO_APP_FILE) $(AEGEAN_NOCSCHED_FILE) $(NOC_RECONFIG)
 
 noc-sched-name:
 	@echo "Current NoC scheduling topoligy:"
 	@echo $(AEGEAN_NOCSCHED)
 
 noc-sched: $(AEGEAN_NOCSCHED_FILE_USED) $(BUILD_NOCSCHED_PATH)
+ifeq ($(NOC_RECONFIG),1)
 	@echo "GENERATING nocinit.c FILE FROM NoC TDM SCHEDULE"
-	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE_USED)
+	@echo "NoC schedule file: "
+	@echo $(AEGEAN_NOCSCHED_FILE)
+	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE)
+else
+	@echo "GENERATING nocinit.c FILE FROM NoC TDM SCHEDULE"
+	@echo "NoC schedule file: "
+	@echo $(AEGEAN_NOCSCHED_FILE_ALL2ALL)
+	@python3 $(AEGEAN_PATH)/python/nocSchedMain.py $(AEGEAN_NOCSCHED_FILE_ALL2ALL)
+endif
 
 $(BUILD_NOCSCHED_PATH):
 	mkdir -p $(BUILD_NOCSCHED_PATH)/xml
