@@ -29,7 +29,7 @@ NoCConfs = [
 class AudioMain:
     #some parameters:
     OH_MULT_0 = 16
-    INOUT_BUF_SIZE = 64
+    INOUT_BUF_SIZE = 128
     MAX_NOC_BANDWIDTH = 4
     Fs = 52083
     BUF_AMOUNT = 3
