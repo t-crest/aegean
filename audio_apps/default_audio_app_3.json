@@ -1,0 +1,14 @@
+{ "modes" : [
+    [
+        "DELAY", "DRY", "HP", "TREMOLO"
+    ],
+    [
+        { "chains" : [
+            [ "DELAY" ],
+            [ "DISTORTION" ]]},
+        "TREMOLO"
+    ],
+    [
+        "OVERDRIVE", "LP"
+    ]
+]}

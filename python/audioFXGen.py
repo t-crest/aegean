@@ -32,7 +32,7 @@ class AudioMain:
     INOUT_BUF_SIZE = 128
     MAX_NOC_BANDWIDTH = 4
     Fs = 52083
-    BUF_AMOUNT = 3
+    BUF_AMOUNT = 2
     #################### FX ######################
     #Amount of available cores in the platform
     CORE_AMOUNT = 4
@@ -53,18 +53,18 @@ class AudioMain:
     #   -occup: occupation ratio: processing time per sample relative to sampling period
     FX = [
         { 'name' : 'DRY',          'S' : 1 ,  'OH_req' : 1 , 'occup' : 0.5 },
-        { 'name' : 'DRY_8SAMPLES', 'S' : 8 ,  'OH_req' : 2 , 'occup' : 0.5 },
-        { 'name' : 'DELAY',        'S' : 1 ,  'OH_req' : 2 , 'occup' : 0.5 },
+        { 'name' : 'DRY_8SAMPLES', 'S' : 8 ,  'OH_req' : 1 , 'occup' : 0.5 },
+        { 'name' : 'DELAY',        'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
         { 'name' : 'OVERDRIVE',    'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
-        { 'name' : 'WAHWAH',       'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
-        { 'name' : 'CHORUS',       'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
+        { 'name' : 'WAHWAH',       'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
+        { 'name' : 'CHORUS',       'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
         { 'name' : 'DISTORTION',   'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
-        { 'name' : 'HP',           'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
-        { 'name' : 'LP',           'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
-        { 'name' : 'BP',           'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
-        { 'name' : 'BR',           'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
-        { 'name' : 'VIBRATO',      'S' : 1 ,  'OH_req' : 2 , 'occup' : 0.5 },
-        { 'name' : 'TREMOLO',      'S' : 1 ,  'OH_req' : 2 , 'occup' : 0.5 },
+        { 'name' : 'HP',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
+        { 'name' : 'LP',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
+        { 'name' : 'BP',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
+        { 'name' : 'BR',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
+        { 'name' : 'VIBRATO',      'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
+        { 'name' : 'TREMOLO',      'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
     ]
     #loaded JSON object
     audioApp = {}
@@ -139,8 +139,8 @@ class AudioMain:
             if (1-CORE_OCCUP[core]) < occup: #if not enough space
                 core += 1
             else:
-                #receives from same core: only if it is not 0 and its not empty
-                if (core != 0) and (CORE_OCCUP[core] > 0):
+                #receives from same core: only if it is not 1st and its not empty
+                if (fx_id != 0) and (CORE_OCCUP[core] > 0):
                     same_core_in = True
         if core >= self.CORE_AMOUNT:
             print('ERROR: TOO MANY EFFECTS, DONT FIT IN ' \
@@ -161,6 +161,8 @@ class AudioMain:
         if same_core_in:
             FXList[len(FXList)-1]['out_same'] = True
             fxObj['in_same'] = True
+            #if out same, increase overhead reducer
+            fxObj['xb_size'] = fxObj['xb_size']*self.OH_MULT_0
         #check if there is fork or join
         if (len(FXList) > 0): #if it is not first FX of this mode
             if (thisChain > 0) and (prevChain == 0):
@@ -187,7 +189,7 @@ class AudioMain:
             fx_id = 0
             core = 0
             #Current occupation on each core (between 0 and 1)
-            CORE_OCCUP = [0, 0, 0, 0]
+            CORE_OCCUP = [0.5, 0, 0, 0]
             #to check which chain (0 = no chain, 1+ = chain number)
             thisChain = 0
             prevChain = 0
@@ -203,6 +205,21 @@ class AudioMain:
                                  'chain_id': 0 })
                 fx_id += 1
                 CORE_OCCUP[0] = 1
+            else:
+                #if occup of 1st > 0.5, create dry effect as first:
+                for fxi in range(0,len(self.FX)):
+                    #get fx_type and S
+                    if (self.FX[fxi]['name'] == mode[0]) and (self.FX[fxi]['occup'] > 0.5):
+                        #add initial effect: dry
+                        FXList.append( { 'fx_id'   : fx_id,
+                                         'core'    : 0,
+                                         'fx_type' : 0,
+                                         'S'       : 1,
+                                         'xb_size' : self.OH_MULT_0,
+                                         'yb_size' : self.OH_MULT_0,
+                                         'chain_id': 0 })
+                        fx_id += 1
+                        CORE_OCCUP[0] = 1
             #loop through items in mode
             for item in mode:
                 if type(item)  == dict:
@@ -801,8 +818,8 @@ for i in range(0, 10):
 '''
 #print all
 for mode in myAudio.ModesList:
-    print(' ' '
-    *******NEW MODE********' ' ')
+    print(' ''
+    *******NEW MODE********' '')
     for fx in mode:
         print(fx)
 '''
