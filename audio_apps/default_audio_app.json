@@ -1,16 +1,10 @@
 { "modes" : [
     [
-        "DELAY", "HP", "DRY_8SAMPLES", "VIBRATO"
+        "WAHWAH", { "chains" : [
+            [ "DELAY" ],
+            [ "DISTORTION" ]]}
     ],
     [
-        "HP", "DRY", { "chains" : [
-            [ "DELAY", "DRY" ],
-            [ "VIBRATO" ]]}
-    ],
-    [
-        { "chains" : [
-            [ "VIBRATO", "DELAY" ],
-            [ "TREMOLO", "DRY_8SAMPLES" ]]},
-        "DRY_8SAMPLES"
+        "OVERDRIVE", "VIBRATO"
     ]
 ]}

@@ -28,11 +28,11 @@ NoCConfs = [
 
 class AudioMain:
     #some parameters:
-    OH_MULT_0 = 16
+    OH_MULT_0 = 4
     INOUT_BUF_SIZE = 128
-    MAX_NOC_BANDWIDTH = 1
+    MAX_NOC_BANDWIDTH = 4
     Fs = 52083
-    BUF_AMOUNT = 2
+    BUF_AMOUNT = 3
     #################### FX ######################
     #Amount of available cores in the platform
     CORE_AMOUNT = 4
@@ -139,13 +139,17 @@ class AudioMain:
             return (1, fx_id, core, FXList, CORE_OCCUP)
         #update occupation
         CORE_OCCUP[core] += occup
+        bufsize = S*OH_red
+        #limit: 32
+        if bufsize > 32:
+            bufsize = 32
         #store object
         fxObj = { 'fx_id'   : fx_id,
                   'core'    : self.coreOrder[core]['id'],
                   'fx_type' : fx_type,
                   'S'       : S,
-                  'xb_size' : (S*OH_red),
-                  'yb_size' : (S*OH_red),
+                  'xb_size' : bufsize,
+                  'yb_size' : bufsize,
                   'chain_id': thisChain
         }
         #check if it is same core in

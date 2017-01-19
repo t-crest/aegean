@@ -1,0 +1,14 @@
+{ "modes" : [
+    [
+        "DELAY", "OVERDRIVE", "CHORUS"
+    ],
+    [
+        "WAHWAH",
+        { "chains" : [
+            [ "OVERDRIVE" ],
+            [ "DELAY" ]]}
+    ],
+    [
+        "LP", "DISTORTION", "TREMOLO"
+    ]
+]}

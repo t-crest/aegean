@@ -1,6 +1,6 @@
 { "modes" : [
     [
-        "DELAY", "DRY", "HP", "TREMOLO"
+        "DELAY", "HP", "TREMOLO"
     ],
     [
         { "chains" : [

@@ -1,0 +1,8 @@
+{ "modes" : [
+    [
+        "DRY", "DRY", "DRY_8SAMPLES"
+    ],
+    [
+        "DRY", "HP", "TREMOLO"
+    ]
+]}
