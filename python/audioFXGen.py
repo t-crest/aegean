@@ -30,7 +30,7 @@ class AudioMain:
     #some parameters:
     OH_MULT_0 = 16
     INOUT_BUF_SIZE = 128
-    MAX_NOC_BANDWIDTH = 4
+    MAX_NOC_BANDWIDTH = 1
     Fs = 52083
     BUF_AMOUNT = 2
     #################### FX ######################
@@ -58,6 +58,7 @@ class AudioMain:
     ModesList = []
     chan_id = 0
     LatencyList = []
+    latenciesDict = {}
     #################### NoC ######################
     #Platform NoC description
     NoC = {'width'       : '2',
@@ -472,14 +473,18 @@ class AudioMain:
 
     #function to calculate the latency in RUNS OF CORE 0 (not in samples from input to output)
     def calcLatency(self):
-        L_IO = self.INOUT_BUF_SIZE * 1000 / self.Fs
-        print('WC LATENCY OF INPUT/OUTPUT BUFFERS: ' + \
-              str('%.2f' % L_IO) + ' ms')
-        L_FX = []
-        modeInd = 0
+        #JSON file containing latency values
+        #self.latenciesDict = {}
+        #add Fs and IO Buffer Latency
+        self.latenciesDict['Fs'] = self.Fs
+        self.latenciesDict['L_IO'] = self.INOUT_BUF_SIZE
+        #Prepare to add FX Latency of each mode
+        self.latenciesDict['modes'] = []
         for FXList in self.ModesList:
             coresDone = []
             Latency = 0
+            #List to store channel buffer sizes
+            buf_sizes_list = []
             #first, latency for the 1st sample to arrive
             for fx in FXList:
                 #check that latency of this core has not jet been considered
@@ -488,17 +493,21 @@ class AudioMain:
                 if (fx['core'] not in coresDone) and ( (fx['chain_id'] == 0) or (fx['chain_id'] == 1) ):
                     coresDone.append(fx['core'])
                     Latency += fx['yb_size']
+                    buf_sizes_list.append(fx['yb_size'])
             #then, add xb_size of LAST
-            last_xb_size = FXList[len(FXList)-1]['xb_size']
-            Latency += last_xb_size
-            L_FX.append(Latency * 1000 / self.Fs)
-            print('WC LATENCY OF FX PROCESSING IN MODE ' + str(modeInd) + ': ' + \
-                  str('%.2f' % L_FX[len(L_FX)-1]) + ' ms')
+            last_xb_size = FXList[len(FXList)-1]['xb_size'] #YES
+            Latency += last_xb_size #really?
+            #object to add to latencies JSON
+            latObj = {
+                'FX_L' : Latency,
+                'LAST_FX_SIZE' : last_xb_size,
+                'BUF_S_LIST' : buf_sizes_list
+            }
+            self.latenciesDict['modes'].append(latObj)
             #finally, divide by xb_size of LAST and ceil
             MasterLatency = math.ceil(Latency / last_xb_size)
             #add to latencies list
             self.LatencyList.append(MasterLatency)
-            modeInd += 1
 
     #function to extract NoC channels info
     def extNoCChannels(self):
@@ -690,11 +699,6 @@ class AudioMain:
             (const int *)RECV_ARRAY_''' + str(mode) + ','
         FX_H += '''
         };
-        //latency from input to output in samples (without considering NoC)
-        const unsigned int LATENCY[MODES] = {'''
-        for Latency in self.LatencyList:
-            FX_H += str(Latency) + ', '
-        FX_H += '''};
 
         #endif /* _AUDIOINIT_H_ */'''
         #write file
@@ -744,6 +748,14 @@ class AudioMain:
                     NoCConf['channels'].append(chanObj)
                     NoCConf['channels'].append(chanObjRev)
             self.NoCConfs.append(NoCConf)
+        #add bandwidth values to latencies dict
+        modeInd = 0
+        for mode in self.latenciesDict['modes']:
+            mode['BANDWIDTH'] = minBufSizes[modeInd]
+            modeInd += 1
+        #Write latencies object
+        with open(sys.argv[5], 'w') as latJSON:
+            json.dump(self.latenciesDict, latJSON)
         '''
         for NoCConf in self.NoCConfs:
             print('THIS MODE')

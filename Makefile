@@ -29,8 +29,10 @@ AEGEAN_NOCSCHED_FILE_ALL2ALL=$(CURDIR)/config/default-altde2-115-audio-nocsched-
 
 AUDIO_APP?=default_audio_app
 FX_LIST?=FX_List
+LATENCY?=latency_autogen.json
 AUDIO_APP_FILE=$(AEGEAN_PATH)/audio_apps/$(AUDIO_APP).json
 FX_LIST_FILE=$(AEGEAN_PATH)/audio_apps/$(FX_LIST).json
+LATENCY_FILE=$(AEGEAN_PATH)/audio_apps/$(LATENCY)
 
 BUILD_NOCSCHED_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_NOCSCHED)
 
@@ -98,10 +100,17 @@ audio-app-name:
 	@echo "Current Audio APP name":
 	@echo $(AUDIO_APP)
 
-audio-setup: clean-noc-sched audio-generate noc-sched
+audio-setup: clean-noc-sched audio-generate noc-sched audio-latency
 
 audio-generate: $(AUDIO_APP_FILE)
-	@python3 $(AEGEAN_PATH)/python/audioFXGen.py $(FX_LIST_FILE) $(AUDIO_APP_FILE) $(AEGEAN_NOCSCHED_FILE) $(NOC_RECONFIG)
+	@python3 $(AEGEAN_PATH)/python/audioFXGen.py $(FX_LIST_FILE) $(AUDIO_APP_FILE) $(AEGEAN_NOCSCHED_FILE) $(NOC_RECONFIG) $(LATENCY_FILE)
+
+audio-latency: $(LATENCY_FILE)
+ifeq ($(NOC_RECONFIG),1)
+	@python3 $(AEGEAN_PATH)/python/audioLatencyCalc.py $(LATENCY_FILE) $(NOC_RECONFIG) $(AEGEAN_NOCSCHED_FILE)
+else
+	@python3 $(AEGEAN_PATH)/python/audioLatencyCalc.py $(LATENCY_FILE) $(NOC_RECONFIG) $(AEGEAN_NOCSCHED_FILE_ALL2ALL)
+endif
 
 noc-sched-name:
 	@echo "Current NoC scheduling topoligy:"
