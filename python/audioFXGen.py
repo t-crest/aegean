@@ -49,7 +49,7 @@ class AudioMain:
     ]
     #List of available effects:
     #   -S: samples processed per execution
-    #   -OH_req: overhead required ratio between minimum buffer size and S
+    #   -OH_red: overhead reducing factor between minimum buffer size and S
     #   -occup: occupation ratio: processing time per sample relative to sampling period
     FX = []
     #loaded JSON object
@@ -103,10 +103,10 @@ class AudioMain:
             if self.FX[fxi]['name'] == thisFX:
                 fx_type = fxi
                 S = self.FX[fxi]['S']
-                OH_req = self.FX[fxi]['OH_req']
-                #for 0: increase OH_req
+                OH_red = self.FX[fxi]['OH_red']
+                #for 0: increase OH_red
                 if fx_id == 0:
-                    OH_req = OH_req * self.OH_MULT_0
+                    OH_red = OH_red * self.OH_MULT_0
                 occup = self.FX[fxi]['occup']
                 break
             if fxi == (len(self.FX)-1):
@@ -143,8 +143,8 @@ class AudioMain:
                   'core'    : self.coreOrder[core]['id'],
                   'fx_type' : fx_type,
                   'S'       : S,
-                  'xb_size' : (S*OH_req),
-                  'yb_size' : (S*OH_req),
+                  'xb_size' : (S*OH_red),
+                  'yb_size' : (S*OH_red),
                   'chain_id': thisChain
         }
         #check if it is same core in
