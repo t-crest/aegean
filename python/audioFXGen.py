@@ -51,21 +51,7 @@ class AudioMain:
     #   -S: samples processed per execution
     #   -OH_req: overhead required ratio between minimum buffer size and S
     #   -occup: occupation ratio: processing time per sample relative to sampling period
-    FX = [
-        { 'name' : 'DRY',          'S' : 1 ,  'OH_req' : 1 , 'occup' : 0.5 },
-        { 'name' : 'DRY_8SAMPLES', 'S' : 8 ,  'OH_req' : 1 , 'occup' : 0.5 },
-        { 'name' : 'DELAY',        'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
-        { 'name' : 'OVERDRIVE',    'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
-        { 'name' : 'WAHWAH',       'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
-        { 'name' : 'CHORUS',       'S' : 1 ,  'OH_req' : 2 , 'occup' :   1 },
-        { 'name' : 'DISTORTION',   'S' : 1 ,  'OH_req' : 4 , 'occup' :   1 },
-        { 'name' : 'HP',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
-        { 'name' : 'LP',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
-        { 'name' : 'BP',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
-        { 'name' : 'BR',           'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
-        { 'name' : 'VIBRATO',      'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
-        { 'name' : 'TREMOLO',      'S' : 1 ,  'OH_req' : 4 , 'occup' : 0.5 },
-    ]
+    FX = []
     #loaded JSON object
     audioApp = {}
     #List describing the used effects (used to create header)
@@ -87,7 +73,7 @@ class AudioMain:
     #Describer of the scheduler XML
     NoCConfs = []
     #setup project name and paths
-    projectname = sys.argv[2]
+    projectname = sys.argv[3]
     projectname = os.path.splitext(projectname)[0]
     print("PROJECT NAME: " + projectname)
     p = Paths(projectname)
@@ -96,11 +82,15 @@ class AudioMain:
 
     def __init__ (self):
         #Read Audio APP JSON
-        print("READING AUDIO APP FILE: " + sys.argv[1])
-        with open (sys.argv[1]) as audioApp_json:
+        print("READING AUDIO APP FILE: " + sys.argv[2])
+        with open (sys.argv[2]) as audioApp_json:
             self.audioApp = json.load(audioApp_json)
+        print('READING FX LIST FILE: ' + sys.argv[1])
+        with open (sys.argv[1]) as FX_json:
+            jsonFX = json.load(FX_json)
+        self.FX = jsonFX['FX_LIST']
         #check if reconfiguration is enabled
-        if sys.argv[3] == '1':
+        if sys.argv[4] == '1':
             print('NoC RECONFIGURATION ENABLED')
             self.NoCReconfig = True
         else:
@@ -794,8 +784,8 @@ class AudioMain:
                     channel = etree.SubElement(communication, 'channel', channel)
 
         # Save to XML file
-        print("GENERATING NoC TDM SCHEDULING XML FILE: " + sys.argv[2])
-        doc.write(sys.argv[2], xml_declaration=True, encoding='utf-8')
+        print("GENERATING NoC TDM SCHEDULING XML FILE: " + sys.argv[3])
+        doc.write(sys.argv[3], xml_declaration=True, encoding='utf-8')
 
 
 #create class

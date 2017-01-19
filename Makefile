@@ -28,7 +28,9 @@ AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
 AEGEAN_NOCSCHED_FILE_ALL2ALL=$(CURDIR)/config/default-altde2-115-audio-nocsched-all2all.xml
 
 AUDIO_APP?=default_audio_app
+FX_LIST?=FX_List
 AUDIO_APP_FILE=$(AEGEAN_PATH)/audio_apps/$(AUDIO_APP).json
+FX_LIST_FILE=$(AEGEAN_PATH)/audio_apps/$(FX_LIST).json
 
 BUILD_NOCSCHED_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_NOCSCHED)
 
@@ -99,7 +101,7 @@ audio-app-name:
 audio-setup: clean-noc-sched audio-generate noc-sched
 
 audio-generate: $(AUDIO_APP_FILE)
-	@python3 $(AEGEAN_PATH)/python/audioFXGen.py $(AUDIO_APP_FILE) $(AEGEAN_NOCSCHED_FILE) $(NOC_RECONFIG)
+	@python3 $(AEGEAN_PATH)/python/audioFXGen.py $(FX_LIST_FILE) $(AUDIO_APP_FILE) $(AEGEAN_NOCSCHED_FILE) $(NOC_RECONFIG)
 
 noc-sched-name:
 	@echo "Current NoC scheduling topoligy:"
