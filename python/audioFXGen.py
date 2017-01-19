@@ -500,7 +500,7 @@ class AudioMain:
                     buf_sizes_list.append(fx['yb_size'])
             #then, add xb_size of LAST
             last_xb_size = FXList[len(FXList)-1]['xb_size'] #YES
-            Latency += last_xb_size #really?
+            #Latency += last_xb_size #really?
             #object to add to latencies JSON
             latObj = {
                 'FX_L' : Latency,
