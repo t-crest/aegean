@@ -3,12 +3,12 @@
         "DISTORTION"
     ],
     [
-        "LP"
+        "OVERDRIVE"
     ],
     [
         {"chains" : [
             [ "DISTORTION"],
-            [ "LP" ]
+            [ "OVERDRIVE" ]
         ]}
     ]
 ]}
