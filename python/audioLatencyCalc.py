@@ -43,7 +43,12 @@ LAT_IO = latList['L_IO'] * 1000 / latList['Fs']
 #Loop through modes
 MasterLatenciesList = []
 modeInd = 0
+
+
+print('********************** LATENCY **********************')
+
 for mode in latList['modes']:
+    print('************** MODE ' + str(modeInd) + ' **************')
     FX_latency = mode['FX_L'] # in samples
     FX_latency_ms = FX_latency * 1000 / latList['Fs']
 
@@ -58,15 +63,18 @@ for mode in latList['modes']:
         L_accum_ccs += LC_ccs
     L_NoC = math.ceil(L_accum_ccs/1536) # to samples (1535 clock cycles per sample)
     L_NoC_ms = L_NoC * 1000 / latList['Fs']
-    #total latency
-    L_TOTAL = L_NoC + FX_latency + latList['L_IO']
-    L_TOTAL_ms = L_TOTAL * 1000 / latList['Fs']
-    print('LATENCY IN MODE ' + str(modeInd) + ': ' + \
-          str('%.2f' % L_TOTAL_ms) + ' ms (' + str(L_TOTAL) + ' samples)')
     print('IO Latency: ' + str('%.2f' % LAT_IO) + ' ms (' + str(latList['L_IO']) + ' samples)' + \
           ', FX Latency: ' + str('%.2f' % FX_latency_ms) + ' ms (' + str(FX_latency) + ' samples)' + \
           ', NoC Latency: ' + str('%.2f' % L_NoC_ms) + ' ms (' + str(L_NoC) + ' samples)')
     MasterLatency = math.ceil( (FX_latency+L_NoC) / mode['LAST_FX_SIZE'])
+    tot_lat = MasterLatency * mode['LAST_FX_SIZE']
+    tot_lat_ms = tot_lat * 1000 / latList['Fs']
+    print('Total Latency of FX and NoC:' + str('%.2f' % tot_lat_ms) + ' ms (' + str(tot_lat) + ' samples)')
+    #total latency (FX, NoC, IOs)
+    L_TOTAL = tot_lat + latList['L_IO']
+    L_TOTAL_ms = L_TOTAL * 1000 / latList['Fs']
+    print('TOTAL LATENCY: ' + \
+          str('%.2f' % L_TOTAL_ms) + ' ms (' + str(L_TOTAL) + ' samples)')
     MasterLatenciesList.append(MasterLatency)
     modeInd += 1
 

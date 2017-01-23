@@ -1,0 +1,14 @@
+{ "modes" : [
+    [
+        "DISTORTION"
+    ],
+    [
+        "LP"
+    ],
+    [
+        {"chains" : [
+            [ "DISTORTION"],
+            [ "LP" ]
+        ]}
+    ]
+]}
