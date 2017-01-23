@@ -22,19 +22,20 @@ AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
 BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
-AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
-AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
-#if NoC reconfiguration is disabled:
-AEGEAN_NOCSCHED_FILE_ALL2ALL=$(CURDIR)/config/default-altde2-115-audio-nocsched-all2all.xml
-
+#AUDIO FILES:
 AUDIO_APP?=default_audio_app
 FX_LIST?=FX_List
 LATENCY?=latency_autogen.json
 AUDIO_APP_FILE=$(AEGEAN_PATH)/audio_apps/$(AUDIO_APP).json
 FX_LIST_FILE=$(AEGEAN_PATH)/audio_apps/$(FX_LIST).json
 LATENCY_FILE=$(AEGEAN_PATH)/audio_apps/$(LATENCY)
+#NoC Reconfiguration (for AUDIO): 1=Enabled, 2=Disabled
 NOC_RECONFIG?=0
-
+#destination for auto-generated NoC schedule (for AUDIO)
+AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
+AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
+#if NoC reconfiguration is disabled, all2all schedule for NoC (for AUDIO)
+AEGEAN_NOCSCHED_FILE_ALL2ALL=$(CURDIR)/config/default-altde2-115-audio-nocsched-all2all.xml
 BUILD_NOCSCHED_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_NOCSCHED)
 
 # Source file variables
