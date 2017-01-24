@@ -1,15 +1,15 @@
 { "FX_LIST" : [
-    { "name" : "DRY",          "S" : 1 ,  "OH_red" : 4  , "occup" : 0.5 },
-    { "name" : "DRY_8SAMPLES", "S" : 8 ,  "OH_red" : 1  , "occup" : 0.5 },
-    { "name" : "DELAY",        "S" : 1 ,  "OH_red" : 8  , "occup" :   1 },
-    { "name" : "OVERDRIVE",    "S" : 1 ,  "OH_red" : 16 , "occup" :   1 },
-    { "name" : "WAHWAH",       "S" : 1 ,  "OH_red" : 8  , "occup" :   1 },
-    { "name" : "CHORUS",       "S" : 1 ,  "OH_red" : 8  , "occup" :   1 },
-    { "name" : "DISTORTION",   "S" : 1 ,  "OH_red" : 16 , "occup" :   1 },
-    { "name" : "HP",           "S" : 1 ,  "OH_red" : 16 , "occup" : 0.5 },
-    { "name" : "LP",           "S" : 1 ,  "OH_red" : 16 , "occup" : 0.5 },
-    { "name" : "BP",           "S" : 1 ,  "OH_red" : 16 , "occup" : 0.5 },
-    { "name" : "BR",           "S" : 1 ,  "OH_red" : 16 , "occup" : 0.5 },
-    { "name" : "VIBRATO",      "S" : 1 ,  "OH_red" : 8  , "occup" : 0.5 },
-    { "name" : "TREMOLO",      "S" : 1 ,  "OH_red" : 8  , "occup" : 0.5 }
+    { "name" : "DRY",          "S" : 1 ,  "OH_red" : 4  , "util" : 0.5 },
+    { "name" : "DRY_8SAMPLES", "S" : 8 ,  "OH_red" : 1  , "util" : 0.5 },
+    { "name" : "DELAY",        "S" : 1 ,  "OH_red" : 8  , "util" :   1 },
+    { "name" : "OVERDRIVE",    "S" : 1 ,  "OH_red" : 16 , "util" :   1 },
+    { "name" : "WAHWAH",       "S" : 1 ,  "OH_red" : 8  , "util" :   1 },
+    { "name" : "CHORUS",       "S" : 1 ,  "OH_red" : 8  , "util" :   1 },
+    { "name" : "DISTORTION",   "S" : 1 ,  "OH_red" : 16 , "util" :   1 },
+    { "name" : "HP",           "S" : 1 ,  "OH_red" : 16 , "util" : 0.5 },
+    { "name" : "LP",           "S" : 1 ,  "OH_red" : 16 , "util" : 0.5 },
+    { "name" : "BP",           "S" : 1 ,  "OH_red" : 16 , "util" : 0.5 },
+    { "name" : "BR",           "S" : 1 ,  "OH_red" : 16 , "util" : 0.5 },
+    { "name" : "VIBRATO",      "S" : 1 ,  "OH_red" : 8  , "util" : 0.5 },
+    { "name" : "TREMOLO",      "S" : 1 ,  "OH_red" : 8  , "util" : 0.5 }
 ]}

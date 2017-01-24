@@ -50,7 +50,7 @@ class AudioMain:
     #List of available effects:
     #   -S: samples processed per execution
     #   -OH_red: overhead reducing factor between minimum buffer size and S
-    #   -occup: occupation ratio: processing time per sample relative to sampling period
+    #   -util: utilization ratio: processing time per sample relative to sampling period
     FX = []
     #loaded JSON object
     audioApp = {}
@@ -98,7 +98,7 @@ class AudioMain:
             print('NoC RECONFIGURATION DISABLED')
 
     #function used by addFX to add 1 FX
-    def addThisFX(self, thisFX, fx_id, core, FXList, CORE_OCCUP, thisChain, prevChain):
+    def addThisFX(self, thisFX, fx_id, core, FXList, CORE_UTIL, thisChain, prevChain):
         for fxi in range(0,len(self.FX)):
             #get fx_type and S
             if self.FX[fxi]['name'] == thisFX:
@@ -108,12 +108,12 @@ class AudioMain:
                 #for 0: increase OH_red
                 if fx_id == 0:
                     OH_red = OH_red * self.OH_MULT_0
-                occup = self.FX[fxi]['occup']
+                util = self.FX[fxi]['util']
                 break
             if fxi == (len(self.FX)-1):
                 print('ERROR: EFFECT ' \
                       + thisFX + ' DOES NOT EXIST')
-                return (1, fx_id, core, FXList, CORE_OCCUP)
+                return (1, fx_id, core, FXList, CORE_UTIL)
         same_core_in = False
         #if chain starts or finishes, must update core
         chainStarts = False
@@ -126,19 +126,19 @@ class AudioMain:
                 chainEnds = True
             #print('chain start or finish')
         else:
-            #see if there is enough occupation space on this core for this FX
-            if (1-CORE_OCCUP[core]) < occup: #if not enough space
+            #see if there is enough utilization space on this core for this FX
+            if (1-CORE_UTIL[core]) < util: #if not enough space
                 core += 1
             else:
                 #receives from same core: only if it is not 1st and its not empty
-                if (fx_id != 0) and (CORE_OCCUP[core] > 0):
+                if (fx_id != 0) and (CORE_UTIL[core] > 0):
                     same_core_in = True
         if core >= self.CORE_AMOUNT:
             print('ERROR: TOO MANY EFFECTS, DONT FIT IN ' \
                   + str(self.CORE_AMOUNT) + ' CORES')
-            return (1, fx_id, core, FXList, CORE_OCCUP)
-        #update occupation
-        CORE_OCCUP[core] += occup
+            return (1, fx_id, core, FXList, CORE_UTIL)
+        #update utilization
+        CORE_UTIL[core] += util
         bufsize = S*OH_red
         #limit: 32
         if bufsize > 32:
@@ -173,9 +173,9 @@ class AudioMain:
         if chainEnds:
             FXList[len(FXList)-1]['chain_end'] = True
         FXList.append(fxObj)
-        #print(thisFX + ', chain=' + str(thisChain) + ', core ' + str(core) + ': fx_occup=' + str(occup) + ', core_occup='+ str(CORE_OCCUP[core]))
+        #print(thisFX + ', chain=' + str(thisChain) + ', core ' + str(core) + ': fx_util=' + str(util) + ', core_util='+ str(CORE_UTIL[core]))
         fx_id += 1
-        return (0, fx_id, core, FXList, CORE_OCCUP)
+        return (0, fx_id, core, FXList, CORE_UTIL)
 
     #function to add chains form audioApp into the FX List
     def addFX(self):
@@ -183,8 +183,8 @@ class AudioMain:
             FXList = []
             fx_id = 0
             core = 0
-            #Current occupation on each core (between 0 and 1)
-            CORE_OCCUP = [0.5, 0, 0, 0]
+            #Current utilization on each core (between 0 and 1)
+            CORE_UTIL = [0.5, 0, 0, 0]
             #to check which chain (0 = no chain, 1+ = chain number)
             thisChain = 0
             prevChain = 0
@@ -199,12 +199,12 @@ class AudioMain:
                                  'yb_size' : self.OH_MULT_0,
                                  'chain_id': 0 })
                 fx_id += 1
-                CORE_OCCUP[0] = 1
+                CORE_UTIL[0] = 1
             else:
-                #if occup of 1st > 0.5, create dry effect as first:
+                #if util of 1st > 0.5, create dry effect as first:
                 for fxi in range(0,len(self.FX)):
                     #get fx_type and S
-                    if (self.FX[fxi]['name'] == mode[0]) and (self.FX[fxi]['occup'] > 0.5):
+                    if (self.FX[fxi]['name'] == mode[0]) and (self.FX[fxi]['util'] > 0.5):
                         #add initial effect: dry
                         FXList.append( { 'fx_id'   : fx_id,
                                          'core'    : 0,
@@ -214,7 +214,7 @@ class AudioMain:
                                          'yb_size' : self.OH_MULT_0,
                                          'chain_id': 0 })
                         fx_id += 1
-                        CORE_OCCUP[0] = 1
+                        CORE_UTIL[0] = 1
             #loop through items in mode
             for item in mode:
                 if type(item)  == dict:
@@ -228,17 +228,17 @@ class AudioMain:
                             thisChain += 1
                             #iterate FX
                             for fxname in chain:
-                                result, fx_id, core, FXList, CORE_OCCUP = \
+                                result, fx_id, core, FXList, CORE_UTIL = \
                                     self.addThisFX(fxname, fx_id, core, \
-                                                   FXList, CORE_OCCUP, thisChain, prevChain)
+                                                   FXList, CORE_UTIL, thisChain, prevChain)
                                 prevChain = thisChain
                                 if result == 1:
                                     return 1
                 else:
                     thisChain = 0
-                    result, fx_id, core, FXList, CORE_OCCUP = \
+                    result, fx_id, core, FXList, CORE_UTIL = \
                         self.addThisFX(item, fx_id, core, \
-                                       FXList, CORE_OCCUP, thisChain, prevChain)
+                                       FXList, CORE_UTIL, thisChain, prevChain)
                     prevChain = thisChain
                     if result == 1:
                         return 1
