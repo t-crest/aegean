@@ -1,18 +1,27 @@
 PROCESS TO BUILD AUDIO APP:
 
-1) On config.mk, specify the audio platform.
-   Recommended: AEGEAN_PLATFORM?=default-altde2-115-audio
+Steps:
+
+1) On config.mk, specify the audio platform and enable audio platform
+   AUDIO_ENABLED?=1
+   AEGEAN_PLATFORM?=default-altde2-115-audio
+
 2) build the platform:
    > make clean platform synth
+
 3) On config.mk, specify audio application.
    For example: AUDIO_APP?=default_audio_app_2
+
 4) On config.mk, disable NoC Reconfiguration:
    NOC_RECONFIG?=0
    Or enable it at your own risk. If enabled (1), specify NoC schedule XML file destination.
    For example: AEGEAN_NOCSCHED?=default-altde2-115-audio-nocsched
+
 5) Run effect allocator:
    > make audio-setup
    audioinit.h and latencyinit.h files will be created at t-crest/patmos/c/libaudio.
+
 6) From t-crest directory:
    > make -C patmos APP=audio_main comp download
+
 7) Enjoy!!

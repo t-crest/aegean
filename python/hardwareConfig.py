@@ -55,13 +55,12 @@ class HWConfig(object):
         et = etree.ElementTree(self.platform)
         et.write(self.p.GEN_PLAT)
 
-    def config(self):
+    def config(self, audioEnabled):
         nocComp = NoCGen(self.p,self.platform)
         nocComp.config()
         noc = nocComp.generate()
         aegeanGen = AegeanGen(self.p,self.platform)
         aegean = aegeanGen.generate(noc)
-        top = aegeanGen.generateTopLevel(aegean)
+        top = aegeanGen.generateTopLevel(aegean, audioEnabled)
         testGen = TestGen(self.p,self.platform)
         test = testGen.generate(top)
-

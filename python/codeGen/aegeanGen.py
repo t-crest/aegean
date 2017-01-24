@@ -357,7 +357,7 @@ class AegeanGen(object):
         return aegean
 
 
-    def generateTopLevel(self,aegean):
+    def generateTopLevel(self,aegean, audioEnabled):
         vendor = self.board.get('vendor')
         if vendor == 'Altera':
             self.addPinsToQSF()
@@ -448,7 +448,7 @@ class AegeanGen(object):
         topCode.pll(top,vendor,clkPin)
         top.arch.declComp(sram)
 
-        topCode.bindAegean(aegean,len(self.nodes))
+        topCode.bindAegean(aegean,len(self.nodes), audioEnabled)
         top.arch.instComp(aegean,'cmp',True)
         topCode.bindSram(sram,sramEntity,'sram_burst_m','sram_burst_s')
         top.arch.instComp(sram,'ssram')

@@ -230,22 +230,23 @@ def writeTriState(top,name,sram,dataSig):
 ''')
 
 
-def bindAegean(aegean,nodes=0):
+def bindAegean(aegean,nodes=0,audioEnabled=False):
     aegean.entity.bindPort('clk','clk_int')
     aegean.entity.bindPort('reset','int_res')
     aegean.entity.bindPort('io_uartPins_tx0','oUart0Pins_txd')
     aegean.entity.bindPort('io_uartPins_rx0','iUart0Pins_rxd')
-    aegean.entity.bindPort('io_keysPins_key0','iKeys0Pins_key')
-    aegean.entity.bindPort('io_audioInterfacePins_dacDat0',  'oAudio0Pins_dacDat')
-    aegean.entity.bindPort('io_audioInterfacePins_dacLrc0',  'oAudio0Pins_dacLrc')
-    aegean.entity.bindPort('io_audioInterfacePins_adcDat0',  'iAudio0Pins_adcDat')
-    aegean.entity.bindPort('io_audioInterfacePins_adcLrc0',  'oAudio0Pins_adcLrc')
-    aegean.entity.bindPort('io_audioInterfacePins_sdIn0',    'Audio0Pins_in_din')
-    aegean.entity.bindPort('io_audioInterfacePins_sdOut0',   'Audio0Pins_out_dout')
-    aegean.entity.bindPort('io_audioInterfacePins_we0',      'Audio0Pins_out_dout_ena')
-    aegean.entity.bindPort('io_audioInterfacePins_sclkOut0', 'oAudio0Pins_sclkOut')
-    aegean.entity.bindPort('io_audioInterfacePins_bclk0',    'oAudio0Pins_bclk')
-    aegean.entity.bindPort('io_audioInterfacePins_xclk0',    'oAudio0Pins_xclk')
+    if audioEnabled:
+        aegean.entity.bindPort('io_keysPins_key0','iKeys0Pins_key')
+        aegean.entity.bindPort('io_audioInterfacePins_dacDat0',  'oAudio0Pins_dacDat')
+        aegean.entity.bindPort('io_audioInterfacePins_dacLrc0',  'oAudio0Pins_dacLrc')
+        aegean.entity.bindPort('io_audioInterfacePins_adcDat0',  'iAudio0Pins_adcDat')
+        aegean.entity.bindPort('io_audioInterfacePins_adcLrc0',  'oAudio0Pins_adcLrc')
+        aegean.entity.bindPort('io_audioInterfacePins_sdIn0',    'Audio0Pins_in_din')
+        aegean.entity.bindPort('io_audioInterfacePins_sdOut0',   'Audio0Pins_out_dout')
+        aegean.entity.bindPort('io_audioInterfacePins_we0',      'Audio0Pins_out_dout_ena')
+        aegean.entity.bindPort('io_audioInterfacePins_sclkOut0', 'oAudio0Pins_sclkOut')
+        aegean.entity.bindPort('io_audioInterfacePins_bclk0',    'oAudio0Pins_bclk')
+        aegean.entity.bindPort('io_audioInterfacePins_xclk0',    'oAudio0Pins_xclk')
     for p in range(0,nodes):
         aegean.entity.bindPort('io_ledsPins_led' + str(p),'oLed' + str(p) + 'Pins_led')
     aegean.entity.bindPort('sram_burst_m','sram_burst_m')

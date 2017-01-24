@@ -71,9 +71,18 @@ print("Projectname: " + projectname)
 p = Paths(projectname)
 mkdir_p(p.TMP_BUILD_PATH)
 
+#audio platform: initially disabled
+audioEnabled = False
+
+try:
+    if str(sys.argv[2]) == '1':
+        audioEnabled = True
+except IndexError:
+    pass
+
 hwc = HWConfig(p,aegean)
 swc = SWConfig(p,aegean)
 # At the moment software config needs to be done before hardware config
 # because the schedule (init.h) is included in the patmos.v
 swc.config(hwc.routerDepth)
-hwc.config()
+hwc.config(audioEnabled)

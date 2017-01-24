@@ -22,6 +22,9 @@ AEGEAN_PLATFORM_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_PLATFORM).xml
 
 BUILD_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_PLATFORM)
 
+#For BUILDING AUDIO PLATFORM (default disabled):
+AUDIO_ENABLED?=0
+
 #AUDIO FILES:
 AUDIO_APP?=default_audio_app
 FX_LIST?=FX_List
@@ -139,7 +142,7 @@ platform: $(BUILD_PATH)/nocinit.c
 $(BUILD_PATH)/nocinit.c: $(PGEN)
 
 $(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files ise_files
-	@python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE)
+	@python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE) $(AUDIO_ENABLED)
 	@echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
 
 $(BUILD_PATH):
