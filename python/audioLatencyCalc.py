@@ -83,7 +83,7 @@ LAT_H = '''
 #ifndef _LATENCYINIT_H_
 #define _LATENCYINIT_H_
 
-//latency from input to output in samples (without considering NoC)
+//latency from input to output, measured in iterations
 const unsigned int LATENCY[MODES] = {'''
 for Latency in MasterLatenciesList:
     LAT_H += str(Latency) + ', '

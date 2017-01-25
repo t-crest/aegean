@@ -49,7 +49,7 @@ class AudioMain:
     ]
     #List of available effects:
     #   -S: samples processed per execution
-    #   -OH_red: overhead reducing factor between minimum buffer size and S
+    #   -ORF: overhead reducing factor between minimum buffer size and S
     #   -util: utilization ratio: processing time per sample relative to sampling period
     FX = []
     #loaded JSON object
@@ -104,10 +104,10 @@ class AudioMain:
             if self.FX[fxi]['name'] == thisFX:
                 fx_type = fxi
                 S = self.FX[fxi]['S']
-                OH_red = self.FX[fxi]['OH_red']
-                #for 0: increase OH_red
+                ORF = self.FX[fxi]['ORF']
+                #for 0: increase ORF
                 if fx_id == 0:
-                    OH_red = OH_red * self.OH_MULT_0
+                    ORF = ORF * self.OH_MULT_0
                 util = self.FX[fxi]['util']
                 break
             if fxi == (len(self.FX)-1):
@@ -139,7 +139,7 @@ class AudioMain:
             return (1, fx_id, core, FXList, CORE_UTIL)
         #update utilization
         CORE_UTIL[core] += util
-        bufsize = S*OH_red
+        bufsize = S*ORF
         #limit: 32
         if bufsize > 32:
             bufsize = 32
