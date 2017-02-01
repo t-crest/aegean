@@ -1,0 +1,10 @@
+{ "modes" : [
+    [
+        "VIBRATO", "OVERDRIVE"
+    ],
+    [
+        "DRY_8SAMPLES", { "chains" : [
+            [ "DELAY" ],
+            [ "DISTORTION" ]]}
+    ]
+]}

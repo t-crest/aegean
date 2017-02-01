@@ -1,0 +1,14 @@
+{ "modes" : [
+    [
+        "DRY", "DRY_8SAMPLES", "DRY", "DRY"
+    ],
+    [
+        "WAHWAH"
+    ],
+    [
+        "OVERDRIVE", "LP", "DELAY"
+    ],
+    [
+        "CHORUS", "TREMOLO"
+    ]
+]}
