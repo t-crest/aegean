@@ -46,6 +46,58 @@
             </IOs>
         </patmos>
     </IPCore>
+<IPCores>
+	<IPCore IPType="patmosMaster-sdram">
+        <patmos>
+            <description>Single issue patmos master for DE2-115 board with SDRAM memory.</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpmaster"/>
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="2k" />
+            <DSPM size="0" />
+
+            <ExtMem size="128M" DevTypeRef="MemBridge" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Uart" offset="8" />
+                <IO DevTypeRef="Led" offset="9" />
+            </IOs>
+        </patmos>
+    </IPCore>
+    <IPCore IPType="patmosSlave-sdram">
+        <patmos>
+            <description>Single issue patmos slave for DE2-115 board with SDRAM memory.</description>
+
+            <frequency Hz="80000000" />
+            <pipeline dual="false" />
+            <bus burstLength="4" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpslave"/>
+            <ICache type="method" size="8k" assoc="32" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="0k" />
+            <DSPM size="0" />
+
+            <ExtMem size="128M" DevTypeRef="MemBridge" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Led" offset="9" />
+            </IOs>
+        </patmos>
+    </IPCore>
+	
+    <Dev DevType="MemBridge" entity="MemBridge" iface="OcpBurst">
+    </Dev>
+
     <IPCore IPType="Master-MC">
         <patmos>
             <description>Single issue patmos master</description>
