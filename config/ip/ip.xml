@@ -46,8 +46,7 @@
             </IOs>
         </patmos>
     </IPCore>
-<IPCores>
-	<IPCore IPType="patmosMaster-sdram">
+    <IPCore IPType="patmosMaster-sdram">
         <patmos>
             <description>Single issue patmos master for DE2-115 board with SDRAM memory.</description>
 
@@ -61,7 +60,7 @@
             <ISPM size="2k" />
             <DSPM size="0" />
 
-            <ExtMem size="128M" DevTypeRef="MemBridge" />
+            <ExtMem size="128M" />
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
@@ -85,7 +84,7 @@
             <ISPM size="0k" />
             <DSPM size="0" />
 
-            <ExtMem size="128M" DevTypeRef="MemBridge" />
+            <ExtMem size="128M" />
 
             <IOs>
                 <IO DevTypeRef="CpuInfo" offset="0"/>
@@ -94,10 +93,6 @@
             </IOs>
         </patmos>
     </IPCore>
-	
-    <Dev DevType="MemBridge" entity="MemBridge" iface="OcpBurst">
-    </Dev>
-
     <IPCore IPType="Master-MC">
         <patmos>
             <description>Single issue patmos master</description>
