@@ -21,7 +21,7 @@
 
 		</nodes>
 
-		<memory id="ram0" DevTypeRef="Ssram16" size="2M" />
+		<memory id="ram0" DevTypeRef="OCRam" size="128M" />
 
 		<!-- The standard IP cores are included -->
 		<xi:include href="./ip/ip.xml" />

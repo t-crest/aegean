@@ -41,6 +41,9 @@ AEGEAN_NOCSCHED_FILE=$(AEGEAN_PATH)/config/$(AEGEAN_NOCSCHED).xml
 AEGEAN_NOCSCHED_FILE_ALL2ALL=$(CURDIR)/config/default-altde2-115-audio-nocsched-all2all.xml
 BUILD_NOCSCHED_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_NOCSCHED)
 
+#Use predefined top-level
+PREDIFINED_TOP_ENABLED?=0
+
 # Source file variables
 PATMOS_PATH?=$(CURDIR)/../patmos
 ARGO_PATH?=$(CURDIR)/../argo
@@ -144,6 +147,10 @@ $(BUILD_PATH)/nocinit.c: $(PGEN)
 $(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files ise_files
 	@python3 $(AEGEAN_PATH)/python/main.py $(AEGEAN_PLATFORM_FILE) $(AUDIO_ENABLED)
 	@echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
+ifeq ($(PREDIFINED_TOP_ENABLED),1)
+	@echo "Using predifined top level."
+	cp -v -r $(AEGEAN_SRC_PATH)/top/$(AEGEAN_PLATFORM)/. $(BUILD_PATH)/
+endif
 
 $(BUILD_PATH):
 	mkdir -p $(BUILD_PATH)/xml
