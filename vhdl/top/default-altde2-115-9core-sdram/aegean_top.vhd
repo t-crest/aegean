@@ -63,8 +63,8 @@ architecture struct of aegean_top is
 			S_Data          : out   std_logic_vector(31 downto 0);
 			S_CmdAccept     : out   std_logic;
 			S_DataAccept    : out   std_logic;
-			--M_CmdRefresh    : in    std_logic;
-			--S_RefreshAccept : out   std_logic;
+			M_CmdRefresh    : in    std_logic;
+			S_RefreshAccept : out   std_logic;
 
 			-- memory interface
 			dram_CLK        : out   std_logic; -- Clock
@@ -148,27 +148,28 @@ process(sys_clk, pll_locked)
 	dram_clk_int <= sys_clk;
 
 	--Temporarely project that mananges the refresh of the of the memory once every 512CC (max 624 @ 80MHZ)
---	process(sys_clk)
---	begin
---		if rising_edge(sys_clk) then
---			if rst = '1' then
---				M_CmdRefresh_int <= '0';
---				ref_cnt <= "0000000000";
---			else
---				if (ref_cnt = "1000000000") then
---					M_CmdRefresh_int <= '1';--time to refresh
---					ref_cnt <= "1111111111";
---				elsif(ref_cnt = "1111111111") then
---					if (S_RefreshAccept_int = '1') then
---						M_CmdRefresh_int <= '0';
---						ref_cnt <= "0000000000";
---					end if;
---				else
---					ref_cnt <= ref_cnt + 1;
---				end if;
---			end if;
---		end if;
---	end process;
+	process(sys_clk)
+	begin
+		if rising_edge(sys_clk) then
+			if rst = '1' then
+				M_CmdRefresh_int <= '0';
+				ref_cnt <= "0000000000";
+			else
+				if (ref_cnt = "1000000000") then
+					M_CmdRefresh_int <= '1';--time to refresh
+					ref_cnt <= "1111111111";
+				elsif(ref_cnt = "1111111111") then
+					M_CmdRefresh_int <= '1';
+					if (S_RefreshAccept_int = '1') then
+						M_CmdRefresh_int <= '0';
+						ref_cnt <= "0000000000";
+					end if;
+				else
+					ref_cnt <= ref_cnt + 1;
+				end if;
+			end if;
+		end if;
+	end process;
 			
 	sc_sdram_top_inst0 : sc_sdram_top port map(
 			clk             => dram_clk_int, --
@@ -187,8 +188,8 @@ process(sys_clk, pll_locked)
 			S_DataAccept    => SDataAccept_int, --
 			S_Data          => SData_int, --
 			S_Resp          => SResp_int, --
-			--M_CmdRefresh    => M_CmdRefresh_int, --: in    std_logic;
-			--S_RefreshAccept => S_RefreshAccept_int, --: out   std_logic;
+			M_CmdRefresh    => M_CmdRefresh_int, --: in    std_logic;
+			S_RefreshAccept => S_RefreshAccept_int, --: out   std_logic;
 			
 			-- memory interface
 			dram_CLK        => dram_CLK, --       : out   std_logic; -- Clock
