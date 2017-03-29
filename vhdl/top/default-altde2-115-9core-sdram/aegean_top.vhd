@@ -148,6 +148,30 @@ process(sys_clk, pll_locked)
 	dram_clk_int <= sys_clk;
 
 	--Temporarely project that mananges the refresh of the of the memory once every 512CC (max 624 @ 80MHZ)
+--	process(sys_clk)
+--	begin
+--		if rising_edge(sys_clk) then
+--			if rst = '1' then
+--				M_CmdRefresh_int <= '0';
+--				ref_cnt <= "0000000000";
+--			else
+--				if (ref_cnt = "1000000000") then
+--					M_CmdRefresh_int <= '1';--time to refresh
+--					ref_cnt <= "1111111111";
+--				elsif(ref_cnt = "1111111111") then
+--					M_CmdRefresh_int <= '1';
+--					if (S_RefreshAccept_int = '1') then
+--						M_CmdRefresh_int <= '0';
+--						ref_cnt <= "0000000000";
+--					end if;
+--				else
+--					ref_cnt <= ref_cnt + 1;
+--				end if;
+--			end if;
+--		end if;
+--	end process;
+			
+		--Temporarely project that mananges the refresh of the of the memory
 	process(sys_clk)
 	begin
 		if rising_edge(sys_clk) then
@@ -155,21 +179,23 @@ process(sys_clk, pll_locked)
 				M_CmdRefresh_int <= '0';
 				ref_cnt <= "0000000000";
 			else
-				if (ref_cnt = "1000000000") then
+				if (ref_cnt = "0001011101") then --93
+					ref_cnt <= ref_cnt + 1;
 					M_CmdRefresh_int <= '1';--time to refresh
-					ref_cnt <= "1111111111";
-				elsif(ref_cnt = "1111111111") then
-					M_CmdRefresh_int <= '1';
-					if (S_RefreshAccept_int = '1') then
-						M_CmdRefresh_int <= '0';
-						ref_cnt <= "0000000000";
-					end if;
+				elsif(ref_cnt = "0001100011")then
+					ref_cnt <= "0000000000";
+					M_CmdRefresh_int <= '0';--time to reset
 				else
 					ref_cnt <= ref_cnt + 1;
+					--luca--M_CmdRefresh_int <= '0';--time to stay quiet
+					if (S_RefreshAccept_int = '1') then
+						M_CmdRefresh_int <= '0'; -- keep it 1 util it is accepted
+					end if;
 				end if;
 			end if;
 		end if;
-	end process;
+	end process;		
+			
 			
 	sc_sdram_top_inst0 : sc_sdram_top port map(
 			clk             => dram_clk_int, --

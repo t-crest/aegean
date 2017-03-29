@@ -42,7 +42,7 @@ AEGEAN_NOCSCHED_FILE_ALL2ALL=$(CURDIR)/config/default-altde2-115-audio-nocsched-
 BUILD_NOCSCHED_PATH?=$(AEGEAN_PATH)/build/$(AEGEAN_NOCSCHED)
 
 #Use predefined top-level
-PREDIFINED_TOP_ENABLED?=0
+PREDIFINED_TOP_ENABLED?=1
 
 # Source file variables
 PATMOS_PATH?=$(CURDIR)/../patmos
