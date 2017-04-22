@@ -96,10 +96,10 @@ def getArbiter(numPorts,ocpBurstAddrWidth):
     return arbiter
 
 def getSSPM(numPorts):
-    sspm = Component('SSPM') # SSPM becomes the name of the component in the vhdl file, and sspm of the instance
+    sspm = Component('SSPMAegean') # SSPM becomes the name of the component in the vhdl file, and sspm of the instance
     sspm.entity.addPort('clk')
     sspm.entity.addPort('reset')
-    for i in range(0,numPorts):
+    for i in range(numPorts-1, -1, -1):
         sspm.entity.addPort('io_'+str(i)+'_M_Cmd','in','std_logic_vector',3)
         sspm.entity.addPort('io_'+str(i)+'_M_Addr','in','std_logic_vector',32)
         sspm.entity.addPort('io_'+str(i)+'_M_Data','in','std_logic_vector',32)
@@ -226,7 +226,7 @@ def bindSSPM(sspm, numPorts):
     sspm.entity.bindPort('clk','clk')
     sspm.entity.bindPort('reset','reset')
 
-    for i in range(0,numPorts):
+    for i in range(numPorts-1, -1, -1):
         sspm.entity.bindPort('io_'+str(i)+'_M_Cmd   ','ocp_core_m_sspm('+str(i)+').MCmd')
         sspm.entity.bindPort('io_'+str(i)+'_M_Addr  ','ocp_core_m_sspm('+str(i)+').MAddr')
         sspm.entity.bindPort('io_'+str(i)+'_M_Data  ','ocp_core_m_sspm('+str(i)+').MData')

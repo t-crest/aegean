@@ -498,12 +498,12 @@ class AegeanGen(object):
     def sspmGen(self):
         Sspm = ['make','-C',self.p.PATMOSHW_PATH]
         Sspm+= ['HWBUILDDIR='+self.p.BUILD_PATH]
-        Sspm+= [self.p.BUILD_PATH+'/SSPM.v']
+        Sspm+= [self.p.BUILD_PATH+'/SSPMAegean.v']
         ret = subprocess.call(Sspm)
         if ret != 0:
             raise SystemExit(__file__ +': Error: Generation of SSPM: return value: ' + str(ret))
 
-        self.genFiles.append('../SSPM.v')        
+        self.genFiles.append('../SSPMAegean.v')        
 
 
     def arbiterGen(self,cnt,addr,data,burstLength):
