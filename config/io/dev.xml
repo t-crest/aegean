@@ -38,7 +38,7 @@
     </Dev>
     <Dev DevType="SSPMio" entity="SSPMio" iface="OcpCore">
         <params>
-            <param name="extAddrWidth" value="8" />
+            <param name="extAddrWidth" value="32" />
             <param name="dataWidth" value="32" />
         </params>
     </Dev>    
