@@ -279,23 +279,6 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="doc/clk_wiz_v5_3_changelog.txt"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_board.xdc"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager.veo"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="mmcm_pll_drp_func_7s_mmcm.vh"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="mmcm_pll_drp_func_7s_pll.vh"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="mmcm_pll_drp_func_us_mmcm.vh"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="mmcm_pll_drp_func_us_pll.vh"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_clk_wiz.v"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager.v"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_sim_netlist.vhdl"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_sim_netlist.v"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_stub.v"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_stub.vhdl"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager.xdc"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_late.xdc"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager_ooc.xdc"/>
-        <CompFileExtendedInfo CompFileName="clk_manager.xci" FileRelPathName="clk_manager.xml"/>
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>

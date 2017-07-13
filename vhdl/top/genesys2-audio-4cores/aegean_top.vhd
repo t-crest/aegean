@@ -22,7 +22,7 @@ entity aegean_top is
     clk_in_n        : in    std_logic;
 
     led             : out   std_logic_vector(7 downto 0);
-    sw0              : in    std_logic;
+    keys        	: in std_logic_vector(3 downto 0);
 
     --TXD, RXD naming uses terminal-centric naming convention
     uart_txd        : in    std_logic;
@@ -56,29 +56,6 @@ entity aegean_top is
     audio_scl       : inout std_logic; --serial data output of i2c bus
     audio_sda       : inout std_logic --serial clock output of i2c bus
 );
-
---	port(
---		clk	: in std_logic;
---		oSRAM_A	: out std_logic_vector(19 downto 0);
---		oSRAM_OE_N	: out std_logic;
---		oSRAM_WE_N	: out std_logic;
---		oSRAM_CE_N	: out std_logic;
---		oSRAM_LB_N	: out std_logic;
---		oSRAM_UB_N	: out std_logic;
---		SRAM_DQ	: inout std_logic_vector(15 downto 0);
---		iUart0Pins_rxd	: in std_logic;
---		oUart0Pins_txd	: out std_logic;
---		oLed0Pins_led	: out std_logic;
---		oLed1Pins_led	: out std_logic;
---		oLed2Pins_led	: out std_logic;
---		oLed3Pins_led	: out std_logic;
---		oLed4Pins_led	: out std_logic;
---		oLed5Pins_led	: out std_logic;
---		oLed6Pins_led	: out std_logic;
---		oLed7Pins_led	: out std_logic;
---		oLed8Pins_led	: out std_logic
---	);
-
 end entity;
 
 architecture struct of aegean_top is
@@ -310,11 +287,14 @@ architecture struct of aegean_top is
 
     signal adc_data_int : STD_LOGIC_VECTOR(31 downto 0);
     signal dac_data_int : STD_LOGIC_VECTOR(31 downto 0);
+    
+    signal keys_n        	: std_logic_vector(3 downto 0);
 
 begin
 
-    led(7) <= sw0;
-    led(6 downto 4) <= (others =>'0');
+    led(7 downto 4) <= (others =>'0');
+    
+    keys_n <= not(keys);
 
     MCmd_bridge <= sram_burst_m.MCmd;
     MAddr_bridge(31 downto 30) <= (others =>'0');
@@ -526,7 +506,7 @@ begin
 		sram_burst_s	=>	sram_burst_s,
 		io_uartPins_rx0	=>	uart_txd, --TXD, RXD naming uses terminal-centric naming convention
 		io_uartPins_tx0	=>	uart_rxd, --TXD, RXD naming uses terminal-centric naming convention
-		io_keysPins_key0	=>	(others => '0'),
+		io_keysPins_key0	=>	keys_n,
 		io_ledsPins_led0	=>	led(0),
         io_i2CSubAddrPins_MCmd0        => I2CSubAddr_MCmd_bridge, -- : out std_logic_vector(2 downto 0);
         io_i2CSubAddrPins_MAddr0       => I2CSubAddr_MAddr_bridge, -- : out std_logic_vector(15 downto 0);
