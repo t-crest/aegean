@@ -174,7 +174,7 @@ class AegeanGen(object):
                 self.ocpBurstAddrWidth = params[i].get('value')
                 break
         self.ssramGen(entity,self.ocpBurstAddrWidth)
-        self.arbiterGen(len(self.nodes),self.ocpBurstAddrWidth,32,4)
+        self.arbiterGen(len(self.nodes),self.ocpBurstAddrWidth,32,8)
 
         aegeanCode.writeConfig(self.p.OcpConfFile,self.ocpBurstAddrWidth)
 
@@ -492,9 +492,11 @@ class AegeanGen(object):
         Arbiter+= ['ARBITER_ADDR_WIDTH='+str(addr)]
         Arbiter+= ['ARBITER_DATA_WIDTH='+str(data)]
         Arbiter+= ['ARBITER_BURST_LENGTH='+str(burstLength)]
-        Arbiter+= [self.p.BUILD_PATH+'/TdmArbiterWrapper.v']
+        #Arbiter+= [self.p.BUILD_PATH+'/TdmArbiterWrapper.v']
+        Arbiter+= [self.p.BUILD_PATH+'/Arbiter.v']
         ret = subprocess.call(Arbiter)
         if ret != 0:
             raise SystemExit(__file__ +': Error: Generation of memory arbiter: return value: ' + str(ret))
 
-        self.genFiles.append('../TdmArbiterWrapper.v')
+        #self.genFiles.append('../TdmArbiterWrapper.v')
+        self.genFiles.append('../Arbiter.v')

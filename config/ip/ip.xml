@@ -46,6 +46,111 @@
             </IOs>
         </patmos>
     </IPCore>
+    <IPCore IPType="patmosMasterGenesys2">
+        <patmos>
+            <description>Single issue patmos master for the Genesys 2 board.</description>
+
+            <frequency Hz="100000000" />
+            <pipeline dual="false" />
+            <bus burstLength="8" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpmaster"/>
+	    <!--bootrom app="bootable-blinking_cmp"/-->
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="2k" />
+            <DSPM size="0" />
+
+            <ExtMem size="1G" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Uart" offset="8" />
+	        <IO DevTypeRef="Keys" offset="10" intrs="2,3,4,5"/>
+                <IO DevTypeRef="Led" offset="9" />
+            </IOs>
+        </patmos>
+    </IPCore>
+    <IPCore IPType="patmosSlaveGenesys2">
+        <patmos>
+            <description>Single issue patmos slave for the Genesys 2 board.</description>
+
+            <frequency Hz="100000000" />
+            <pipeline dual="false" />
+            <bus burstLength="8" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpslave"/>
+	    <!--bootrom app="bootable-blinking_cmp"/-->
+            <ICache type="method" size="4k" assoc="16" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="0k" />
+            <DSPM size="0" />
+
+            <ExtMem size="1G" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Led" offset="9" />
+            </IOs>
+        </patmos>
+    </IPCore>
+
+    <IPCore IPType="patmosMasterGenesys2Audio">
+        <patmos>
+            <description>Single issue patmos master for the Genesys 2 board.</description>
+
+            <frequency Hz="100000000" />
+            <pipeline dual="false" />
+            <bus burstLength="8" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpmaster"/>
+            <!--bootrom app="bootable-blinking_cmp"/-->
+            <!--ICache type="method" size="4k" assoc="16" repl="fifo" /-->            
+            <ICache type="method" size="8k" assoc="32" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="2k" />
+            <DSPM size="0" />
+
+            <ExtMem size="1G" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Uart" offset="8" />
+	            <IO DevTypeRef="Keys" offset="10" intrs="2,3,4,5"/>
+                <IO DevTypeRef="Led" offset="9" />
+		<IO DevTypeRef="AudioBuffer" offset="11"/>
+		<IO DevTypeRef="I2CSubAddr" offset="12"/>
+            </IOs>
+        </patmos>
+    </IPCore>
+    <IPCore IPType="patmosSlaveGenesys2Audio">
+        <patmos>
+            <description>Single issue patmos slave for the Genesys 2 board.</description>
+
+            <frequency Hz="100000000" />
+            <pipeline dual="false" />
+            <bus burstLength="8" writeCombine="false" mmu="false" />
+            <bootrom app="bootable-cmpslave"/>
+            <!--bootrom app="bootable-blinking_cmp"/-->
+            <!--ICache type="method" size="4k" assoc="16" repl="fifo" /-->            
+            <ICache type="method" size="8k" assoc="32" repl="fifo" />
+            <DCache size="4k" assoc="1" repl="" writeThrough="true" />
+            <SCache size="4k" />
+            <ISPM size="0k" />
+            <DSPM size="0" />
+
+            <ExtMem size="1G" />
+
+            <IOs>
+                <IO DevTypeRef="CpuInfo" offset="0"/>
+                <IO DevTypeRef="Timer" offset="2" intrs="0,1" />
+                <IO DevTypeRef="Led" offset="9" />
+            </IOs>
+        </patmos>
+    </IPCore>
     <IPCore IPType="Master-MC">
         <patmos>
             <description>Single issue patmos master</description>

@@ -149,7 +149,7 @@ $(PGEN): $(AEGEAN_PLATFORM_FILE) $(BUILD_PATH) quartus_files ise_files
 	@echo $(AEGEAN_PLATFORM)+$(BUILD_PATH) > $(PGEN)
 ifeq ($(PREDIFINED_TOP_ENABLED),1)
 	@echo "Using predifined top level."
-	cp -v -r $(AEGEAN_SRC_PATH)/top/$(AEGEAN_PLATFORM)/. $(BUILD_PATH)/
+	cp -r $(AEGEAN_SRC_PATH)/top/$(AEGEAN_PLATFORM)/. $(BUILD_PATH)/
 endif
 
 $(BUILD_PATH):

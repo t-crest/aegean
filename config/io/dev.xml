@@ -104,7 +104,7 @@
     </Dev>
     <Dev DevType="OCRam" entity="OCRamCtrl" iface="OcpBurst">
         <params>
-            <param name="addr_width" value="20" />
+            <param name="addr_width" value="30" />
         </params>
     </Dev>
 	<Dev DevType="EMAC" entity="EMAC" iface="OcpCore">
@@ -155,6 +155,34 @@
       <outport   name="io_audioInterfacePins_sclkOut" />
       <outport   name="io_audioInterfacePins_bclk" />
       <outport   name="io_audioInterfacePins_xclk" />
-        </ports>
+    </ports>
+    </Dev>
+   <Dev DevType="AudioBuffer" entity="AudioBuffer" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="16" />
+            <param name="dataWidth" value="32" />
+        </params>
+	<ports>
+	    <outport    name="io_audioBufferPins_MCmd" width="3" />
+	    <outport    name="io_audioBufferPins_MAddr" width="16" />
+	    <outport    name="io_audioBufferPins_MData" width="32" />
+	    <outport    name="io_audioBufferPins_MByteEn" width="4" />
+	    <inport    name="io_audioBufferPins_SResp" width="2" />
+	    <inport    name="io_audioBufferPins_SData" width="32" />
+	</ports>
+   </Dev>
+   <Dev DevType="I2CSubAddr" entity="I2CSubAddr" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="16" />
+            <param name="dataWidth" value="32" />
+        </params>
+	<ports>
+	    <outport    name="io_i2CSubAddrPins_MCmd" width="3" />
+	    <outport    name="io_i2CSubAddrPins_MAddr" width="16" />
+	    <outport    name="io_i2CSubAddrPins_MData" width="32" />
+	    <outport    name="io_i2CSubAddrPins_MByteEn" width="4" />
+	    <inport    name="io_i2CSubAddrPins_SResp" width="2" />
+	    <inport    name="io_i2CSubAddrPins_SData" width="32" />
+	</ports>
     </Dev>
 </Devs>
