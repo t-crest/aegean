@@ -264,7 +264,7 @@ class AegeanGen(object):
         self.parseIOPorts()
         self.generateNodes()
         self.generateMemory()
-        self.sspmGen()
+        self.sspmGen(len(self.nodes))
 
         vlog_src = open(self.p.BUILD_PATH+'/.vlog_src','w')
         for f in self.genFiles:
@@ -495,9 +495,10 @@ class AegeanGen(object):
 
         self.genFiles.append('../'+entity+'.v')
 
-    def sspmGen(self):
+    def sspmGen(self,cnt):
         Sspm = ['make','-C',self.p.PATMOSHW_PATH]
         Sspm+= ['HWBUILDDIR='+self.p.BUILD_PATH]
+        Sspm+= ['CORE_CNT='+str(cnt)]
         Sspm+= [self.p.BUILD_PATH+'/SSPMAegean.v']
         ret = subprocess.call(Sspm)
         if ret != 0:
