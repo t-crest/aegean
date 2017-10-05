@@ -9,6 +9,7 @@
         </ports>
     </Dev>
   <Dev DevType="Timer" entity="Timer" iface="OcpCore" />
+  <Dev DevType="Deadline" entity="Deadline" iface="OcpCore" />
   <Dev DevType="Uart" entity="Uart" iface="OcpCore">
     <!-- Maybe the Dev should also have a srcfile attribute -->
     <params>
