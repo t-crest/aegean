@@ -176,6 +176,8 @@ class AegeanGen(object):
         self.ssramGen(entity,self.ocpBurstAddrWidth)
         self.arbiterGen(len(self.nodes),self.ocpBurstAddrWidth,32,4)
 
+        # Add sspm here for generation, since it is a type of memory
+
         aegeanCode.writeConfig(self.p.OcpConfFile,self.ocpBurstAddrWidth)
 
 
@@ -262,6 +264,7 @@ class AegeanGen(object):
         self.parseIOPorts()
         self.generateNodes()
         self.generateMemory()
+        self.sspmGen(len(self.nodes))
 
         vlog_src = open(self.p.BUILD_PATH+'/.vlog_src','w')
         for f in self.genFiles:
@@ -270,6 +273,10 @@ class AegeanGen(object):
 
 
         aegean = aegeanCode.getAegean()
+
+        # Adding our own sspm
+        sspm = aegeanCode.getSSPM(len(self.nodes))
+        aegean.arch.declComp(sspm)
 
         arbiter = aegeanCode.getArbiter(len(self.nodes),self.ocpBurstAddrWidth)
         aegean.arch.declComp(arbiter)
@@ -351,6 +358,10 @@ class AegeanGen(object):
         aegean.arch.instComp(noc,'noc',True)
         aegeanCode.bindArbiter(arbiter,len(self.nodes))
         aegean.arch.instComp(arbiter,'arbit')
+
+        # Adding our own sspm
+        aegeanCode.bindSSPM(sspm,len(self.nodes))
+        aegean.arch.instComp(sspm,'sspm')        
 
         aegean.writeComp(self.p.AegeanFile)
 
@@ -483,6 +494,17 @@ class AegeanGen(object):
             raise SystemExit(__file__ +': Error: Generation of Sram controller: return value: ' + str(ret))
 
         self.genFiles.append('../'+entity+'.v')
+
+    def sspmGen(self,cnt):
+        Sspm = ['make','-C',self.p.PATMOSHW_PATH]
+        Sspm+= ['HWBUILDDIR='+self.p.BUILD_PATH]
+        Sspm+= ['CORE_CNT='+str(cnt)]
+        Sspm+= [self.p.BUILD_PATH+'/SSPMAegean.v']
+        ret = subprocess.call(Sspm)
+        if ret != 0:
+            raise SystemExit(__file__ +': Error: Generation of SSPM: return value: ' + str(ret))
+
+        self.genFiles.append('../SSPMAegean.v')        
 
 
     def arbiterGen(self,cnt,addr,data,burstLength):

@@ -37,6 +37,12 @@
             <outport name="io_ledsPins_led" width="1" />
         </ports>
     </Dev>
+    <Dev DevType="SSPMio" entity="SSPMio" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="32" />
+            <param name="dataWidth" value="32" />
+        </params>
+    </Dev>    
     <Dev DevType="ExtIODevice" entity="ExtIODevice" iface="OcpCore">
         <params>
             <param name="extAddrWidth" value="8" />
@@ -49,7 +55,6 @@
             <inport name="io_ExtIODevice_S_Data" width="32" />
             <inport name="io_ExtIODevice_S_Resp" width="2" />
             <inport name="io_ExtIODevice_S_CmdAccept" width="1" />
-
         </ports>
     </Dev>
     <Dev DevType="Avalon-MM" entity="AvalonMMBridge" iface="OcpCore">

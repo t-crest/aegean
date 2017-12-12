@@ -95,6 +95,19 @@ def getArbiter(numPorts,ocpBurstAddrWidth):
         arbiter.entity.addPort('io_master_'+str(i)+'_S_DataAccept','out','std_logic')
     return arbiter
 
+def getSSPM(numPorts):
+    sspm = Component('SSPMAegean') # SSPM becomes the name of the component in the vhdl file, and sspm of the instance
+    sspm.entity.addPort('clk')
+    sspm.entity.addPort('reset')
+    for i in range(numPorts-1, -1, -1):
+        sspm.entity.addPort('io_'+str(i)+'_M_Cmd','in','std_logic_vector',3)
+        sspm.entity.addPort('io_'+str(i)+'_M_Addr','in','std_logic_vector',32)
+        sspm.entity.addPort('io_'+str(i)+'_M_Data','in','std_logic_vector',32)
+        sspm.entity.addPort('io_'+str(i)+'_M_ByteEn','in','std_logic_vector',4)
+        sspm.entity.addPort('io_'+str(i)+'_S_Resp','out','std_logic_vector',2)
+        sspm.entity.addPort('io_'+str(i)+'_S_Data','out','std_logic_vector',32)
+    return sspm    
+
 def getPatmos(IPType,ocpBurstAddrWidth=21):
     patmos = Component(IPType+'PatmosCore')
     patmos.entity.addPort('clk')
@@ -128,21 +141,28 @@ def getPatmos(IPType,ocpBurstAddrWidth=21):
     patmos.entity.addPort('io_memPort_S_Data','in', 'std_logic_vector',32)
     patmos.entity.addPort('io_memPort_S_CmdAccept','in', 'std_logic')
     patmos.entity.addPort('io_memPort_S_DataAccept','in', 'std_logic')
+    patmos.entity.addPort('io_sSPMioPins_M_Cmd','out', 'std_logic_vector',3)
+    patmos.entity.addPort('io_sSPMioPins_M_Addr','out', 'std_logic_vector',32)
+    patmos.entity.addPort('io_sSPMioPins_M_Data','out', 'std_logic_vector',32)
+    patmos.entity.addPort('io_sSPMioPins_M_ByteEn','out', 'std_logic_vector',4)
+    patmos.entity.addPort('io_sSPMioPins_S_Resp','in', 'std_logic_vector',2)
+    patmos.entity.addPort('io_sSPMioPins_S_Data','in', 'std_logic_vector',32)    
 
     return patmos
-
 
 def declareSignals(aegean,numNodes):
     aegean.arch.declSignal('ocp_io_ms','ocp_io_m_a')
     aegean.arch.declSignal('ocp_io_ss','ocp_io_s_a')
     aegean.arch.declSignal('ocp_core_ms','ocp_core_m_a')
-    aegean.arch.declSignal('ocp_core_ss','ocp_core_s_a')
+    aegean.arch.declSignal('ocp_core_ss','ocp_core_s_a') 
     aegean.arch.declSignal('ocp_burst_ms','ocp_burst_m_a')
     aegean.arch.declSignal('ocp_burst_ss','ocp_burst_s_a')
     aegean.arch.declSignal('spm_ms','mem_if_masters')
     aegean.arch.declSignal('spm_ss','mem_if_slaves')
     aegean.arch.declSignal('supervisor','std_logic_vector',numNodes)
     aegean.arch.declSignal('irq','std_logic_vector',numNodes*2)
+    aegean.arch.declSignal('ocp_core_m_sspm','ocp_core_m_a')
+    aegean.arch.declSignal('ocp_core_s_sspm','ocp_core_s_a')       
 
 def setSPMSize(aegean,sizes):
     aegean.arch.decl('''
@@ -184,6 +204,12 @@ def bindPatmos(patmos,cnt,p):
     patmos.entity.bindPort('io_memPort_S_Data','ocp_burst_ss('+str(p)+').SData')
     patmos.entity.bindPort('io_memPort_S_CmdAccept','ocp_burst_ss('+str(p)+').SCmdAccept')
     patmos.entity.bindPort('io_memPort_S_DataAccept','ocp_burst_ss('+str(p)+').SDataAccept')
+    patmos.entity.bindPort('io_sSPMioPins_M_Cmd', 'ocp_core_m_sspm('+str(p)+').MCmd')
+    patmos.entity.bindPort('io_sSPMioPins_M_Addr', 'ocp_core_m_sspm('+str(p)+').MAddr')
+    patmos.entity.bindPort('io_sSPMioPins_M_Data','ocp_core_m_sspm('+str(p)+').MData')
+    patmos.entity.bindPort('io_sSPMioPins_M_ByteEn','ocp_core_m_sspm('+str(p)+').MByteEn')
+    patmos.entity.bindPort('io_sSPMioPins_S_Resp','ocp_core_s_sspm('+str(p)+').SResp')
+    patmos.entity.bindPort('io_sSPMioPins_S_Data','ocp_core_s_sspm('+str(p)+').SData')       
 
 
 def bindNoc(noc):
@@ -195,6 +221,18 @@ def bindNoc(noc):
     noc.entity.bindPort('spm_ports_m','spm_ms')
     noc.entity.bindPort('spm_ports_s','spm_ss')
     noc.entity.bindPort('irq','irq')
+
+def bindSSPM(sspm, numPorts):
+    sspm.entity.bindPort('clk','clk')
+    sspm.entity.bindPort('reset','reset')
+
+    for i in range(numPorts-1, -1, -1):
+        sspm.entity.bindPort('io_'+str(i)+'_M_Cmd   ','ocp_core_m_sspm('+str(i)+').MCmd')
+        sspm.entity.bindPort('io_'+str(i)+'_M_Addr  ','ocp_core_m_sspm('+str(i)+').MAddr')
+        sspm.entity.bindPort('io_'+str(i)+'_M_Data  ','ocp_core_m_sspm('+str(i)+').MData')
+        sspm.entity.bindPort('io_'+str(i)+'_M_ByteEn','ocp_core_m_sspm('+str(i)+').MByteEn')
+        sspm.entity.bindPort('io_'+str(i)+'_S_Resp  ','ocp_core_s_sspm('+str(i)+').SResp')
+        sspm.entity.bindPort('io_'+str(i)+'_S_Data  ','ocp_core_s_sspm('+str(i)+').SData')
 
 def addSPM():
     return '''
