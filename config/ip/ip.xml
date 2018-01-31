@@ -5,6 +5,8 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
@@ -31,6 +33,8 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
@@ -56,6 +60,8 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
@@ -82,6 +88,8 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
@@ -107,6 +115,8 @@
 
             <frequency Hz="66000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmp_hello"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
@@ -132,6 +142,8 @@
 
             <frequency Hz="75000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
@@ -159,6 +171,8 @@
 
             <frequency Hz="75000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
@@ -186,6 +200,8 @@
 
             <frequency Hz="66000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpmaster"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
@@ -211,6 +227,8 @@
 
             <frequency Hz="66000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-cmpslave"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
@@ -237,6 +255,8 @@
 
             <frequency Hz="80000000" />
             <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
             <bootrom app="bootable-argo2_libnoc"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
@@ -264,6 +284,8 @@
 
       <frequency Hz="80000000" />
       <pipeline dual="false" />
+            <cores count="1" />
+            <cmp device="0" />
       <bus burstLength="4" writeCombine="false" mmu="false" />
       <bootrom app="bootable-cmpmaster"/>
       <ICache type="method" size="8k" assoc="32" repl="fifo" />

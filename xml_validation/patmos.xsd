@@ -16,6 +16,16 @@
                         <xs:attribute name="dual" type="xs:boolean" use="required" />
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="cores">
+                    <xs:complexType>
+                        <xs:attribute name="count" type="xs:nonNegativeInteger" use="required" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="cmp">
+                    <xs:complexType>
+                        <xs:attribute name="device" type="xs:nonNegativeInteger" use="required" />
+                    </xs:complexType>
+                </xs:element>
                 <xs:element name="bus">
                     <xs:complexType>
                         <xs:attribute name="burstLength" type="xs:nonNegativeInteger" use="required" />
