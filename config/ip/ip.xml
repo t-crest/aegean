@@ -8,7 +8,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpmaster"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
@@ -36,7 +36,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpslave"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
@@ -63,7 +63,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpmaster"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
@@ -91,7 +91,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpslave"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="4k" />
@@ -145,7 +145,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpmaster"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
@@ -174,7 +174,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpslave"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="8k" assoc="16" repl="fifo" />
             <DCache size="4k" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
@@ -203,7 +203,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpmaster"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
@@ -230,7 +230,7 @@
             <cores count="1" />
             <cmp device="0" />
             <bus burstLength="4" writeCombine="false" mmu="false" />
-            <bootrom app="bootable-cmpslave"/>
+            <bootrom app="bootable-bootloader"/>
             <ICache type="method" size="4k" assoc="16" repl="fifo" />
             <DCache size="256" assoc="1" repl="" writeThrough="true" />
             <SCache size="2k" />
@@ -287,7 +287,7 @@
             <cores count="1" />
             <cmp device="0" />
       <bus burstLength="4" writeCombine="false" mmu="false" />
-      <bootrom app="bootable-cmpmaster"/>
+      <bootrom app="bootable-bootloader"/>
       <ICache type="method" size="8k" assoc="32" repl="fifo" />
       <DCache size="4k" assoc="1" repl="" writeThrough="true" />
       <SCache size="4k" />
