@@ -18,7 +18,7 @@
 		<memory id="ram0" DevTypeRef="OCRam" size="1G" />
 
 		<!-- The standard IP cores are included -->
-		<xi:include href="./ip/ip.xml" />
+		<xi:include href="./ip/ip_rec.xml" />
 		<!-- The standard IO devices are included -->
 		<xi:include href="./io/dev.xml" />
 		<!-- The IO ports for the de2-115 board are included-->

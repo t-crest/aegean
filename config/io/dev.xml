@@ -185,4 +185,45 @@
 	    <inport    name="io_i2CSubAddrPins_SData" width="32" />
 	</ports>
     </Dev>
+    <Dev DevType="BRamCtrl" entity="BRamCtrl" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="16" />
+            <param name="dataWidth" value="32" />
+        </params>
+	<ports>
+	    <outport    name="io_bRamCtrlPins_MCmd" width="3" />
+	    <outport    name="io_bRamCtrlPins_MAddr" width="16" />
+	    <outport    name="io_bRamCtrlPins_MData" width="32" />
+	    <outport    name="io_bRamCtrlPins_MByteEn" width="4" />
+	    <inport    name="io_bRamCtrlPins_SResp" width="2" />
+	    <inport    name="io_bRamCtrlPins_SData" width="32" />
+	</ports>
+    </Dev>
+	<Dev DevType="IcapCtrl" entity="IcapCtrl" iface="OcpCore">
+        <params>
+            <param name="extAddrWidth" value="16" />
+            <param name="dataWidth" value="32" />
+        </params>
+	<ports>
+	    <outport    name="io_icapCtrlPins_MCmd" width="3" />
+	    <outport    name="io_icapCtrlPins_MAddr" width="16" />
+	    <outport    name="io_icapCtrlPins_MData" width="32" />
+	    <outport    name="io_icapCtrlPins_MByteEn" width="4" />
+	    <inport    name="io_icapCtrlPins_SResp" width="2" />
+	    <inport    name="io_icapCtrlPins_SData" width="32" />
+	</ports>
+	</Dev>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </Devs>

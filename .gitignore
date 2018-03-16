@@ -1,6 +1,6 @@
 ##############
 # Project specific files
-config.mk
+# config.mk
 build/
 *.svg
 *.dbg

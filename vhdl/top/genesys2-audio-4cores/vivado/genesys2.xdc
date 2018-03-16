@@ -13,17 +13,18 @@ set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets clk_manager_inst_0/inst/cl
 #create_clock -name AUDIO_BCLK -period 160 [get_nets audio_bclk]
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets audio_bclk]
 #set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets {audio_bclk_IBUF}]
+#set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets {sw_IBUF[0]}]
 
 ## Clock Signal
 set_property -dict {PACKAGE_PIN AD11 IOSTANDARD LVDS} [get_ports clk_in_n]
 set_property -dict {PACKAGE_PIN AD12 IOSTANDARD LVDS} [get_ports clk_in_p]
 
 ## Buttons
-set_property -dict { PACKAGE_PIN E18   IOSTANDARD LVCMOS12 } [get_ports { keys[1] }]; #IO_25_17 Sch=btnc
-set_property -dict { PACKAGE_PIN M19   IOSTANDARD LVCMOS12 } [get_ports { keys[3] }]; #IO_0_15 Sch=btnd
-set_property -dict { PACKAGE_PIN M20   IOSTANDARD LVCMOS12 } [get_ports { keys[2] }]; #IO_L6P_T0_15 Sch=btnl
+#set_property -dict { PACKAGE_PIN E18   IOSTANDARD LVCMOS12 } [get_ports {  }]; #IO_25_17 Sch=btnc
+set_property -dict { PACKAGE_PIN M19   IOSTANDARD LVCMOS12 } [get_ports { keys[2] }]; #IO_0_15 Sch=btnd
+set_property -dict { PACKAGE_PIN M20   IOSTANDARD LVCMOS12 } [get_ports { keys[1] }]; #IO_L6P_T0_15 Sch=btnl
 set_property -dict { PACKAGE_PIN C19   IOSTANDARD LVCMOS12 } [get_ports { keys[0] }]; #IO_L24P_T3_17 Sch=btnr
-#set_property -dict { PACKAGE_PIN B19   IOSTANDARD LVCMOS12 } [get_ports { btnu }]; #IO_L24N_T3_17 Sch=btnu
+set_property -dict { PACKAGE_PIN B19   IOSTANDARD LVCMOS12 } [get_ports { keys[3] }]; #IO_L24N_T3_17 Sch=btnu
 #set_property -dict { PACKAGE_PIN R19   IOSTANDARD LVCMOS33 } [get_ports { cpu_resetn }]; #IO_0_14 Sch=cpu_resetn
 
 ## LEDs
@@ -37,14 +38,14 @@ set_property -dict {PACKAGE_PIN W24 IOSTANDARD LVCMOS33} [get_ports {led[6]}]
 set_property -dict {PACKAGE_PIN W23 IOSTANDARD LVCMOS33} [get_ports {led[7]}]
 
 ## Switches
-#set_property -dict {PACKAGE_PIN G19 IOSTANDARD LVCMOS12} [get_ports sw0]
-#set_property -dict { PACKAGE_PIN G25   IOSTANDARD LVCMOS12 } [get_ports { sw[1] }]; #IO_25_16 Sch=sw[1]
-#set_property -dict { PACKAGE_PIN H24   IOSTANDARD LVCMOS12 } [get_ports { sw[2] }]; #IO_L19P_T3_16 Sch=sw[2]
-#set_property -dict { PACKAGE_PIN K19   IOSTANDARD LVCMOS12 } [get_ports { sw[3] }]; #IO_L6P_T0_17 Sch=sw[3]
-#set_property -dict { PACKAGE_PIN N19   IOSTANDARD LVCMOS12 } [get_ports { sw[4] }]; #IO_L19P_T3_A22_15 Sch=sw[4]
-#set_property -dict { PACKAGE_PIN P19   IOSTANDARD LVCMOS12 } [get_ports { sw[5] }]; #IO_25_15 Sch=sw[5]
-#set_property -dict { PACKAGE_PIN P26   IOSTANDARD LVCMOS33 } [get_ports { sw[6] }]; #IO_L10P_T1_D14_14 Sch=sw[6]
-#set_property -dict { PACKAGE_PIN P27   IOSTANDARD LVCMOS33 } [get_ports { sw[7] }]; #IO_L8P_T1_D11_14 Sch=sw[7]
+set_property -dict { PACKAGE_PIN G19   IOSTANDARD LVCMOS12}  [get_ports { sw[0] }]
+set_property -dict { PACKAGE_PIN G25   IOSTANDARD LVCMOS12 } [get_ports { sw[1] }]; #IO_25_16 Sch=sw[1]
+set_property -dict { PACKAGE_PIN H24   IOSTANDARD LVCMOS12 } [get_ports { sw[2] }]; #IO_L19P_T3_16 Sch=sw[2]
+set_property -dict { PACKAGE_PIN K19   IOSTANDARD LVCMOS12 } [get_ports { sw[3] }]; #IO_L6P_T0_17 Sch=sw[3]
+set_property -dict { PACKAGE_PIN N19   IOSTANDARD LVCMOS12 } [get_ports { sw[4] }]; #IO_L19P_T3_A22_15 Sch=sw[4]
+set_property -dict { PACKAGE_PIN P19   IOSTANDARD LVCMOS12 } [get_ports { sw[5] }]; #IO_25_15 Sch=sw[5]
+set_property -dict { PACKAGE_PIN P26   IOSTANDARD LVCMOS33 } [get_ports { sw[6] }]; #IO_L10P_T1_D14_14 Sch=sw[6]
+set_property -dict { PACKAGE_PIN P27   IOSTANDARD LVCMOS33 } [get_ports { sw[7] }]; #IO_L8P_T1_D11_14 Sch=sw[7]
 
 ## USB HIDs For Both Mouse and Keyboard
 #set_property -dict { PACKAGE_PIN AD23  IOSTANDARD LVCMOS33  PULLUP true } [get_ports { ps2_clk_0 }]; #IO_L12P_T1_MRCC_12 Sch=ps2_clk[0]
@@ -445,11 +446,3 @@ set_property -dict {PACKAGE_PIN AF18 IOSTANDARD LVCMOS18} [get_ports audio_sda]
 #set_property -dict { PACKAGE_PIN AB14  IOSTANDARD LVCMOS18 } [get_ports { USB_OTG_RESETB }]; #IO_25_VRP_32 Sch=usb_otg_resetb
 #set_property -dict { PACKAGE_PIN AA17  IOSTANDARD LVCMOS18 } [get_ports { USB_OTG_STP }]; #IO_L23P_T3_32 Sch=usb_otg_stp
 #set_property -dict { PACKAGE_PIN AF16  IOSTANDARD LVCMOS18 } [get_ports { USB_OTG_VBUSOC }]; #IO_L6N_T0_VREF_32 Sch=usb_otg_vbusoc
-
-connect_debug_port u_ila_0/probe0 [get_nets [list {dac_data_int[0]} {dac_data_int[1]} {dac_data_int[2]} {dac_data_int[3]} {dac_data_int[4]} {dac_data_int[5]} {dac_data_int[6]} {dac_data_int[7]} {dac_data_int[8]} {dac_data_int[9]} {dac_data_int[10]} {dac_data_int[11]} {dac_data_int[12]} {dac_data_int[13]} {dac_data_int[14]} {dac_data_int[15]} {dac_data_int[16]} {dac_data_int[17]} {dac_data_int[18]} {dac_data_int[19]} {dac_data_int[20]} {dac_data_int[21]} {dac_data_int[22]} {dac_data_int[23]} {dac_data_int[24]} {dac_data_int[25]} {dac_data_int[26]} {dac_data_int[27]} {dac_data_int[28]} {dac_data_int[29]} {dac_data_int[30]} {dac_data_int[31]}]]
-connect_debug_port u_ila_0/probe2 [get_nets [list {audioBuffer_MCmd_bridge[0]} {audioBuffer_MCmd_bridge[1]} {audioBuffer_MCmd_bridge[2]}]]
-connect_debug_port u_ila_0/probe4 [get_nets [list {audioBuffer_MData_bridge[0]} {audioBuffer_MData_bridge[1]} {audioBuffer_MData_bridge[2]} {audioBuffer_MData_bridge[3]} {audioBuffer_MData_bridge[4]} {audioBuffer_MData_bridge[5]} {audioBuffer_MData_bridge[6]} {audioBuffer_MData_bridge[7]} {audioBuffer_MData_bridge[8]} {audioBuffer_MData_bridge[9]} {audioBuffer_MData_bridge[10]} {audioBuffer_MData_bridge[11]} {audioBuffer_MData_bridge[12]} {audioBuffer_MData_bridge[13]} {audioBuffer_MData_bridge[14]} {audioBuffer_MData_bridge[15]} {audioBuffer_MData_bridge[16]} {audioBuffer_MData_bridge[17]} {audioBuffer_MData_bridge[18]} {audioBuffer_MData_bridge[19]} {audioBuffer_MData_bridge[20]} {audioBuffer_MData_bridge[21]} {audioBuffer_MData_bridge[22]} {audioBuffer_MData_bridge[23]} {audioBuffer_MData_bridge[24]} {audioBuffer_MData_bridge[25]} {audioBuffer_MData_bridge[26]} {audioBuffer_MData_bridge[27]} {audioBuffer_MData_bridge[28]} {audioBuffer_MData_bridge[29]} {audioBuffer_MData_bridge[30]} {audioBuffer_MData_bridge[31]}]]
-connect_debug_port u_ila_0/probe5 [get_nets [list {adc_data_int[0]} {adc_data_int[1]} {adc_data_int[2]} {adc_data_int[3]} {adc_data_int[4]} {adc_data_int[5]} {adc_data_int[6]} {adc_data_int[7]} {adc_data_int[8]} {adc_data_int[9]} {adc_data_int[10]} {adc_data_int[11]} {adc_data_int[12]} {adc_data_int[13]} {adc_data_int[14]} {adc_data_int[15]} {adc_data_int[16]} {adc_data_int[17]} {adc_data_int[18]} {adc_data_int[19]} {adc_data_int[20]} {adc_data_int[21]} {adc_data_int[22]} {adc_data_int[23]} {adc_data_int[24]} {adc_data_int[25]} {adc_data_int[26]} {adc_data_int[27]} {adc_data_int[28]} {adc_data_int[29]} {adc_data_int[30]} {adc_data_int[31]}]]
-connect_debug_port u_ila_0/probe6 [get_nets [list {audioBuffer_MAddr_bridge[0]} {audioBuffer_MAddr_bridge[1]} {audioBuffer_MAddr_bridge[2]} {audioBuffer_MAddr_bridge[3]} {audioBuffer_MAddr_bridge[4]} {audioBuffer_MAddr_bridge[5]} {audioBuffer_MAddr_bridge[6]} {audioBuffer_MAddr_bridge[7]} {audioBuffer_MAddr_bridge[8]} {audioBuffer_MAddr_bridge[9]} {audioBuffer_MAddr_bridge[10]} {audioBuffer_MAddr_bridge[11]} {audioBuffer_MAddr_bridge[12]} {audioBuffer_MAddr_bridge[13]} {audioBuffer_MAddr_bridge[14]} {audioBuffer_MAddr_bridge[15]}]]
-connect_debug_port u_ila_0/probe7 [get_nets [list {audioBuffer_MByteEn_bridge[0]} {audioBuffer_MByteEn_bridge[1]} {audioBuffer_MByteEn_bridge[2]} {audioBuffer_MByteEn_bridge[3]}]]
-
